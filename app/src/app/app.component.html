@@ -1,0 +1,23 @@
+<header>
+  <nav>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      Главная
+    </a>
+    <a routerLink="/download" routerLinkActive="active">
+      Скачать
+    </a>
+    <a routerLink="/template" routerLinkActive="active">
+      Шаблон
+    </a>
+  </nav>
+</header>
+
+<!-- Контент страниц будет вставляться сюда -->
+<main>
+  <router-outlet></router-outlet>
+</main>
+
+<!-- Подвал -->
+<footer>
+  <p>&copy; 2026 Анонимусы</p>
+</footer>

@@ -1,0 +1,28 @@
+nav {
+  background-color: #333;
+  padding: 1rem;
+}
+
+nav a {
+  color: white;
+  margin-right: 1rem;
+  text-decoration: none;
+  padding: 0.5rem;
+}
+
+nav a.active {
+  background-color: #555;
+  border-radius: 4px;
+}
+
+main {
+  min-height: 400px;
+  padding: 2rem;
+}
+
+footer {
+  background-color: #333;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}

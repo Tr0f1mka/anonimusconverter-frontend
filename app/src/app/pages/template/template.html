@@ -1,0 +1,8 @@
+<div class="template-container">
+  <h2>Выбор шаблона</h2>
+  <ul>
+    <li *ngFor="let template of templates" (click)="selectTemplate(template)">
+      {{ template }}
+    </li>
+  </ul>
+</div>
