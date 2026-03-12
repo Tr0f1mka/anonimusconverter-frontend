@@ -1,0 +1,18 @@
+<div class="file-upload-container">
+    <button 
+    class="file-upload-btn" 
+    [class.file-selected]="selectedFile"
+    (click)="fileInput.click()">
+    <span class="btn-text">
+        {{ selectedFile ? selectedFile.name : ('selectFile' | translate) }}
+    </span>
+    <span class="btn-icon" *ngIf="selectedFile">✓</span>
+    </button>
+    
+    <input 
+    #fileInput
+    type="file" 
+    class="file-input" 
+    (change)="onFileSelected($event)"
+    [accept]="acceptedFileTypes">
+</div>

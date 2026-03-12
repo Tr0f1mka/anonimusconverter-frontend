@@ -1,0 +1,14 @@
+<div class="language-switcher">
+    <button 
+    class="lang-btn" 
+    [class.active]="(currentLang$ | async) === 'ru'"
+    (click)="setLanguage('ru')">
+    RU
+    </button>
+    <button 
+    class="lang-btn" 
+    [class.active]="(currentLang$ | async) === 'en'"
+    (click)="setLanguage('en')">
+    EN
+    </button>
+</div>

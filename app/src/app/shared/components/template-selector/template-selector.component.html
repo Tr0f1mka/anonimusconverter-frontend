@@ -1,0 +1,73 @@
+<div class="template-selector">
+    <!-- Кнопка выбора шаблона -->
+    <button 
+    class="template-btn" 
+    [class.template-selected]="selectedTemplate"
+    (click)="openTemplateSelector()"
+    [disabled]="isLoading">
+        <span class="btn-icon">{{ selectedTemplate ? '📋' : '📄' }}</span>
+        <span class="btn-text">
+            {{ selectedTemplate ? selectedTemplate.name : ('selectTemplate' | translate) }}
+        </span>
+        <span class="btn-icon dropdown-icon" *ngIf="!selectedTemplate">▼</span>
+        <span class="btn-icon clear-icon" *ngIf="selectedTemplate && !isLoading" (click)="clearTemplate($event)">✕</span>
+        <span class="spinner" *ngIf="isLoading"></span>
+    </button>
+    
+    <!-- Модальное окно выбора шаблона -->
+    <div class="modal" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+        <h3>Выберите шаблон</h3>
+        <button class="close-btn" (click)="closeModal()">×</button>
+        </div>
+        
+        <div class="modal-body">
+        <!-- Поиск шаблонов -->
+        <div class="search-box">
+            <input 
+            type="text" 
+            placeholder="Поиск шаблонов..." 
+            [(ngModel)]="searchQuery"
+            (input)="filterTemplates()"
+            class="search-input">
+        </div>
+        
+        <!-- Список шаблонов -->
+        <div class="templates-list" *ngIf="filteredTemplates.length > 0; else noTemplates">
+            <div 
+            *ngFor="let template of filteredTemplates"
+            class="template-item"
+            [class.selected]="selectedTemplate?.id === template.id"
+            (click)="selectTemplate(template)">
+            <div class="template-info">
+                <div class="template-name">{{ template.name }}</div>
+                <div class="template-description" *ngIf="template.description">
+                {{ template.description }}
+                </div>
+            </div>
+            <div class="template-actions">
+                <span class="check-icon" *ngIf="selectedTemplate?.id === template.id">✓</span>
+            </div>
+            </div>
+        </div>
+        
+        <ng-template #noTemplates>
+            <div class="no-templates">
+            <p>У вас пока нет шаблонов</p>
+            <button class="btn btn-primary" (click)="createTemplate()">
+                Создать шаблон
+            </button>
+            </div>
+        </ng-template>
+        </div>
+        
+        <div class="modal-footer">
+        <div class="footer-info" *ngIf="totalTemplates > 0">
+            Всего шаблонов: {{ totalTemplates }}
+        </div>
+        <button class="btn btn-secondary" (click)="closeModal()">Отмена</button>
+        </div>
+    </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="format-selector" #selectorRef>
+    <!-- Кнопка выбора формата -->
+    <button 
+    class="format-button" 
+    (click)="toggleDropdown()"
+    [class.active]="isOpen">
+    <span class="format-from">{{ sourceFormat }}</span>
+    <span class="arrow-icon">→</span>
+    <span class="format-to">{{ selectedFormat?.name || '?' }}</span>
+    <span class="dropdown-icon">▼</span>
+    </button>
+    
+    <!-- Выпадающий список форматов -->
+    <div class="format-dropdown" *ngIf="isOpen">
+        <div 
+            *ngFor="let format of availableFormats"
+            class="format-option"
+            [class.selected]="selectedFormat?.format === format.format"
+            (click)="selectFormat(format)">
+            <span class="format-name">{{ format.name }}</span>
+            <span class="format-extension">{{ format.extension }}</span>
+            <span class="check-icon" *ngIf="selectedFormat?.format === format.format">✓</span>
+        </div>
+    </div>
+</div>
