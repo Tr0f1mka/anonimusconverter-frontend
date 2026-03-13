@@ -8,20 +8,20 @@ import { HeaderComponent } from './main-layout/components/header/header.componen
 import { FooterComponent } from './main-layout/components/footer/footer.component';
 
 @NgModule({
-  declarations: [
-    MainLayoutComponent,
-    HeaderComponent,
-    FooterComponent
-  ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    RouterModule
-  ],
-  exports: [
-    MainLayoutComponent,
-    HeaderComponent,
-    FooterComponent
-  ]
+    declarations: [
+        MainLayoutComponent,
+        HeaderComponent,
+        FooterComponent
+    ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        RouterModule
+    ],
+    exports: [
+        MainLayoutComponent,
+        HeaderComponent,
+        FooterComponent
+    ]
 })
 export class LayoutsModule { }

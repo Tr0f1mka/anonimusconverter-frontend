@@ -17,16 +17,43 @@
             class="nav-link">
             {{ 'templates' | translate }}
         </a>
-        <a 
-            [routerLink]="['/auth/login']" 
-            routerLinkActive="active"
-            class="nav-link">
-            {{ 'login' | translate }}
-        </a>
     </nav>
     
     <div class="header-actions">
         <app-language-switcher></app-language-switcher>
+        
+        <!-- Если пользователь авторизован -->
+        <div class="user-menu" *ngIf="isLoggedIn">
+            <button class="user-btn" (click)="toggleUserMenu()">
+                <span class="user-icon">👤</span>
+                <span class="user-name">{{ currentUser?.name }}</span>
+                <span class="dropdown-icon">▼</span>
+            </button>
+            
+            <div class="user-dropdown" *ngIf="showUserMenu">
+                <div class="user-info">
+                    <div class="user-email">{{ currentUser?.email }}</div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" (click)="logout()">
+                    <span class="item-icon">🚪</span>
+                    Выйти
+                </button>
+            </div>
+        </div>
+        
+        <!-- Если не авторизован -->
+        <a 
+            *ngIf="!isLoggedIn"
+            [routerLink]="['/auth/login']" 
+            routerLinkActive="active"
+            class="nav-link login-link">
+            {{ 'login' | translate }}
+        </a>
+        
         <button class="help-btn" (click)="showHelpModal()">?</button>
+        <button class="dev-btn" (click)="showDevModal()">
+            {{ 'forDevelopers' | translate }}
+        </button>
     </div>
 </header>
