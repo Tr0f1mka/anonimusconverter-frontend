@@ -4,7 +4,7 @@
         <h1 class="page-title">Конвертация файла</h1>
        
         <!-- Состояние загрузки -->
-        <div class="loading-state" *ngIf="!downloadUrl && !error">
+        <div class="loading-state" *ngIf="!downloadUrl && !error && !isCompleted">
             <div class="spinner"></div>
             <h2>Конвертация в процессе</h2>
             <p class="loading-message">Пожалуйста, подождите. Это может занять несколько секунд...</p>

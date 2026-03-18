@@ -25,9 +25,6 @@ export class AuthService {
       try {
         const user = JSON.parse(userData);
         // Преобразуем строку даты обратно в Date объект если нужно
-        if (user.createdAt) {
-          user.createdAt = new Date(user.createdAt);
-        }
         this.currentUser.next(user);
         this.isAuthenticated.next(true);
       } catch (e) {
@@ -55,7 +52,7 @@ export class AuthService {
   // Регистрация
   register(data: RegisterRequest): Observable<AuthResponse> {
     // Реальный запрос к API
-    /*
+    
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data).pipe(
       map(response => {
         this.setSession(response);
@@ -65,35 +62,35 @@ export class AuthService {
         return throwError(() => error);
       })
     );
-    */
     
-    // Заглушка для демонстрации
-    const response: AuthResponse = {
-      user: {
-        id: Math.random().toString(36).substring(7),
-        name: data.name,
-        email: data.email,
-        createdAt: new Date().toISOString() // Отправляем как строку ISO
-      },
-      token: 'dummy-token-' + Math.random().toString(36).substring(7)
-    };
     
-    return of(response).pipe(
-      delay(1000),
-      map(response => {
-        this.setSession(response);
-        return response;
-      }),
-      catchError(error => {
-        return throwError(() => new Error('Ошибка регистрации'));
-      })
-    );
+    // // Заглушка для демонстрации
+    // const response: AuthResponse = {
+    //   user: {
+    //     id: Math.random().toString(36).substring(7),
+    //     name: data.name,
+    //     email: data.email,
+    //     createdAt: new Date().toISOString() // Отправляем как строку ISO
+    //   },
+    //   token: 'dummy-token-' + Math.random().toString(36).substring(7)
+    // };
+    
+    // return of(response).pipe(
+    //   delay(1000),
+    //   map(response => {
+    //     this.setSession(response);
+    //     return response;
+    //   }),
+    //   catchError(error => {
+    //     return throwError(() => new Error('Ошибка регистрации'));
+    //   })
+    // );
   }
 
   // Вход
   login(data: LoginRequest): Observable<AuthResponse> {
     // Реальный запрос к API
-    /*
+    
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data).pipe(
       map(response => {
         this.setSession(response);
@@ -103,38 +100,35 @@ export class AuthService {
         return throwError(() => error);
       })
     );
-    */
+    
     
     // Заглушка для демонстрации
-    const response: AuthResponse = {
-      user: {
-        id: '1',
-        name: 'Тестовый пользователь',
-        email: data.email,
-        createdAt: new Date().toISOString() // Отправляем как строку ISO
-      },
-      token: 'dummy-token-' + Math.random().toString(36).substring(7)
-    };
+    // const response: AuthResponse = {
+    //   user: {
+    //     id: '1',
+    //     name: 'Тестовый пользователь',
+    //     email: data.email,
+    //     createdAt: new Date().toISOString() // Отправляем как строку ISO
+    //   },
+    //   token: 'dummy-token-' + Math.random().toString(36).substring(7)
+    // };
     
-    return of(response).pipe(
-      delay(1000),
-      map(response => {
-        this.setSession(response);
-        return response;
-      }),
-      catchError(error => {
-        return throwError(() => new Error('Неверный email или пароль'));
-      })
-    );
+    // return of(response).pipe(
+    //   delay(1000),
+    //   map(response => {
+    //     this.setSession(response);
+    //     return response;
+    //   }),
+    //   catchError(error => {
+    //     return throwError(() => new Error('Неверный email или пароль'));
+    //   })
+    // );
   }
 
   private setSession(response: AuthResponse): void {
     // Преобразуем Date в строку для localStorage если нужно
     const userForStorage = {
-      ...response.user,
-      createdAt: response.user.createdAt instanceof Date 
-        ? response.user.createdAt.toISOString() 
-        : response.user.createdAt
+      ...response.user
     };
     
     localStorage.setItem('token', response.token);

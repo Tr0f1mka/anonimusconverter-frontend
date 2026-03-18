@@ -4,8 +4,6 @@ import { SharedModule } from '../../shared/shared.module';
 import { ConverterPageComponent } from './pages/converter-page/converter-page.component';
 import { DownloadPageComponent } from './pages/download-page/download-page.component';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
-import { ConversionService } from './services/conversion.service';
-import { FileValidationService } from './services/file-validation.service';
 
 const routes: Routes = [
     {
@@ -28,6 +26,6 @@ const routes: Routes = [
         SharedModule,
         RouterModule.forChild(routes)
     ],
-    providers: [ConversionService, FileValidationService]
+    providers: []
 })
 export class ConverterModule { }

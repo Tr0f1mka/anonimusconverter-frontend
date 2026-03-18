@@ -2,7 +2,6 @@ export interface User {
     id: string;
     name: string;
     email: string;
-    createdAt?: string | Date;
 }
 
 export interface LoginRequest {

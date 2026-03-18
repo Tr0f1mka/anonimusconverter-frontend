@@ -1,7 +1,7 @@
 export enum APIPathes {
-    API = '',
-    convert = `${API}/`,
-    download = `${API}/`,
-    templates = `${API}`,
-    auth = ''
+    API = 'http://localhost:8080/api/v1',
+    convert = `${API}/conversion`,
+    download = `${API}/download`,
+    templates = `${API}/templates`,
+    auth = `${API}/auth`
 }

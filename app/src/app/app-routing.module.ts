@@ -12,6 +12,10 @@ const routes: Routes = [
                 loadChildren: () => import('./features/converter/converter.module').then(m => m.ConverterModule)
             },
             {
+                path: 'converter',  // Добавляем явный путь
+                loadChildren: () => import('./features/converter/converter.module').then(m => m.ConverterModule)
+            },
+            {
                 path: 'templates',
                 loadChildren: () => import('./features/templates/templates.module').then(m => m.TemplatesModule)
             },
