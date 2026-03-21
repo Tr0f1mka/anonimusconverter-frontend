@@ -1,0 +1,110 @@
+<div class="converter-page">
+    <h1 class="page-title">{{ 'converter' | translate }}</h1>
+    
+    <div class="converter-description">
+        <p>{{ 'helpContent1' | translate }}</p>
+    </div>
+    
+    <div class="converter-container">
+        <!-- Селектор форматов -->
+        <div class="format-selector-section">
+            <app-format-selector
+            [sourceFormat]="sourceFormatDisplay"
+            [selectedFormat]="targetFormat"
+            (formatChange)="onTargetFormatChange($event)">
+            </app-format-selector>
+        </div>
+        
+        <!-- Предупреждение о совпадении форматов -->
+        <div class="format-warning" *ngIf="isSameFormat() && selectedFile">
+            <span class="warning-icon">⚠️</span>
+            <span class="warning-text">
+            Исходный и конечный форматы совпадают. Для конвертации необходимо выбрать шаблон.
+            </span>
+        </div>
+        
+        <!-- Компонент загрузки файла -->
+        <div class="upload-section">
+            <app-file-upload 
+            #fileUpload
+            (fileSelected)="onFileSelected($event)">
+            </app-file-upload>
+        </div>
+        
+        <!-- Селектор шаблона -->
+        <div class="template-section">
+            <app-template-selector
+            [selectedTemplate]="selectedTemplate"
+            (templateSelected)="onTemplateSelected($event)">
+            </app-template-selector>
+            
+            <!-- Индикатор необходимости шаблона -->
+            <div class="template-required-badge" *ngIf="isSameFormat() && selectedFile && !selectedTemplate">
+                <span class="required-icon">*</span>
+                <span class="required-text">Обязательно</span>
+            </div>
+        </div>
+        
+        <!-- Информация о файле (без предпросмотра) -->
+        <div class="file-info" *ngIf="selectedFile">
+            <div class="file-info-card">
+                <div class="file-icon">📄</div>
+                <div class="file-details">
+                    <div class="file-name">{{ selectedFile.name }}</div>
+                    <div class="file-meta">
+                        <span class="file-size">{{ formatFileSize(selectedFile.size) }}</span>
+                        <span class="file-type">
+                            {{ getFileTypeDisplay() }}
+                            <span class="format-badge" [class.unknown]="sourceFormat === FileFormat.UNKNOWN">
+                            {{ sourceFormatDisplay }}
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <button class="remove-file" (click)="removeFile()" title="Удалить файл">×</button>
+            </div>
+        </div>
+        
+        <!-- Информация о выбранном шаблоне -->
+        <div class="template-info" *ngIf="selectedTemplate">
+            <div class="template-info-card">
+                <span class="template-icon">📋</span>
+                <div class="template-details">
+                    <span class="template-name">{{ selectedTemplate.name }}</span>
+                    <span class="template-id">ID: {{ selectedTemplate.id }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Кнопка конвертации -->
+        <div class="converter-actions">
+            <button 
+                class="btn btn-primary convert-btn" 
+                [disabled]="!canConvert() || isConverting"
+                (click)="convert()">
+                <span *ngIf="!isConverting">{{ 'convert' | translate }} ✓</span>
+                <span *ngIf="isConverting">Подготовка...</span>
+            </button>
+        </div>
+        
+        <!-- Сводка конвертации -->
+        <div class="conversion-summary" *ngIf="selectedFile && targetFormat">
+            <div class="summary-item">
+                <span class="summary-label">Исходный формат:</span>
+                <span class="summary-value">{{ sourceFormatDisplay }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Целевой формат:</span>
+                <span class="summary-value">{{ targetFormat.name }}</span>
+            </div>
+            <div class="summary-item" *ngIf="selectedTemplate">
+                <span class="summary-label">Шаблон:</span>
+                <span class="summary-value">{{ selectedTemplate.name }}</span>
+            </div>
+            <div class="summary-item warning" *ngIf="isSameFormat() && !selectedTemplate">
+                <span class="summary-label">Требуется:</span>
+                <span class="summary-value warning-text">выбрать шаблон</span>
+            </div>
+        </div>
+    </div>
+</div>

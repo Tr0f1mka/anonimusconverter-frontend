@@ -1,0 +1,214 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cson {
+    color: #333;
+    transition: color 0.3s;
+}
+
+.logo:hover .cson {
+    color: #007bff;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #666;
+    transition: color 0.3s;
+    padding: 0.5rem 0;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: #007bff;
+}
+
+.nav-link.active {
+    color: #007bff;
+    font-weight: 500;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #007bff;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Меню пользователя */
+.user-menu {
+    position: relative;
+}
+
+.user-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.user-btn:hover {
+    background: #f8f9fa;
+}
+
+.user-icon {
+    font-size: 1.2rem;
+}
+
+.user-name {
+    color: #333;
+    font-weight: 500;
+}
+
+.dropdown-icon {
+    color: #666;
+    font-size: 0.75rem;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 200px;
+    z-index: 1000;
+}
+
+.user-info {
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+}
+
+.user-email {
+    color: #666;
+    font-size: 0.875rem;
+    word-break: break-all;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #dee2e6;
+    margin: 0.5rem 0;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: background 0.3s;
+    color: #333;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+}
+
+.item-icon {
+    font-size: 1.2rem;
+}
+
+/* Ссылка входа */
+.login-link {
+    padding: 0.5rem 1rem;
+    background: #007bff;
+    color: white !important;
+    border-radius: 4px;
+}
+
+.login-link:hover {
+    background: #0056b3;
+}
+
+.help-btn, .dev-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.help-btn:hover, .dev-btn:hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+}
+
+.help-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dev-btn {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+.dev-btn:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .user-name {
+        display: none;
+    }
+}

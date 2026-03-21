@@ -1,0 +1,234 @@
+<div class="auth-page">
+    <div class="auth-container">
+        <!-- Переключатель между входом и регистрацией -->
+        <div class="auth-tabs">
+            <button 
+                class="tab-btn" 
+                [class.active]="!isRegisterMode"
+                (click)="setMode(false)">
+                Вход
+            </button>
+            <button 
+                class="tab-btn" 
+                [class.active]="isRegisterMode"
+                (click)="setMode(true)">
+                Регистрация
+            </button>
+        </div>
+        
+        <!-- Форма входа -->
+        <div class="auth-form" *ngIf="!isRegisterMode">
+            <h2>Вход в систему</h2>
+            
+            <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="login-email">
+                        Email
+                        <span class="required">*</span>
+                    </label>
+                    <input 
+                    type="email" 
+                    id="login-email" 
+                    formControlName="email"
+                    class="form-control"
+                    [class.is-invalid]="isFieldInvalid(loginForm, 'email')"
+                    placeholder="example@email.com">
+                    
+                    <div class="error-messages" *ngIf="isFieldInvalid(loginForm, 'email')">
+                        <div *ngIf="loginForm.get('email')?.errors?.['required']">
+                            Email обязателен
+                        </div>
+                        <div *ngIf="loginForm.get('email')?.errors?.['invalidEmail']">
+                            {{ loginForm.get('email')?.errors?.['invalidEmail'] }}
+                        </div>
+                        <div *ngIf="loginForm.get('email')?.errors?.['bannedCharacters']">
+                            {{ loginForm.get('email')?.errors?.['bannedCharacters'] }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Пароль -->
+                <div class="form-group">
+                    <label for="login-password">
+                        Пароль
+                        <span class="required">*</span>
+                    </label>
+                    <input 
+                    type="password" 
+                    id="login-password" 
+                    formControlName="password"
+                    class="form-control"
+                    [class.is-invalid]="isFieldInvalid(loginForm, 'password')"
+                    placeholder="Введите пароль">
+                    
+                    <div class="error-messages" *ngIf="isFieldInvalid(loginForm, 'password')">
+                        <div *ngIf="loginForm.get('password')?.errors?.['required']">
+                            Пароль обязателен
+                        </div>
+                        <div *ngIf="loginForm.get('password')?.errors?.['passwordLength']">
+                            {{ loginForm.get('password')?.errors?.['passwordLength'] }}
+                        </div>
+                        <div *ngIf="loginForm.get('password')?.errors?.['passwordBannedChars']">
+                            {{ loginForm.get('password')?.errors?.['passwordBannedChars'] }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Кнопка входа -->
+                <button 
+                    type="submit" 
+                    class="btn btn-primary btn-block"
+                    [disabled]="loginForm.invalid || isLoading">
+                    <span *ngIf="!isLoading">Войти</span>
+                    <span *ngIf="isLoading" class="spinner-small"></span>
+                </button>
+            </form>
+            
+            <div class="auth-links">
+                <a href="#" (click)="forgotPassword($event)">Забыли пароль?</a>
+            </div>
+        </div>
+        
+        <!-- Форма регистрации -->
+        <div class="auth-form" *ngIf="isRegisterMode">
+            <h2>Регистрация</h2>
+            
+            <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+                <!-- Имя -->
+                <div class="form-group">
+                    <label for="register-name">
+                        Имя
+                        <span class="required">*</span>
+                    </label>
+                    <input 
+                    type="text" 
+                    id="register-name" 
+                    formControlName="name"
+                    class="form-control"
+                    [class.is-invalid]="isFieldInvalid(registerForm, 'name')"
+                    placeholder="Введите ваше имя">
+                    
+                    <div class="error-messages" *ngIf="isFieldInvalid(registerForm, 'name')">
+                        <div *ngIf="registerForm.get('name')?.errors?.['required']">
+                            Имя обязательно
+                        </div>
+                        <div *ngIf="registerForm.get('name')?.errors?.['minlength']">
+                            Имя должно быть не менее 2 символов
+                        </div>
+                        <div *ngIf="registerForm.get('name')?.errors?.['maxlength']">
+                            Имя должно быть не более 50 символов
+                        </div>
+                        <div *ngIf="registerForm.get('name')?.errors?.['invalidName']">
+                            {{ registerForm.get('name')?.errors?.['invalidName'] }}
+                        </div>
+                        <div *ngIf="registerForm.get('name')?.errors?.['bannedCharacters']">
+                            {{ registerForm.get('name')?.errors?.['bannedCharacters'] }}
+                        </div>
+                        <div *ngIf="registerForm.get('name')?.errors?.['leadingTrailingSpaces']">
+                            {{ registerForm.get('name')?.errors?.['leadingTrailingSpaces'] }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="register-email">
+                        Email
+                        <span class="required">*</span>
+                    </label>
+                    <input 
+                    type="email" 
+                    id="register-email" 
+                    formControlName="email"
+                    class="form-control"
+                    [class.is-invalid]="isFieldInvalid(registerForm, 'email')"
+                    placeholder="example@email.com">
+                    
+                    <div class="error-messages" *ngIf="isFieldInvalid(registerForm, 'email')">
+                        <div *ngIf="registerForm.get('email')?.errors?.['required']">
+                            Email обязателен
+                        </div>
+                        <div *ngIf="registerForm.get('email')?.errors?.['invalidEmail']">
+                            {{ registerForm.get('email')?.errors?.['invalidEmail'] }}
+                        </div>
+                        <div *ngIf="registerForm.get('email')?.errors?.['bannedCharacters']">
+                            {{ registerForm.get('email')?.errors?.['bannedCharacters'] }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Пароль -->
+                <div class="form-group">
+                    <label for="register-password">
+                        Пароль
+                        <span class="required">*</span>
+                    </label>
+                    <input 
+                    type="password" 
+                    id="register-password" 
+                    formControlName="password"
+                    class="form-control"
+                    [class.is-invalid]="isFieldInvalid(registerForm, 'password')"
+                    placeholder="Придумайте пароль">
+                    
+                    <div class="password-requirements">
+                        <div class="requirement" [class.valid]="registerForm.get('password')?.value?.length >= 8">
+                            <span class="req-icon">{{ registerForm.get('password')?.value?.length >= 8 ? '✓' : '○' }}</span>
+                            Минимум 8 символов
+                        </div>
+                        <div class="requirement" [class.valid]="!hasBannedChars">
+                            <span class="req-icon">{{ !hasBannedChars ? '✓' : '○' }}</span>
+                            Только разрешенные символы
+                        </div>
+                    </div>
+                    
+                    <div class="error-messages" *ngIf="isFieldInvalid(registerForm, 'password')">
+                        <div *ngIf="registerForm.get('password')?.errors?.['required']">
+                            Пароль обязателен
+                        </div>
+                        <div *ngIf="registerForm.get('password')?.errors?.['passwordLength']">
+                            {{ registerForm.get('password')?.errors?.['passwordLength'] }}
+                        </div>
+                        <div *ngIf="registerForm.get('password')?.errors?.['passwordBannedChars']">
+                            {{ registerForm.get('password')?.errors?.['passwordBannedChars'] }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Подтверждение пароля -->
+                <div class="form-group">
+                    <label for="register-confirm-password">
+                        Подтверждение пароля
+                        <span class="required">*</span>
+                    </label>
+                    <input 
+                    type="password" 
+                    id="register-confirm-password" 
+                    formControlName="confirmPassword"
+                    class="form-control"
+                    [class.is-invalid]="isFieldInvalid(registerForm, 'confirmPassword')"
+                    placeholder="Повторите пароль">
+                    
+                    <div class="error-messages" *ngIf="isFieldInvalid(registerForm, 'confirmPassword')">
+                        <div *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">
+                            Подтверждение пароля обязательно
+                        </div>
+                        <div *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordsMismatch']">
+                            Пароли не совпадают
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Кнопка регистрации -->
+                <button 
+                    type="submit" 
+                    class="btn btn-primary btn-block"
+                    [disabled]="registerForm.invalid || isLoading">
+                    <span *ngIf="!isLoading">Зарегистрироваться</span>
+                    <span *ngIf="isLoading" class="spinner-small"></span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+name: Converter
+
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    ports:
+      - "1234:5432"
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    image: kekishev/converter:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      DB_URL: jdbc:postgresql://db:5432/postgres
+
+volumes:
+  db_data:
