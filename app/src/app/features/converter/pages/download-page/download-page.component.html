@@ -4,7 +4,7 @@
         <h1 class="page-title">Конвертация файла</h1>
        
         <!-- Состояние загрузки -->
-        <div class="loading-state" *ngIf="!downloadUrl && !error">
+        <div class="loading-state" *ngIf="!isLoading && !error && !isCompleted">
             <div class="spinner"></div>
             <h2>Конвертация в процессе</h2>
             <p class="loading-message">Пожалуйста, подождите. Это может занять несколько секунд...</p>
@@ -36,7 +36,7 @@
         </div>
         
         <!-- Состояние готовности -->
-        <div class="ready-state" *ngIf="downloadUrl && !error">
+        <div class="ready-state" *ngIf="isCompleted && downloadUrl && !error">
             <div class="success-icon">✅</div>
             <h2>Конвертация завершена!</h2>
             <p class="success-message">Ваш файл готов к скачиванию</p>
@@ -53,10 +53,14 @@
             </div>
           
             <div class="action-buttons">
-                <a [href]="downloadUrl" download class="btn btn-success download-btn">
+                <!-- <a [href]="downloadUrl" download class="btn btn-success download-btn">
                   <span class="btn-icon">⬇️</span>
                   Скачать файл
-                </a>
+                </a> -->
+                <button class="btn btn-success download-btn" (click)="onDownloadClick()">
+                    <span class="btn-icon">⬇️</span>
+                    Скачать файл
+                </button>
               
                 <button class="btn btn-primary new-conversion-btn" (click)="startNewConversion()">
                     Новая конвертация

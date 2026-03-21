@@ -136,21 +136,30 @@ export class ConverterPageComponent {
     }
 
     convert(): void {
-        if (!this.selectedFile || !this.targetFormat) return;
+        console.log('Метод convert вызван');
+        console.log('selectedFile:', this.selectedFile);
+        console.log('targetFormat:', this.targetFormat);
+        console.log('selectedTemplate:', this.selectedTemplate);
+        
+        if (!this.selectedFile || !this.targetFormat) {
+            console.log('Нет файла или формата');
+            return;
+        }
         
         // Дополнительная проверка перед конвертацией
         if (this.isSameFormat() && !this.selectedTemplate) {
             this.modalService.open({
-                id: 'template-required-error',
-                title: 'Ошибка',
-                content: ['Для конвертации файла в тот же формат необходимо выбрать шаблон.'],
-                type: 'warning',
-                size: 'small'
+            id: 'template-required-error',
+            title: 'Ошибка',
+            content: ['Для конвертации файла в тот же формат необходимо выбрать шаблон.'],
+            type: 'warning',
+            size: 'small'
             });
             return;
         }
         
         this.isConverting = true;
+        console.log('Начинаем конвертацию...');
         
         // Подготавливаем данные для отправки
         const conversionData = {
@@ -158,18 +167,44 @@ export class ConverterPageComponent {
             sourceFormat: this.sourceFormat,
             targetFormat: this.targetFormat.format,
             templateId: this.selectedTemplate ? this.selectedTemplate.id : null,
-            options: {
-                // Дополнительные опции конвертации
-            }
+            options: {}
         };
         
-        console.log('Отправка данных на сервер:', conversionData);
+        console.log('Данные конвертации:', conversionData);
+        console.log('Имя файла для сохранения:', conversionData.file.name);
         
-        // Сохраняем данные конвертации в сервисе для страницы загрузки
+        // Сохраняем данные в сервисе
         this.conversionService.setCurrentConversion(conversionData);
         
+        // Проверяем, что данные сохранились
+        const savedData = this.conversionService.getCurrentConversion();
+        console.log('Проверка сохраненных данных:', savedData);
+        
+        if (!savedData) {
+            console.error('Данные не сохранились!');
+            this.modalService.open({
+                id: 'save-error',
+                title: 'Ошибка',
+                content: ['Не удалось сохранить данные конвертации'],
+                type: 'warning',
+                size: 'small'
+            });
+            this.isConverting = false;
+            return;
+        }
+        
         // Перенаправляем на страницу загрузки
-        this.router.navigate(['/download']);
+        console.log('Перенаправляем на /converter/download');
+        this.router.navigate(['/converter/download']).then(success => {
+            console.log('Навигация успешна:', success);
+            if (!success) {
+                console.error('Навигация не удалась');
+                this.isConverting = false;
+            }
+        }).catch(error => {
+            console.error('Ошибка навигации:', error);
+            this.isConverting = false;
+        });
     }
 
     getFileTypeDisplay(): string {
