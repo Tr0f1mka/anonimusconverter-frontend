@@ -1,0 +1,34 @@
+<div class="template-page">
+    <h1>Patterns</h1>
+    <div class="template-container">
+        <p>Здесь будут храниться ваши шаблоны</p>
+    </div>
+
+    <!-- <div class="templates-container" *ngIf="templates.length > 0">
+        <p>Patterns exist</p>
+        <div class="template-card" *ngFor="let template of templates">
+            <p>{{ template.name }}</p>
+        </div>
+        <div class="template-footer">
+            <p>{{ templates.length }}</p>
+        </div>
+    </div>
+
+    <div class="template-container" *ngIf="templates.length === 0">
+        <p>Patterns not exist</p>
+    </div> -->
+
+    <div class="template-container">
+        <div class="templates-container" *ngIf="templates.length > 0">
+            <div class="template-card" *ngFor="let template of templates">
+                <p>{{ template.name }}</p>
+            </div>
+        </div>
+
+        <div class="template-footer" *ngIf="templates.length > 0">
+            <p>{{templates.length}}</p>
+        </div>
+
+        <p *ngIf="templates.length === 0">Patterns not exist</p>
+    </div>
+</div>

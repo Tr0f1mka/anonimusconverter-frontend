@@ -51,4 +51,52 @@ export class TemplateService {
             })
         );
     }
+
+    loadTemplates(): Pattern[] {
+        // Заглушка для просмотра
+        return [
+            {
+                id: "1",
+                name: "pat1",
+                type: "json csv",
+                modifications: [
+                    {
+                        id: "1",
+                        old_name: "azaza",
+                        new_name: "aboba",
+                        new_type: null,
+                        new_value: null
+                    }
+                ]
+            },
+            {
+                id: "1",
+                name: "pat2",
+                type: "json csv",
+                modifications: [
+                    {
+                        id: "1",
+                        old_name: "azaza",
+                        new_name: "aboba",
+                        new_type: null,
+                        new_value: null
+                    }
+                ]
+            },
+            {
+                id: "1",
+                name: "pat3",
+                type: "json csv",
+                modifications: [
+                    {
+                        id: "1",
+                        old_name: "azaza",
+                        new_name: "aboba",
+                        new_type: null,
+                        new_value: null
+                    }
+                ]
+            },
+        ];
+    }
 }

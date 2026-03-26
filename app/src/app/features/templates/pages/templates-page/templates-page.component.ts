@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Pattern } from 'src/app/core/models/template.model';
+import { TemplateService } from 'src/app/core/services/template.service';
 
 @Component({
     selector: 'app-templates-page',
@@ -6,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
     styleUrl: 'templates-page.component.css'
 })
 export class TemplatesPageComponent implements OnInit {
-    templates: any[] = [];
+    templates: Pattern[] = [];
+
+    constructor(
+        private templateService: TemplateService
+    ) {}
 
     ngOnInit() {
         // Загрузка шаблонов
@@ -14,21 +20,7 @@ export class TemplatesPageComponent implements OnInit {
     }
 
     loadTemplates(): void {
-        
-        // // Заглушка
-        // this.templates = [
-        //     {
-        //         id: 1,
-        //         name: 'Шаблон1'
-        //     },
-        //     {
-        //         id: 2,
-        //         name: 'Шаблон2'
-        //     },
-        //     {
-        //         id: 3,
-        //         name: 'Шаблон3'
-        //     }
-        // ];
+        this.templates = this.templateService.loadTemplates();
+        // this.templates = [];
     }
 }
