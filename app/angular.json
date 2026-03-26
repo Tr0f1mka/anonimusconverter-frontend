@@ -25,11 +25,6 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
-              },
               "src/favicon.ico"
             ],
             "styles": [
@@ -94,7 +89,7 @@
                 "input": "src/assets",
                 "output": "assets"
               },
-              "src/favicon.ico"
+              "app/public/favicon.ico"
             ],
             "styles": [
               "src/styles.css"

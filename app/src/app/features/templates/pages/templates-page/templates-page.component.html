@@ -21,7 +21,32 @@
     <div class="template-container">
         <div class="templates-container" *ngIf="templates.length > 0">
             <div class="template-card" *ngFor="let template of templates">
-                <p>{{ template.name }}</p>
+                <div class="template-loupe">
+                    <h2>🔍</h2>
+                </div>
+                <div class="template-description" style="display: flex;">
+                    <div class="template-meta">
+                        <div class="template-name">
+                            <p>{{ template.name }}</p>
+                        </div>
+                        <div class="template-type">
+                            <p>{{ template.type }}</p>
+                        </div>
+                    </div>
+                    <div class="template-preview">
+                        <button class="template-preview-btn">
+                            prewview
+                        </button>
+                    </div>
+                </div>
+                <div class="template-card-btns" style="display: flex;">
+                    <button class="change-template">
+                        Change
+                    </button>
+                    <button class="delete-template">
+                        Delete
+                    </button>
+                </div>
             </div>
         </div>
 
