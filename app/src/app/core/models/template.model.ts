@@ -1,9 +1,9 @@
 export interface Modification {
     id: string;
     old_name: string;
-    new_name: string;
-    new_type: string;
-    new_value: string;
+    new_name: string | null;
+    new_type: string | null;
+    new_value: string | null;
 }
 
 export interface Pattern {
