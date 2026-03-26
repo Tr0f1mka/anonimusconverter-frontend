@@ -23,8 +23,8 @@ export const TRANSLATIONS: Translation = {
     'helpTitle': { ru: 'Помощь', en: 'Help' },
     'devTitle': { ru: 'Для разработчиков', en: 'For developers' },
     'helpContent1': { 
-        ru: 'Этот конвертер поддерживает преобразование между форматами JSON, CSV и YAML.', 
-        en: 'This converter supports conversion between JSON, CSV and YAML.' 
+        ru: 'Этот конвертер поддерживает преобразование между форматами JSON, CSV и XML.', 
+        en: 'This converter supports conversion between JSON, CSV and XML.' 
     },
     'helpContent2': { 
         ru: 'Выберите файл, укажите шаблон (если необходимо) и нажмите "Конвертировать".', 

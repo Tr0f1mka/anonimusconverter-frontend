@@ -42,9 +42,6 @@
             (click)="selectTemplate(template)">
             <div class="template-info">
                 <div class="template-name">{{ template.name }}</div>
-                <div class="template-description" *ngIf="template.description">
-                {{ template.description }}
-                </div>
             </div>
             <div class="template-actions">
                 <span class="check-icon" *ngIf="selectedTemplate?.id === template.id">✓</span>

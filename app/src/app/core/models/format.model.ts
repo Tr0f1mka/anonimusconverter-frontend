@@ -1,7 +1,7 @@
 export enum FileFormat {
     JSON = 'json',
     CSV = 'csv',
-    YAML = 'yaml',
+    XML = 'xml',
     UNKNOWN = 'unknown'
 }
 
@@ -15,12 +15,12 @@ export interface FormatInfo {
 export const SUPPORTED_FORMATS: FormatInfo[] = [
     { format: FileFormat.JSON, extension: '.json', mimeType: 'application/json', name: 'JSON' },
     { format: FileFormat.CSV, extension: '.csv', mimeType: 'text/csv', name: 'CSV' },
-    { format: FileFormat.YAML, extension: '.yaml', mimeType: 'application/x-yaml', name: 'YAML' },
-    { format: FileFormat.YAML, extension: '.yml', mimeType: 'application/x-yaml', name: 'YAML' }
+    { format: FileFormat.XML, extension: '.xml', mimeType: 'application/xml', name: 'XML' },
+    { format: FileFormat.XML, extension: '.xml', mimeType: 'text/xml', name: 'XML' }
 ];
 
 export const OUTPUT_FORMATS: FormatInfo[] = [
     { format: FileFormat.JSON, extension: '.json', mimeType: 'application/json', name: 'JSON' },
     { format: FileFormat.CSV, extension: '.csv', mimeType: 'text/csv', name: 'CSV' },
-    { format: FileFormat.YAML, extension: '.yaml', mimeType: 'application/x-yaml', name: 'YAML' }
+    { format: FileFormat.XML, extension: '.xml', mimeType: 'application/xml', name: 'XML' }
 ];

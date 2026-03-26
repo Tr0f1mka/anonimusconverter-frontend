@@ -108,45 +108,34 @@ export class LoginPageComponent {
     }
 
     onRegister(): void {
-      if (this.registerForm.valid) {
-        this.isLoading = true;
-        
-        const { confirmPassword, ...registerData } = this.registerForm.value;
-        
-        this.authService.register(registerData).subscribe({
-          next: () => {
-            this.isLoading = false;
-            this.modalService.open({
-              id: 'register-success',
-              title: 'Успех',
-              content: ['Регистрация прошла успешно! Теперь вы можете войти'],
-              type: 'info',
-              size: 'small'
+        if (this.registerForm.valid) {
+            this.isLoading = true;
+            
+            const { confirmPassword, ...registerData } = this.registerForm.value;
+            
+            this.authService.register(registerData).subscribe({
+                next: () => {
+                  this.isLoading = false;
+                  this.modalService.open({
+                      id: 'register-success',
+                      title: 'Успех',
+                      content: ['Регистрация прошла успешно! Теперь вы можете войти'],
+                      type: 'info',
+                      size: 'small'
+                  });
+                  this.setMode(false);
+                },
+                error: (error) => {
+                    this.isLoading = false;
+                    this.modalService.open({
+                        id: 'register-error',
+                        title: 'Ошибка',
+                        content: [error.message || 'Не удалось зарегистрироваться'],
+                        type: 'warning',
+                        size: 'small'
+                    });
+                }
             });
-            this.setMode(false);
-          },
-          error: (error) => {
-            this.isLoading = false;
-            this.modalService.open({
-              id: 'register-error',
-              title: 'Ошибка',
-              content: [error.message || 'Не удалось зарегистрироваться'],
-              type: 'warning',
-              size: 'small'
-            });
-          }
-        });
-      }
-    }
-
-    forgotPassword(event: Event): void {
-      event.preventDefault();
-      this.modalService.open({
-        id: 'forgot-password',
-        title: 'Восстановление пароля',
-        content: ['Функция восстановления пароля будет доступна позже'],
-        type: 'info',
-        size: 'small'
-      });
+        }
     }
 }
