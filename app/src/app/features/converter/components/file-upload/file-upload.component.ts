@@ -10,7 +10,7 @@ export class FileUploadComponent {
     @Output() fileSelected = new EventEmitter<File | null>();
     
     selectedFile: File | null = null;
-    acceptedFileTypes = '.json,.csv,.yaml';
+    acceptedFileTypes = '.json,.csv,.xml';
 
     onFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;

@@ -71,9 +71,9 @@ export class ConversionService {
       formData.append('options', JSON.stringify(request.options));
     }
     
-    console.log(`${this.apiUrl}/${request.sourceFormat}_${request.targetFormat}`)
+    console.log(`${this.apiUrl}/${request.sourceFormat}/${request.targetFormat}`)
     // Отправляем запрос и ожидаем файл в ответе
-    return this.http.post(`${this.apiUrl}/${request.sourceFormat}_${request.targetFormat}`, formData, {
+    return this.http.post(`${this.apiUrl}/${request.sourceFormat}/${request.targetFormat}`, formData, {
       responseType: 'blob',
       observe: 'response'
     });

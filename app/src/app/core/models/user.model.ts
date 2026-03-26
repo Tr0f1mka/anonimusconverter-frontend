@@ -10,10 +10,17 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
-    name: string;
+    username: string;
     email: string;
     password: string;
     confirmPassword?: string;
+}
+
+export interface BackendAuthResponse {
+    userId: string;
+    username: string;
+    email: string;
+    token: string;
 }
 
 export interface AuthResponse {

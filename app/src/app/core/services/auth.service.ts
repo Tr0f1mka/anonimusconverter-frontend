@@ -2,147 +2,115 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { map, catchError, delay } from 'rxjs/operators';
-import { User, LoginRequest, RegisterRequest, AuthResponse } from '../models/user.model';
+import { User, LoginRequest, RegisterRequest, AuthResponse, BackendAuthResponse } from '../models/user.model';
 import { APIPathes } from 'src/app/api-pathes';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = APIPathes.auth;
-  private currentUser = new BehaviorSubject<User | null>(null);
-  private isAuthenticated = new BehaviorSubject<boolean>(false);
+    private apiUrl = APIPathes.auth;
+    private currentUser = new BehaviorSubject<User | null>(null);
+    private isAuthenticated = new BehaviorSubject<boolean>(false);
 
-  constructor(private http: HttpClient) {
-    this.checkAuthStatus();
-  }
-
-  private checkAuthStatus(): void {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    
-    if (token && userData) {
-      try {
-        const user = JSON.parse(userData);
-        // Преобразуем строку даты обратно в Date объект если нужно
-        this.currentUser.next(user);
-        this.isAuthenticated.next(true);
-      } catch (e) {
-        this.logout();
-      }
+    constructor(private http: HttpClient) {
+        this.checkAuthStatus();
     }
-  }
 
-  getCurrentUser(): Observable<User | null> {
-    return this.currentUser.asObservable();
-  }
+    private checkAuthStatus(): void {
+        const token = localStorage.getItem('token');
+        const userData = localStorage.getItem('user');
+        
+        if (token && userData) {
+            try {
+                const user = JSON.parse(userData);
+                this.currentUser.next(user);
+                this.isAuthenticated.next(true);
+            } catch (e) {
+                this.logout();
+            }
+        }
+    }
 
-  isLoggedIn(): Observable<boolean> {
-    return this.isAuthenticated.asObservable();
-  }
+    getCurrentUser(): Observable<User | null> {
+        return this.currentUser.asObservable();
+    }
 
-  isLoggedInSync(): boolean {
-    return this.isAuthenticated.value;
-  }
+    isLoggedIn(): Observable<boolean> {
+        return this.isAuthenticated.asObservable();
+    }
 
-  getCurrentUserSync(): User | null {
-    return this.currentUser.value;
-  }
+    isLoggedInSync(): boolean {
+        return this.isAuthenticated.value;
+    }
 
-  // Регистрация
-  register(data: RegisterRequest): Observable<AuthResponse> {
-    // Реальный запрос к API
-    
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data).pipe(
-      map(response => {
-        this.setSession(response);
-        return response;
-      }),
-      catchError(error => {
-        return throwError(() => error);
-      })
-    );
-    
-    
-    // // Заглушка для демонстрации
-    // const response: AuthResponse = {
-    //   user: {
-    //     id: Math.random().toString(36).substring(7),
-    //     name: data.name,
-    //     email: data.email,
-    //     createdAt: new Date().toISOString() // Отправляем как строку ISO
-    //   },
-    //   token: 'dummy-token-' + Math.random().toString(36).substring(7)
-    // };
-    
-    // return of(response).pipe(
-    //   delay(1000),
-    //   map(response => {
-    //     this.setSession(response);
-    //     return response;
-    //   }),
-    //   catchError(error => {
-    //     return throwError(() => new Error('Ошибка регистрации'));
-    //   })
-    // );
-  }
+    getCurrentUserSync(): User | null {
+        return this.currentUser.value;
+    }
 
-  // Вход
-  login(data: LoginRequest): Observable<AuthResponse> {
-    // Реальный запрос к API
-    
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data).pipe(
-      map(response => {
-        this.setSession(response);
-        return response;
-      }),
-      catchError(error => {
-        return throwError(() => error);
-      })
-    );
-    
-    
-    // Заглушка для демонстрации
-    // const response: AuthResponse = {
-    //   user: {
-    //     id: '1',
-    //     name: 'Тестовый пользователь',
-    //     email: data.email,
-    //     createdAt: new Date().toISOString() // Отправляем как строку ISO
-    //   },
-    //   token: 'dummy-token-' + Math.random().toString(36).substring(7)
-    // };
-    
-    // return of(response).pipe(
-    //   delay(1000),
-    //   map(response => {
-    //     this.setSession(response);
-    //     return response;
-    //   }),
-    //   catchError(error => {
-    //     return throwError(() => new Error('Неверный email или пароль'));
-    //   })
-    // );
-  }
+    private transformBackendResponse(response: BackendAuthResponse): AuthResponse {
+        return {
+            user: {
+                id: response.userId,
+                name: response.username,
+                email: response.email
+            },
+            token: response.token
+        };
+    }
 
-  private setSession(response: AuthResponse): void {
-    // Преобразуем Date в строку для localStorage если нужно
-    const userForStorage = {
-      ...response.user
-    };
-    
-    localStorage.setItem('token', response.token);
-    localStorage.setItem('user', JSON.stringify(userForStorage));
-    
-    // Для текущего пользователя в приложении оставляем как есть
-    this.currentUser.next(response.user);
-    this.isAuthenticated.next(true);
-  }
+    // Регистрация
+    register(data: RegisterRequest): Observable<AuthResponse> {
+        // Реальный запрос к API
+        
+        return this.http.post<BackendAuthResponse>(`${this.apiUrl}/register`, data).pipe(
+            map(response => {
+                const correct_response = this.transformBackendResponse(response);
+                console.log("USER RESPONSE", correct_response);
+                return correct_response;
+            }),
+            catchError(error => {
+                return throwError(() => error);
+            })
+        );
+    }
 
-  logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.currentUser.next(null);
-    this.isAuthenticated.next(false);
-  }
+    // Вход
+    login(data: LoginRequest): Observable<AuthResponse> {
+        // Реальный запрос к API
+        
+        return this.http.post<BackendAuthResponse>(`${this.apiUrl}/login`, data).pipe(
+            map(response => {
+                const correct_response = this.transformBackendResponse(response);
+                this.setSession(correct_response);
+                console.log("USER RESPONSE", correct_response);
+                return correct_response;
+            }),
+            catchError(error => {
+                return throwError(() => error);
+            })
+        );
+    }
+
+    private setSession(response: AuthResponse): void {
+        // Преобразуем Date в строку для localStorage если нужно
+        console.log("SET SESSION: ", response);
+        const userForStorage = {
+          ...response.user
+        };
+        
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(userForStorage));
+        
+        // Для текущего пользователя в приложении оставляем как есть
+        this.currentUser.next(response.user);
+        this.isAuthenticated.next(true);
+    }
+
+    logout(): void {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        this.currentUser.next(null);
+        this.isAuthenticated.next(false);
+    }
 }
