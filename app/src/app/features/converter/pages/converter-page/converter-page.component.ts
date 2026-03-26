@@ -8,7 +8,7 @@ import { LanguageService } from '../../../../core/services/language.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { FileUploadComponent } from '../../components/file-upload/file-upload.component';
 import { FileFormat, FormatInfo, OUTPUT_FORMATS } from '../../../../core/models/format.model';
-import { Template } from '../../../../core/models/template.model';
+import { Pattern } from '../../../../core/models/template.model';
 
 @Component({
     selector: 'app-converter-page',
@@ -24,7 +24,7 @@ export class ConverterPageComponent {
     sourceFormat: FileFormat = FileFormat.UNKNOWN;
     sourceFormatInfo: FormatInfo | null = null;
     targetFormat: FormatInfo | null = OUTPUT_FORMATS[0]; // По умолчанию JSON
-    selectedTemplate: Template | null = null;
+    selectedTemplate: Pattern | null = null;
     isConverting = false;
 
     constructor(
@@ -124,7 +124,7 @@ export class ConverterPageComponent {
         }
     }
 
-    onTemplateSelected(template: Template | null): void {
+    onTemplateSelected(template: Pattern | null): void {
         this.selectedTemplate = template;
     }
 

@@ -5,12 +5,12 @@ import { Injectable } from '@angular/core';
 })
 export class FileValidationService {
     private readonly MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-    private readonly ALLOWED_TYPES = ['json', 'csv', 'yaml'];
+    private readonly ALLOWED_TYPES = ['json', 'csv', 'xml'];
     private readonly ALLOWED_MIME_TYPES = [
         'application/json',
         'text/csv',
-        'text/yaml',
-        'application/x-yaml'
+        'text/xml',
+        'application/xml'
     ];
 
     validateFile(file: File): { valid: boolean; error?: string } {

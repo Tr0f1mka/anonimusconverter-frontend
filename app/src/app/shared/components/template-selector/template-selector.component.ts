@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { Template } from '../../../core/models/template.model';
-import { TemplateService } from '../../../features/templates/services/template.service';
+import { Pattern } from '../../../core/models/template.model';
+import { TemplateService } from 'src/app/core/services/template.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ModalService } from '../../../core/services/modal.service';
 import { LanguageService } from '../../../core/services/language.service';
@@ -12,13 +12,13 @@ import { Subscription } from 'rxjs';
   styleUrl: 'template-selector.component.css'
 })
 export class TemplateSelectorComponent implements OnInit, OnDestroy {
-  @Input() selectedTemplate: Template | null = null;
-  @Output() templateSelected = new EventEmitter<Template | null>();
+  @Input() selectedTemplate: Pattern | null = null;
+  @Output() templateSelected = new EventEmitter<Pattern | null>();
   
   showModal = false;
   isLoading = false;
-  templates: Template[] = [];
-  filteredTemplates: Template[] = [];
+  templates: Pattern[] = [];
+  filteredTemplates: Pattern[] = [];
   searchQuery = '';
   totalTemplates = 0;
   
@@ -51,7 +51,7 @@ export class TemplateSelectorComponent implements OnInit, OnDestroy {
     }
 
     this.showModal = true;
-    this.loadTemplates();
+    // this.loadTemplates();
   }
 
   closeModal(): void {
@@ -59,30 +59,30 @@ export class TemplateSelectorComponent implements OnInit, OnDestroy {
     this.searchQuery = '';
   }
 
-  loadTemplates(): void {
-    this.isLoading = true;
+  // loadTemplates(): void {
+  //   this.isLoading = true;
     
-    this.templateService.getTemplates().subscribe({
-      next: (response) => {
-        this.templates = response.templates;
-        this.filteredTemplates = response.templates;
-        this.totalTemplates = response.total;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Ошибка загрузки шаблонов:', error);
-        this.modalService.open({
-          id: 'template-load-error',
-          title: 'Ошибка',
-          content: ['Не удалось загрузить список шаблонов'],
-          type: 'warning',
-          size: 'small'
-        });
-        this.isLoading = false;
-        this.closeModal();
-      }
-    });
-  }
+  //   this.templateService.getTemplates().subscribe({
+  //     next: (response) => {
+  //       this.templates = response.templates;
+  //       this.filteredTemplates = response.templates;
+  //       this.totalTemplates = response.total;
+  //       this.isLoading = false;
+  //     },
+  //     error: (error) => {
+  //       console.error('Ошибка загрузки шаблонов:', error);
+  //       this.modalService.open({
+  //         id: 'template-load-error',
+  //         title: 'Ошибка',
+  //         content: ['Не удалось загрузить список шаблонов'],
+  //         type: 'warning',
+  //         size: 'small'
+  //       });
+  //       this.isLoading = false;
+  //       this.closeModal();
+  //     }
+  //   });
+  // }
 
   filterTemplates(): void {
     if (!this.searchQuery.trim()) {
@@ -92,12 +92,11 @@ export class TemplateSelectorComponent implements OnInit, OnDestroy {
 
     const query = this.searchQuery.toLowerCase().trim();
     this.filteredTemplates = this.templates.filter(template => 
-      template.name.toLowerCase().includes(query) ||
-      (template.description && template.description.toLowerCase().includes(query))
+      template.name.toLowerCase().includes(query)
     );
   }
 
-  selectTemplate(template: Template): void {
+  selectTemplate(template: Pattern): void {
     this.selectedTemplate = template;
     this.templateSelected.emit(template);
     this.closeModal();

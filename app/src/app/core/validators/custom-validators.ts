@@ -21,6 +21,12 @@ export class CustomValidators {
                 };
             }
 
+            if (value.length > 30) {
+                return {
+                    OverLength: 'Ввод должен иметь длину не более 30 символов'
+                };
+            }
+
             return null;
         };
     }
