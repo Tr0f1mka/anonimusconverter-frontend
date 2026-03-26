@@ -46,9 +46,9 @@ deploy-job:
       cd /root/projects/converter &&
       docker stop frontend || true &&
       docker rm frontend || true &&
-      docker image rm $DOCKERHUB_USER/$DOCKERHUB_REPOSITORY_NAME:latest &&
+      docker image rm $DOCKERHUB_USER/$DOCKERHUB_REPOSITORY_NAME:latest || true &&
       docker pull $DOCKERHUB_USER/$DOCKERHUB_REPOSITORY_NAME:latest &&
-      docker run -d --name=frontend $DOCKERHUB_USER/$DOCKERHUB_REPOSITORY_NAME:latest
+      docker run -d --name=frontend -p 127.0.0.1:4200:4200 $DOCKERHUB_USER/$DOCKERHUB_REPOSITORY_NAME:latest
       "
   only:
     - main
