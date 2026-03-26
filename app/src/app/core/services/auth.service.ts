@@ -63,7 +63,7 @@ export class AuthService {
     register(data: RegisterRequest): Observable<AuthResponse> {
         // Реальный запрос к API
         
-        return this.http.post<BackendAuthResponse>(`${this.apiUrl}/register`, data).pipe(
+        return this.http.post<BackendAuthResponse>(`${this.apiUrl}/registration`, data).pipe(
             map(response => {
                 const correct_response = this.transformBackendResponse(response);
                 console.log("USER RESPONSE", correct_response);
@@ -112,5 +112,6 @@ export class AuthService {
         localStorage.removeItem('user');
         this.currentUser.next(null);
         this.isAuthenticated.next(false);
+        this.http.delete(this.apiUrl);
     }
 }
