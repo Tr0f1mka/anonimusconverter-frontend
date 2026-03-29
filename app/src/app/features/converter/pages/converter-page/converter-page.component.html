@@ -3,6 +3,7 @@
     
     <div class="converter-description">
         <p>{{ 'helpContent1' | translate }}</p>
+        <button class="help-btn" (click)="showHelpModal()">?</button>
     </div>
     
     <div class="converter-container">
@@ -19,7 +20,7 @@
         <div class="format-warning" *ngIf="isSameFormat() && selectedFile">
             <span class="warning-icon">⚠️</span>
             <span class="warning-text">
-            Исходный и конечный форматы совпадают. Для конвертации необходимо выбрать шаблон.
+            Исходный и конечный форматы совпадают. Конвертация невозможна.
             </span>
         </div>
         

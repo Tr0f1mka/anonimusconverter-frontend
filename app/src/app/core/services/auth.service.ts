@@ -63,9 +63,10 @@ export class AuthService {
     register(data: RegisterRequest): Observable<AuthResponse> {
         // Реальный запрос к API
         
-        return this.http.post<BackendAuthResponse>(`${this.apiUrl}/registration`, data).pipe(
+        return this.http.post<BackendAuthResponse>(`${this.apiUrl}/register`, data).pipe(
             map(response => {
                 const correct_response = this.transformBackendResponse(response);
+                this.setSession(correct_response);
                 console.log("USER RESPONSE", correct_response);
                 return correct_response;
             }),
@@ -81,6 +82,7 @@ export class AuthService {
         
         return this.http.post<BackendAuthResponse>(`${this.apiUrl}/login`, data).pipe(
             map(response => {
+                console.log("RESPONSE BEFORE", response);
                 const correct_response = this.transformBackendResponse(response);
                 this.setSession(correct_response);
                 console.log("USER RESPONSE", correct_response);
@@ -112,6 +114,6 @@ export class AuthService {
         localStorage.removeItem('user');
         this.currentUser.next(null);
         this.isAuthenticated.next(false);
-        this.http.delete(this.apiUrl);
+        // this.http.delete(this.apiUrl);
     }
 }

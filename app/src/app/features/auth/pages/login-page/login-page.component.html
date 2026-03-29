@@ -100,29 +100,29 @@
                     <input 
                     type="text" 
                     id="register-name" 
-                    formControlName="name"
+                    formControlName="username"
                     class="form-control"
-                    [class.is-invalid]="isFieldInvalid(registerForm, 'name')"
+                    [class.is-invalid]="isFieldInvalid(registerForm, 'username')"
                     placeholder="Введите ваше имя">
                     
-                    <div class="error-messages" *ngIf="isFieldInvalid(registerForm, 'name')">
-                        <div *ngIf="registerForm.get('name')?.errors?.['required']">
+                    <div class="error-messages" *ngIf="isFieldInvalid(registerForm, 'username')">
+                        <div *ngIf="registerForm.get('username')?.errors?.['required']">
                             Имя обязательно
                         </div>
-                        <div *ngIf="registerForm.get('name')?.errors?.['minlength']">
+                        <div *ngIf="registerForm.get('username')?.errors?.['minlength']">
                             Имя должно быть не менее 2 символов
                         </div>
-                        <div *ngIf="registerForm.get('name')?.errors?.['maxlength']">
+                        <div *ngIf="registerForm.get('username')?.errors?.['maxlength']">
                             Имя должно быть не более 50 символов
                         </div>
-                        <div *ngIf="registerForm.get('name')?.errors?.['invalidName']">
-                            {{ registerForm.get('name')?.errors?.['invalidName'] }}
+                        <div *ngIf="registerForm.get('username')?.errors?.['invalidName']">
+                            {{ registerForm.get('username')?.errors?.['invalidName'] }}
                         </div>
-                        <div *ngIf="registerForm.get('name')?.errors?.['bannedCharacters']">
-                            {{ registerForm.get('name')?.errors?.['bannedCharacters'] }}
+                        <div *ngIf="registerForm.get('username')?.errors?.['bannedCharacters']">
+                            {{ registerForm.get('username')?.errors?.['bannedCharacters'] }}
                         </div>
-                        <div *ngIf="registerForm.get('name')?.errors?.['leadingTrailingSpaces']">
-                            {{ registerForm.get('name')?.errors?.['leadingTrailingSpaces'] }}
+                        <div *ngIf="registerForm.get('username')?.errors?.['leadingTrailingSpaces']">
+                            {{ registerForm.get('username')?.errors?.['leadingTrailingSpaces'] }}
                         </div>
                     </div>
                 </div>

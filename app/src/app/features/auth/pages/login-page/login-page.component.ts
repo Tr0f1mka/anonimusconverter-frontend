@@ -25,20 +25,20 @@ export class LoginPageComponent {
     ) {
         // Форма входа
         this.loginForm = this.fb.group({
-          email: ['', [
-            Validators.required,
-            CustomValidators.validateEmail(),
-            CustomValidators.noBannedCharacters()
-          ]],
-          password: ['', [
-            Validators.required,
-            CustomValidators.validatePassword()
-          ]]
+            email: ['', [
+                Validators.required,
+                CustomValidators.validateEmail(),
+                CustomValidators.noBannedCharacters()
+            ]],
+            password: ['', [
+                Validators.required,
+                CustomValidators.validatePassword()
+            ]]
         });
 
         // Форма регистрации
         this.registerForm = this.fb.group({
-            name: ['', [
+            username: ['', [
                 Validators.required,
                 Validators.minLength(2),
                 Validators.maxLength(50),
@@ -84,13 +84,6 @@ export class LoginPageComponent {
             this.authService.login(this.loginForm.value).subscribe({
                 next: () => {
                     this.isLoading = false;
-                    this.modalService.open({
-                        id: 'login-success',
-                        title: 'Успех',
-                        content: ['Вы успешно вошли в систему'],
-                        type: 'info',
-                        size: 'small'
-                    });
                     this.router.navigate(['/']);
                 },
                 error: (error) => {
@@ -112,18 +105,19 @@ export class LoginPageComponent {
             this.isLoading = true;
             
             const { confirmPassword, ...registerData } = this.registerForm.value;
-            
+            console.log(registerData);
             this.authService.register(registerData).subscribe({
                 next: () => {
-                  this.isLoading = false;
-                  this.modalService.open({
-                      id: 'register-success',
-                      title: 'Успех',
-                      content: ['Регистрация прошла успешно! Теперь вы можете войти'],
-                      type: 'info',
-                      size: 'small'
-                  });
-                  this.setMode(false);
+                    this.isLoading = false;
+                    // this.modalService.open({
+                    //     id: 'register-success',
+                    //     title: 'Успех',
+                    //     content: ['Регистрация прошла успешно! Теперь вы можете войти'],
+                    //     type: 'info',
+                    //     size: 'small'
+                    // });
+                    this.setMode(false);
+                    this.router.navigate(['/']);
                 },
                 error: (error) => {
                     this.isLoading = false;

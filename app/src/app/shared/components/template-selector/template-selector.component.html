@@ -16,15 +16,15 @@
     
     <!-- Модальное окно выбора шаблона -->
     <div class="modal" *ngIf="showModal" (click)="closeModal()">
-        <!-- <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
             <div class="modal-header">
                 <h3>Выберите шаблон</h3>
                 <button class="close-btn" (click)="closeModal()">×</button>
             </div>
             
             <div class="modal-body">
-                Поиск шаблонов
-                <div class="search-box">
+                <!-- Поиск шаблонов -->
+                <div class="search-box" *ngIf="templates.length > 0">
                     <input 
                     type="text" 
                     placeholder="Поиск шаблонов..." 
@@ -33,7 +33,7 @@
                     class="search-input">
                 </div>
                 
-                Список шаблонов
+                <!-- Список шаблонов -->
                 <div class="templates-list" *ngIf="filteredTemplates.length > 0; else noTemplates">
                     <div 
                     *ngFor="let template of filteredTemplates"
@@ -64,11 +64,6 @@
                     Всего шаблонов: {{ totalTemplates }}
                 </div>
                 <button class="btn btn-secondary" (click)="closeModal()">Отмена</button>
-            </div>
-        </div> -->
-        <div class="template-page">
-        <div class="in-programming">
-                <h1>🛠️ В разработке 🛠️</h1>
             </div>
         </div>
     </div>

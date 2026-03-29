@@ -7,116 +7,116 @@ import { LanguageService } from '../../../core/services/language.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-template-selector',
-  templateUrl: 'template-selector.component.html',
-  styleUrl: 'template-selector.component.css'
+    selector: 'app-template-selector',
+    templateUrl: 'template-selector.component.html',
+    styleUrl: 'template-selector.component.css'
 })
 export class TemplateSelectorComponent implements OnInit, OnDestroy {
-  @Input() selectedTemplate: Pattern | null = null;
-  @Output() templateSelected = new EventEmitter<Pattern | null>();
-  
-  showModal = false;
-  isLoading = false;
-  templates: Pattern[] = [];
-  filteredTemplates: Pattern[] = [];
-  searchQuery = '';
-  totalTemplates = 0;
-  
-  private subscriptions: Subscription[] = [];
+    @Input() selectedTemplate: Pattern | null = null;
+    @Output() templateSelected = new EventEmitter<Pattern | null>();
+    
+    showModal = false;
+    isLoading = false;
+    templates: Pattern[] = [];
+    filteredTemplates: Pattern[] = [];
+    searchQuery = '';
+    totalTemplates = 0;
+    
+    private subscriptions: Subscription[] = [];
 
-  constructor(
-    private templateService: TemplateService,
-    private authService: AuthService,
-    private modalService: ModalService,
-    private languageService: LanguageService
-  ) {}
+    constructor(
+        private templateService: TemplateService,
+        private authService: AuthService,
+        private modalService: ModalService,
+        private languageService: LanguageService
+    ) {}
 
-  ngOnInit(): void {}
+    ngOnInit(): void {}
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-
-  openTemplateSelector(): void {
-    // Проверяем авторизацию
-    if (!this.authService.isLoggedInSync()) {
-      this.modalService.open({
-        id: 'auth-required',
-        title: 'Требуется авторизация',
-        content: ['Для выбора шаблона необходимо войти в систему'],
-        type: 'warning',
-        size: 'small'
-      });
-      return;
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
-    this.showModal = true;
-    // this.loadTemplates();
-  }
+    openTemplateSelector(): void {
+      // Проверяем авторизацию
+        if (!this.authService.isLoggedInSync()) {
+            this.modalService.open({
+                id: 'auth-required',
+                title: 'Требуется авторизация',
+                content: ['Для выбора шаблона необходимо войти в систему'],
+                type: 'warning',
+                size: 'small'
+            });
+            return;
+        }
 
-  closeModal(): void {
-    this.showModal = false;
-    this.searchQuery = '';
-  }
-
-  // loadTemplates(): void {
-  //   this.isLoading = true;
-    
-  //   this.templateService.getTemplates().subscribe({
-  //     next: (response) => {
-  //       this.templates = response.templates;
-  //       this.filteredTemplates = response.templates;
-  //       this.totalTemplates = response.total;
-  //       this.isLoading = false;
-  //     },
-  //     error: (error) => {
-  //       console.error('Ошибка загрузки шаблонов:', error);
-  //       this.modalService.open({
-  //         id: 'template-load-error',
-  //         title: 'Ошибка',
-  //         content: ['Не удалось загрузить список шаблонов'],
-  //         type: 'warning',
-  //         size: 'small'
-  //       });
-  //       this.isLoading = false;
-  //       this.closeModal();
-  //     }
-  //   });
-  // }
-
-  filterTemplates(): void {
-    if (!this.searchQuery.trim()) {
-      this.filteredTemplates = this.templates;
-      return;
+        this.showModal = true;
+        // this.loadTemplates();
     }
 
-    const query = this.searchQuery.toLowerCase().trim();
-    this.filteredTemplates = this.templates.filter(template => 
-      template.name.toLowerCase().includes(query)
-    );
-  }
+    closeModal(): void {
+      this.showModal = false;
+      this.searchQuery = '';
+    }
 
-  selectTemplate(template: Pattern): void {
-    this.selectedTemplate = template;
-    this.templateSelected.emit(template);
-    this.closeModal();
-  }
+    // loadTemplates(): void {
+    //   this.isLoading = true;
+      
+    //   this.templateService.getTemplates().subscribe({
+    //     next: (response) => {
+    //       this.templates = response.templates;
+    //       this.filteredTemplates = response.templates;
+    //       this.totalTemplates = response.total;
+    //       this.isLoading = false;
+    //     },
+    //     error: (error) => {
+    //       console.error('Ошибка загрузки шаблонов:', error);
+    //       this.modalService.open({
+    //         id: 'template-load-error',
+    //         title: 'Ошибка',
+    //         content: ['Не удалось загрузить список шаблонов'],
+    //         type: 'warning',
+    //         size: 'small'
+    //       });
+    //       this.isLoading = false;
+    //       this.closeModal();
+    //     }
+    //   });
+    // }
 
-  clearTemplate(event: Event): void {
-    event.stopPropagation();
-    this.selectedTemplate = null;
-    this.templateSelected.emit(null);
-  }
+    filterTemplates(): void {
+        if (!this.searchQuery.trim()) {
+            this.filteredTemplates = this.templates;
+            return;
+        }
 
-  createTemplate(): void {
-    this.closeModal();
-    
-    this.modalService.open({
-      id: 'create-template',
-      title: 'Создание шаблона',
-      content: ['Функция создания шаблона будет доступна позже'],
-      type: 'info',
-      size: 'medium'
-    });
-  }
+        const query = this.searchQuery.toLowerCase().trim();
+        this.filteredTemplates = this.templates.filter(template => 
+            template.name.toLowerCase().includes(query)
+        );
+    }
+
+    selectTemplate(template: Pattern): void {
+        this.selectedTemplate = template;
+        this.templateSelected.emit(template);
+        this.closeModal();
+    }
+
+    clearTemplate(event: Event): void {
+        event.stopPropagation();
+        this.selectedTemplate = null;
+        this.templateSelected.emit(null);
+    }
+
+    createTemplate(): void {
+        this.closeModal();
+        
+        this.modalService.open({
+            id: 'create-template',
+            title: 'Создание шаблона',
+            content: ['Функция создания шаблона будет доступна позже'],
+            type: 'info',
+            size: 'medium'
+        });
+    }
 }

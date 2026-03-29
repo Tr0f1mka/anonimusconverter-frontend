@@ -55,31 +55,4 @@ export class HeaderComponent implements OnInit {
             size: 'small'
         });
     }
-
-    showHelpModal(): void {
-        this.modalService.open({
-            id: 'help-modal',
-            title: this.languageService.translate('helpTitle'),
-            content: [
-                this.languageService.translate('helpContent1'),
-                this.languageService.translate('helpContent2')
-            ],
-            type: 'help',
-            size: 'medium'
-        });
-    }
-
-    showDevModal(): void {
-        this.modalService.open({
-            id: 'dev-modal',
-            title: this.languageService.translate('devTitle'),
-            content: [
-                `${this.languageService.translate('apiEndpoint')} API нужно вставить`,
-                `${this.languageService.translate('documentation')} /docs`,
-                `${this.languageService.translate('github')} GIT нужно вставить`
-            ],
-            type: 'dev',
-            size: 'medium'
-        });
-    }
 }

@@ -1,6 +1,6 @@
 <header class="header">
-    <div class="logo" (click)="navigateToHome()">
-        <span class="cson">CSON</span>
+    <div class="logo">
+        <span class="cson" (click)="navigateToHome()">CSON</span>
     </div>
     
     <nav class="nav-menu">
@@ -50,10 +50,5 @@
             class="nav-link login-link">
             {{ 'login' | translate }}
         </a>
-        
-        <button class="help-btn" (click)="showHelpModal()">?</button>
-        <button class="dev-btn" (click)="showDevModal()">
-            {{ 'forDevelopers' | translate }}
-        </button>
     </div>
 </header>

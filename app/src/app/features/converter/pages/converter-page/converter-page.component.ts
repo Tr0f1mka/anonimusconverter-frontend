@@ -45,6 +45,20 @@ export class ConverterPageComponent {
     }
 
 
+    showHelpModal(): void {
+        this.modalService.open({
+            id: 'help-modal',
+            title: this.languageService.translate('helpTitle'),
+            content: [
+                this.languageService.translate('helpContent1'),
+                this.languageService.translate('helpContent2')
+            ],
+            type: 'help',
+            size: 'medium'
+        });
+    }
+
+
     isSameFormat(): boolean {
         //Проверка одинаковых форматов
         if (!this.targetFormat || this.sourceFormat === FileFormat.UNKNOWN) {
@@ -60,13 +74,7 @@ export class ConverterPageComponent {
             return false;
         }
         
-        // Если форматы совпадают, шаблон обязателен
-        if (this.isSameFormat()) {
-            return !!this.selectedTemplate;
-        }
-        
-        // В остальных случаях файл и целевой формат достаточно
-        return true;
+        return !this.isSameFormat();
     }
 
     onFileSelected(file: File | null): void {
