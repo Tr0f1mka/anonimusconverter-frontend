@@ -1,16 +1,16 @@
-<div class="template-selector">
+<div class="pattern-selector">
     <!-- Кнопка выбора шаблона -->
     <button 
-    class="template-btn" 
-    [class.template-selected]="selectedTemplate"
-    (click)="openTemplateSelector()"
+    class="pattern-btn" 
+    [class.pattern-selected]="selectedPattern"
+    (click)="openPatternSelector()"
     [disabled]="isLoading">
-        <span class="btn-icon">{{ selectedTemplate ? '📋' : '📄' }}</span>
+        <span class="btn-icon">{{ selectedPattern ? '📋' : '📄' }}</span>
         <span class="btn-text">
-            {{ selectedTemplate ? selectedTemplate.name : ('selectTemplate' | translate) }}
+            {{ selectedPattern ? selectedPattern.name : ('selectPattern' | translate) }}
         </span>
-        <span class="btn-icon dropdown-icon" *ngIf="!selectedTemplate">▼</span>
-        <span class="btn-icon clear-icon" *ngIf="selectedTemplate && !isLoading" (click)="clearTemplate($event)">✕</span>
+        <span class="btn-icon dropdown-icon" *ngIf="!selectedPattern">▼</span>
+        <span class="btn-icon clear-icon" *ngIf="selectedPattern && !isLoading" (click)="clearPattern($event)">✕</span>
         <span class="spinner" *ngIf="isLoading"></span>
     </button>
     
@@ -24,35 +24,35 @@
             
             <div class="modal-body">
                 <!-- Поиск шаблонов -->
-                <div class="search-box" *ngIf="templates.length > 0">
+                <!-- <div class="search-box" *ngIf="patterns.length > 0">
                     <input 
                     type="text" 
                     placeholder="Поиск шаблонов..." 
                     [(ngModel)]="searchQuery"
-                    (input)="filterTemplates()"
+                    (input)="filterPatterns()"
                     class="search-input">
-                </div>
+                </div> -->
                 
                 <!-- Список шаблонов -->
-                <div class="templates-list" *ngIf="filteredTemplates.length > 0; else noTemplates">
+                <div class="patterns-list" *ngIf="filteredPatterns.length > 0; else noPatterns">
                     <div 
-                    *ngFor="let template of filteredTemplates"
-                    class="template-item"
-                    [class.selected]="selectedTemplate?.id === template.id"
-                    (click)="selectTemplate(template)">
-                        <div class="template-info">
-                            <div class="template-name">{{ template.name }}</div>
+                    *ngFor="let pattern of filteredPatterns"
+                    class="pattern-item"
+                    [class.selected]="selectedPattern?.id === pattern.id"
+                    (click)="selectPattern(pattern)">
+                        <div class="pattern-info">
+                            <div class="pattern-name">{{ pattern.name }}</div>
                         </div>
-                        <div class="template-actions">
-                            <span class="check-icon" *ngIf="selectedTemplate?.id === template.id">✓</span>
+                        <div class="pattern-actions">
+                            <span class="check-icon" *ngIf="selectedPattern?.id === pattern.id">✓</span>
                         </div>
                     </div>
                 </div>
                 
-                <ng-template #noTemplates>
-                    <div class="no-templates">
+                <ng-template #noPatterns>
+                    <div class="no-patterns">
                         <p>У вас пока нет шаблонов</p>
-                        <button class="btn btn-primary" (click)="createTemplate()">
+                        <button class="btn btn-primary" (click)="createPattern()">
                             Создать шаблон
                         </button>
                     </div>
@@ -60,8 +60,8 @@
             </div>
             
             <div class="modal-footer">
-                <div class="footer-info" *ngIf="totalTemplates > 0">
-                    Всего шаблонов: {{ totalTemplates }}
+                <div class="footer-info" *ngIf="totalPatterns > 0">
+                    Всего шаблонов: {{ totalPatterns }}
                 </div>
                 <button class="btn btn-secondary" (click)="closeModal()">Отмена</button>
             </div>

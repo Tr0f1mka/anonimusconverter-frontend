@@ -9,13 +9,13 @@ export interface Translation {
 
 export const TRANSLATIONS: Translation = {
     'converter': { ru: 'Конвертер', en: 'Converter' },
-    'templates': { ru: 'Шаблоны', en: 'Templates' },
+    'patterns': { ru: 'Шаблоны', en: 'Patterns' },
     'login': { ru: 'Войти', en: 'Login' },
     'logout': { ru: 'Выйти', en: 'Logout' },
     'json': { ru: 'JSON', en: 'JSON' },
     'csv': { ru: 'CSV', en: 'CSV' },
     'selectFile': { ru: 'Выбрать файл', en: 'Select file' },
-    'selectTemplate': { ru: 'Выбрать шаблон', en: 'Select template' },
+    'selectPattern': { ru: 'Выбрать шаблон', en: 'Select pattern' },
     'convert': { ru: 'Конвертировать', en: 'Convert' },
     'help': { ru: 'Помощь', en: 'Help' },
     'forDevelopers': { ru: 'Для разработчиков', en: 'For developers' },
@@ -28,7 +28,7 @@ export const TRANSLATIONS: Translation = {
     },
     'helpContent2': { 
         ru: 'Выберите файл, укажите шаблон (если необходимо) и нажмите "Конвертировать".', 
-        en: 'Select a file, specify a template (if necessary) and click "Convert".' 
+        en: 'Select a file, specify a pattern (if necessary) and click "Convert".' 
     },
     'apiEndpoint': { ru: 'API доступен по адресу:', en: 'API available at:' },
     'documentation': { ru: 'Документация:', en: 'Documentation:' },

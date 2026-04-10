@@ -1,0 +1,185 @@
+.pattern-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.pattern-description {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.help-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.create-btn {
+    margin-top: 1rem;
+    width: 100%;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    padding: 1rem 0rem;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.create-btn:hover {
+    background: #0056b3;
+}
+
+.pattern-container {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pattern-card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.pattern-card {
+    background: white;
+    border-radius: 1vmin;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pattern-loupe {
+    background: #c4c1c1;
+    border-top-left-radius: 1vmin;
+    border-top-right-radius: 1vmin;
+    min-height: 100px;
+    text-align: center;
+    line-height: 100px;
+    cursor: default;
+}
+
+.pattern-card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.pattern-description {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex: 1;
+}
+
+.pattern-meta {
+    flex: 3;
+}
+
+.pattern-meta p {
+    font-weight: 500;
+    color: #333;
+    word-break: break-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 7rem;
+}
+
+.pattern-meta span {
+    display: inline-block;
+    padding: 0rem 0.125rem;
+    background: #e9ecef;
+    border-radius: 4px;
+    font-weight: 500;
+    color: #495057;
+    text-transform: uppercase;
+}
+
+.pattern-card-preview {
+    flex: 2;
+}
+
+.pattern-card-preview-btn {
+    background: #fff;
+    border: 2px solid #09BEFF;
+    border-radius: 1rem;
+    width: 100%;
+    /* height: 100%; */
+    transition: all 0.3s;
+    padding: 1rem 0rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.pattern-card-preview-btn:hover {
+    background: #09BEFF;
+    color: #fff;
+}
+
+.pattern-card-hr {
+    margin-bottom: 1rem;
+}
+
+.pattern-card-btns {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    height: 40%;
+}
+
+.change-pattern-btn {
+    width: 40%;
+    background: #fff;
+    border: 2px solid #09BEFF;
+    border-radius: 1rem;
+    padding: 1rem 0rem;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.change-pattern-btn:hover {
+    background: #09BEFF;
+    color: #fff;
+}
+
+.delete-pattern-btn {
+    width: 40%;
+    height: 100%;
+    background: #fff;
+    border: 2px solid #FF1C1C;
+    border-radius: 1rem;
+    padding: 1rem 0rem;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.delete-pattern-btn:hover {
+    background: #FF1C1C;
+    color: #fff;
+}
+
+.pattern-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+@media (max-width: 1024px) {
+    .pattern-card-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .pattern-card-container {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

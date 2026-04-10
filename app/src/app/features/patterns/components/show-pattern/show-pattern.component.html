@@ -1,0 +1,69 @@
+<div class="show-pattern-modal" *ngIf="isOpen">
+    <div class="show-pattern-modal-backdrop" (click)="closeModal()"></div>
+    <div class="show-pattern-modal-content">
+        <div class="show-pattern-modal-header">
+            <h3>Просмотр шаблона</h3>
+            <button (click)="closeModal()">×</button>
+        </div>
+        <div class="show-pattern-modal-body">
+            <p>Название: {{ pattern.name }}</p>
+
+            <div class="table-container">
+                <table class="modification-table">
+                    <thead>
+                        <tr>
+                            <th class="head">
+                                Старое имя
+                            </th>
+                            <th class="head">
+                                Новое имя
+                            </th>
+                            <th class="head">
+                                Новый тип
+                            </th>
+                            <th class="head">
+                                Новое значение
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let modification of paginatedModifications">
+                            <td class="wrap-text">{{ modification.old_name || '—' }}</td>
+                            <td class="wrap-text">{{ modification.new_name || '—' }}</td>
+                            <td>{{ modification.new_type || '—' }}</td>
+                            <td class="wrap-text">{{ modification.new_value || '—' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <!-- Пагинация -->
+                <div class="pagination-container" *ngIf="totalPages > 1">
+                    <div class="pagination-info">
+                        Показано {{ startItem }} - {{ endItem }} из {{ totalItems }}
+                    </div>
+
+                    <div class="pagination-controls">
+                        <button (click)="previousPage()" [disabled]="currentPage === 1" class="page-btn">
+                            ← Назад
+                        </button>
+                        
+                        <button *ngFor="let page of getPages()" 
+                                (click)="goToPage(page)"
+                                [class.active]="page === currentPage"
+                                class="page-btn">
+                            {{ page }}
+                        </button>
+                        
+                        <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="page-btn">
+                            Вперед →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="show-pattern-modal-footer">
+            <button (click)="closeModal()" class="close-btn">Закрыть</button>
+        </div>
+    </div>
+</div>

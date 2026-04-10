@@ -8,7 +8,7 @@ import { LanguageService } from '../../../../core/services/language.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { FileUploadComponent } from '../../components/file-upload/file-upload.component';
 import { FileFormat, FormatInfo, OUTPUT_FORMATS } from '../../../../core/models/format.model';
-import { Pattern } from '../../../../core/models/template.model';
+import { Pattern } from '../../../../core/models/pattern.model';
 
 @Component({
     selector: 'app-converter-page',
@@ -24,7 +24,7 @@ export class ConverterPageComponent {
     sourceFormat: FileFormat = FileFormat.UNKNOWN;
     sourceFormatInfo: FormatInfo | null = null;
     targetFormat: FormatInfo | null = OUTPUT_FORMATS[0]; // По умолчанию JSON
-    selectedTemplate: Pattern | null = null;
+    selectedPattern: Pattern | null = null;
     isConverting = false;
 
     constructor(
@@ -121,9 +121,9 @@ export class ConverterPageComponent {
         this.targetFormat = format;
         
         // Если форматы совпадают и шаблон не выбран, показываем подсказку
-        if (this.isSameFormat() && this.selectedFile && !this.selectedTemplate) {
+        if (this.isSameFormat() && this.selectedFile && !this.selectedPattern) {
             this.modalService.open({
-                id: 'template-required-hint',
+                id: 'pattern-required-hint',
                 title: 'Требуется шаблон',
                 content: ['Исходный и конечный форматы совпадают. Для конвертации необходимо выбрать шаблон.'],
                 type: 'info',
@@ -132,8 +132,8 @@ export class ConverterPageComponent {
         }
     }
 
-    onTemplateSelected(template: Pattern | null): void {
-        this.selectedTemplate = template;
+    onPatternSelected(pattern: Pattern | null): void {
+        this.selectedPattern = pattern;
     }
 
     removeFile(): void {
@@ -147,7 +147,7 @@ export class ConverterPageComponent {
         console.log('Метод convert вызван');
         console.log('selectedFile:', this.selectedFile);
         console.log('targetFormat:', this.targetFormat);
-        console.log('selectedTemplate:', this.selectedTemplate);
+        console.log('selectedPattern:', this.selectedPattern);
         
         if (!this.selectedFile || !this.targetFormat) {
             console.log('Нет файла или формата');
@@ -155,9 +155,9 @@ export class ConverterPageComponent {
         }
         
         // Дополнительная проверка перед конвертацией
-        if (this.isSameFormat() && !this.selectedTemplate) {
+        if (this.isSameFormat() && !this.selectedPattern) {
             this.modalService.open({
-            id: 'template-required-error',
+            id: 'pattern-required-error',
             title: 'Ошибка',
             content: ['Для конвертации файла в тот же формат необходимо выбрать шаблон.'],
             type: 'warning',
@@ -174,7 +174,7 @@ export class ConverterPageComponent {
             file: this.selectedFile,
             sourceFormat: this.sourceFormat,
             targetFormat: this.targetFormat.format,
-            templateId: this.selectedTemplate ? this.selectedTemplate.id : null,
+            patternId: this.selectedPattern ? this.selectedPattern.id : null,
             options: {}
         };
         

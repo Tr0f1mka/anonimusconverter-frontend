@@ -1,0 +1,60 @@
+<div class="pattern-page">
+    <h1>Шаблоны</h1>
+    <div class="pattern-container">
+        <div class="pattern-description">
+            <p>Здесь будут храниться ваши шаблоны маппинга</p>
+            <button (click)="openHelp()" class="help-btn">?</button>
+        </div>
+        <button (click)="createPattern()" class="create-btn">Создать шаблон</button>
+        <create-pattern-modal
+        [(isOpen)]="isOpenCreateModal">
+        </create-pattern-modal>
+    </div>
+
+    <div class="pattern-container">
+        <div *ngIf="currentUserId">
+            <div class="pattern-card-container" *ngIf="patterns.length > 0">
+                <div class="pattern-card" *ngFor="let pattern of patterns">
+                    <div class="pattern-loupe">
+                        <h2>🔍</h2>
+                    </div>
+                    <div class="pattern-card-body">
+                        <div class="pattern-description">
+                            <div class="pattern-meta">
+                                <p>{{ pattern.name }}</p>
+                            </div>
+                            <div class="pattern-card-preview">
+                                <button class="pattern-card-preview-btn" (click)="openPattern(pattern)">
+                                Открыть
+                                </button>
+                                <show-pattern-modal
+                                    [pattern]="selectedPattern"
+                                    [(isOpen)]="isOpenShowModal">
+                                </show-pattern-modal>
+                            </div>
+                        </div>
+                        <hr class="pattern-card-hr">
+                        <div class="pattern-card-btns">
+                            <button class="change-pattern-btn" (click)="updatePattern(pattern)">
+                                Изменить
+                            </button>
+                            <button class="delete-pattern-btn" (click)="deletePattern(pattern)">
+                                Удалить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pattern-footer" *ngIf="patterns.length > 0">
+                <p>{{patterns.length}}</p>
+            </div>
+
+            <p *ngIf="patterns.length === 0">Шаблонов нет</p>
+        </div>
+
+        <div *ngIf="!currentUserId">
+            <p>Войдите, чтобы начать работу с шаблонами</p>
+        </div>
+    </div>
+</div>

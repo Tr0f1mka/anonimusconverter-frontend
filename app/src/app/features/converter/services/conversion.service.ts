@@ -8,7 +8,7 @@ export interface ConversionRequest {
     file: File;
     sourceFormat: FileFormat;
     targetFormat: FileFormat;
-    templateId: string | null;
+    patternId: string | null;
     options?: any;
 }
 
@@ -65,7 +65,7 @@ export class ConversionService {
     convert(request: ConversionRequest): Observable<HttpResponse<Blob>> {
         const formData = new FormData();
         formData.append('file', request.file);
-        // formData.append('templateId', request.templateId || '');
+        // formData.append('patternId', request.patternId || '');
         
         if (request.options) {
             formData.append('options', JSON.stringify(request.options));

@@ -1,9 +1,9 @@
-.template-selector {
+.pattern-selector {
     position: relative;
     display: inline-block;
 }
 
-.template-btn {
+.pattern-btn {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -18,23 +18,23 @@
     min-width: 200px;
 }
 
-.template-btn:hover:not(:disabled) {
+.pattern-btn:hover:not(:disabled) {
     background: #6c757d;
     color: white;
 }
 
-.template-btn.template-selected {
+.pattern-btn.pattern-selected {
     background: #28a745;
     border-color: #28a745;
     color: white;
 }
 
-.template-btn.template-selected:hover:not(:disabled) {
+.pattern-btn.pattern-selected:hover:not(:disabled) {
     background: #218838;
     border-color: #218838;
 }
 
-.template-btn:disabled {
+.pattern-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
@@ -151,12 +151,12 @@
     border-color: #007bff;
 }
 
-.templates-list {
+.patterns-list {
     max-height: 400px;
     overflow-y: auto;
 }
 
-.template-item {
+.pattern-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -168,32 +168,32 @@
     transition: all 0.3s;
 }
 
-.template-item:hover {
+.pattern-item:hover {
     background: #f8f9fa;
     border-color: #007bff;
 }
 
-.template-item.selected {
+.pattern-item.selected {
     background: #e3f2fd;
     border-color: #007bff;
 }
 
-.template-info {
+.pattern-info {
     flex: 1;
 }
 
-.template-name {
+.pattern-name {
     font-weight: 500;
     color: #333;
     margin-bottom: 0.25rem;
 }
 
-.template-description {
+.pattern-description {
     font-size: 0.875rem;
     color: #666;
 }
 
-.template-actions {
+.pattern-actions {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -209,13 +209,13 @@
     font-size: 1.2rem;
 }
 
-.no-templates {
+.no-patterns {
     text-align: center;
     padding: 2rem;
     color: #666;
 }
 
-.no-templates p {
+.no-patterns p {
     margin-bottom: 1rem;
 }
 
@@ -265,13 +265,13 @@
     max-height: 90vh;
     }
     
-    .template-item {
+    .pattern-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
     }
     
-    .template-actions {
+    .pattern-actions {
     align-self: flex-end;
     }
 }

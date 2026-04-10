@@ -34,19 +34,13 @@
         
         <!-- Селектор шаблона -->
         <div class="template-section">
-            <app-template-selector
-            [selectedTemplate]="selectedTemplate"
-            (templateSelected)="onTemplateSelected($event)">
-            </app-template-selector>
-            
-            <!-- Индикатор необходимости шаблона -->
-            <div class="template-required-badge" *ngIf="isSameFormat() && selectedFile && !selectedTemplate">
-                <span class="required-icon">*</span>
-                <span class="required-text">Обязательно</span>
-            </div>
+            <app-pattern-selector
+            [selectedPattern]="selectedPattern"
+            (patternSelected)="onPatternSelected($event)">
+            </app-pattern-selector>
         </div>
         
-        <!-- Информация о файле (без предпросмотра) -->
+        <!-- Информация о файле -->
         <div class="file-info" *ngIf="selectedFile">
             <div class="file-info-card">
                 <div class="file-icon">📄</div>
@@ -54,11 +48,8 @@
                     <div class="file-name">{{ selectedFile.name }}</div>
                     <div class="file-meta">
                         <span class="file-size">{{ formatFileSize(selectedFile.size) }}</span>
-                        <span class="file-type">
-                            {{ getFileTypeDisplay() }}
-                            <span class="format-badge" [class.unknown]="sourceFormat === FileFormat.UNKNOWN">
+                        <span class="format-badge" [class.unknown]="sourceFormat === FileFormat.UNKNOWN">
                             {{ sourceFormatDisplay }}
-                            </span>
                         </span>
                     </div>
                 </div>
@@ -67,12 +58,12 @@
         </div>
         
         <!-- Информация о выбранном шаблоне -->
-        <div class="template-info" *ngIf="selectedTemplate">
+        <div class="template-info" *ngIf="selectedPattern">
             <div class="template-info-card">
                 <span class="template-icon">📋</span>
                 <div class="template-details">
-                    <span class="template-name">{{ selectedTemplate.name }}</span>
-                    <span class="template-id">ID: {{ selectedTemplate.id }}</span>
+                    <span class="template-name">{{ selectedPattern.name }}</span>
+                    <span class="template-id">ID: {{ selectedPattern.id }}</span>
                 </div>
             </div>
         </div>
@@ -98,13 +89,13 @@
                 <span class="summary-label">Целевой формат:</span>
                 <span class="summary-value">{{ targetFormat.name }}</span>
             </div>
-            <div class="summary-item" *ngIf="selectedTemplate">
+            <div class="summary-item" *ngIf="selectedPattern">
                 <span class="summary-label">Шаблон:</span>
-                <span class="summary-value">{{ selectedTemplate.name }}</span>
+                <span class="summary-value">{{ selectedPattern.name }}</span>
             </div>
-            <div class="summary-item warning" *ngIf="isSameFormat() && !selectedTemplate">
+            <div class="summary-item warning" *ngIf="isSameFormat() && !selectedPattern">
                 <span class="summary-label">Требуется:</span>
-                <span class="summary-value warning-text">выбрать шаблон</span>
+                <span class="summary-value warning-text">выбрать другой тип</span>
             </div>
         </div>
     </div>
