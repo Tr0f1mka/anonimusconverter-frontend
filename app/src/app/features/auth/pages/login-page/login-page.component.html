@@ -121,9 +121,6 @@
                         <div *ngIf="registerForm.get('username')?.errors?.['bannedCharacters']">
                             {{ registerForm.get('username')?.errors?.['bannedCharacters'] }}
                         </div>
-                        <div *ngIf="registerForm.get('username')?.errors?.['leadingTrailingSpaces']">
-                            {{ registerForm.get('username')?.errors?.['leadingTrailingSpaces'] }}
-                        </div>
                     </div>
                 </div>
                 

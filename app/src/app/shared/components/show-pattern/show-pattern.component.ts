@@ -1,5 +1,5 @@
 // show-pattern.component.ts
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { Pattern } from 'src/app/core/models/pattern.model';
 
 @Component({
@@ -22,6 +22,10 @@ export class ShowPatternComponent implements OnInit, OnChanges {
     
     // Данные
     paginatedModifications: any[] = [];
+
+    constructor(
+        private cdr: ChangeDetectorRef
+    ) {}
     
     ngOnInit() {
         this.updateTable();
@@ -60,6 +64,8 @@ export class ShowPatternComponent implements OnInit, OnChanges {
         const startIndex = (this.currentPage - 1) * this.pageSize;
         const endIndex = startIndex + this.pageSize;
         this.paginatedModifications = this.pattern.modifications.slice(startIndex, endIndex);
+
+        this.cdr?.detectChanges();
     }
     
     previousPage() {

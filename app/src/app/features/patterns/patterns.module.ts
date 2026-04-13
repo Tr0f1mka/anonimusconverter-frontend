@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
 import { PatternsPageComponent } from './pages/patterns-page/patterns-page.component';
 
-import { ShowPatternComponent } from './components/show-pattern/show-pattern.component';
-import { CreatePatternComponent } from './components/create-pattern/create-pattern.component';
+import { ShowPatternComponent } from '../../shared/components/show-pattern/show-pattern.component';
+import { CreatePatternComponent } from '../../shared/components/create-pattern/create-pattern.component';
 
 const routes: Routes = [
     {
@@ -15,9 +15,7 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [
-        PatternsPageComponent,
-        ShowPatternComponent,
-        CreatePatternComponent
+        PatternsPageComponent
     ],
     imports: [
         SharedModule,

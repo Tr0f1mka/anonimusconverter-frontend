@@ -43,8 +43,7 @@ export class LoginPageComponent {
                 Validators.minLength(2),
                 Validators.maxLength(50),
                 CustomValidators.validateName(),
-                CustomValidators.noBannedCharacters(),
-                CustomValidators.noLeadingTrailingSpaces()
+                CustomValidators.noBannedCharacters()
             ]],
             email: ['', [
                 Validators.required,

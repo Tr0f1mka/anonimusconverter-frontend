@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Pattern } from '../../../core/models/pattern.model';
 import { PatternService } from 'src/app/core/services/pattern.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -15,12 +15,15 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
     @Input() selectedPattern: Pattern | null = null;
     @Output() patternSelected = new EventEmitter<Pattern | null>();
     
-    showModal = false;
-    isLoading = false;
+    showModal: boolean = false;
     patterns: Pattern[] = [];
     filteredPatterns: Pattern[] = [];
     searchQuery = '';
     totalPatterns = 0;
+    isLoading: boolean = true;
+
+    isOpenShowModal: boolean = false;
+    selectedShowPattern: Pattern = {id: '', name: '', modifications: []};
     
     private subscriptions: Subscription[] = [];
 
@@ -28,10 +31,23 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
         private patternService: PatternService,
         private authService: AuthService,
         private modalService: ModalService,
-        private languageService: LanguageService
+        private languageService: LanguageService,
+        private cdr: ChangeDetectorRef
     ) {}
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this.subscriptions.push(
+            this.patternService.patterns$.subscribe(patterns => {
+                if (patterns) {
+                    this.patterns = patterns;
+                    this.filteredPatterns = patterns;
+                    this.totalPatterns = patterns.length;
+                    this.isLoading = false;
+                }
+                this.cdr.detectChanges();
+            })
+        );
+    }
 
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe());
@@ -60,27 +76,26 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
     }
 
     loadPatterns(): void {
-        this.isLoading = true;
-        
         this.patternService.patterns$.subscribe(patterns => {
             if (patterns) {
                 this.patterns = patterns;
-                this.isLoading = false;
+                this.filteredPatterns = patterns;
+                this.totalPatterns = patterns.length;
             }
         });
     }
 
-    // filterPatterns(): void {
-    //     if (!this.searchQuery.trim()) {
-    //         this.filteredPatterns = this.patterns;
-    //         return;
-    //     }
+    filterPatterns(): void {
+        if (!this.searchQuery.trim()) {
+            this.filteredPatterns = this.patterns;
+            return;
+        }
 
-    //     const query = this.searchQuery.toLowerCase().trim();
-    //     this.filteredPatterns = this.patterns.filter(pattern => 
-    //         pattern.name.toLowerCase().includes(query)
-    //     );
-    // }
+        const query = this.searchQuery.toLowerCase().trim();
+        this.filteredPatterns = this.patterns.filter(pattern => 
+            pattern.name.toLowerCase().includes(query)
+        );
+    }
 
     selectPattern(pattern: Pattern): void {
         this.selectedPattern = pattern;
@@ -88,21 +103,20 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
         this.closeModal();
     }
 
+    openPattern(pattern: Pattern, event: Event): void {
+        event.stopPropagation();
+        this.closeModal();
+        this.selectedShowPattern = pattern;
+        this.isOpenShowModal = true;
+    }
+
+    onShowModalClosed(): void {
+        this.showModal = true;
+    }
+
     clearPattern(event: Event): void {
         event.stopPropagation();
         this.selectedPattern = null;
         this.patternSelected.emit(null);
-    }
-
-    createPattern(): void {
-        this.closeModal();
-        
-        this.modalService.open({
-            id: 'create-pattern',
-            title: 'Создание шаблона',
-            content: ['Функция создания шаблона будет доступна позже'],
-            type: 'info',
-            size: 'medium'
-        });
     }
 }

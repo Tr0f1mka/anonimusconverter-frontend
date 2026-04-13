@@ -24,3 +24,17 @@ export interface NewPattern {
     name: string;
     modifications: NewModification[];
 }
+
+export interface UpdateModification {
+    id: string | null;
+    old_name: string | null;
+    new_name: string | null;
+    new_type: 'String' | 'Integer' | 'Float' | 'Boolean' | null;
+    new_value: string | null;
+}
+
+export interface UpdetePattern {
+    id: string;
+    name: string;
+    modifications: UpdateModification[];
+}

@@ -1,5 +1,6 @@
+import { group } from "@angular/animations";
 import { emitDistinctChangesOnlyDefaultValue } from "@angular/compiler";
-import { AbstractControl, FormArray, FormGroup, ValidationErrors, ValidatorFn } from "@angular/forms";
+import { AbstractControl, FormArray, FormGroup, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
 
 
 export class CustomValidators {
@@ -22,12 +23,6 @@ export class CustomValidators {
             if (CustomValidators.BAN_PATTERN.test(value)) {
                 return {
                     BannedCharacters: 'Обнаружены недопустимые символы. Разрешены только буквы, цифры, _ ! # $ % & \' ( ) * + , - . / : ; < = > ? @ [ ] { } ^ ` | ~'
-                };
-            }
-
-            if (value.length > 30) {
-                return {
-                    OverLength: 'Ввод должен иметь длину не более 30 символов'
                 };
             }
 
@@ -92,23 +87,6 @@ export class CustomValidators {
         };
     }
 
-    static noLeadingTrailingSpaces(): ValidatorFn {
-        //Проверка на начало или конец с пробела
-        return (control: AbstractControl): ValidationErrors | null => {
-            const value = control.value;
-            
-            if (!value) return null;
-            
-            if (value.startsWith(' ') || value.endsWith(' ')) {
-                return { 
-                    leadingTrailingSpaces: 'Поле не должно начинаться или заканчиваться пробелом'
-                };
-            }
-            
-            return null;
-        };
-    }
-
     static passwordsMatch(passwordField: string, confirmPasswordField: string): ValidatorFn {
         //Проверка на совпадение паролей
         return (control: AbstractControl): ValidationErrors | null => {
@@ -124,13 +102,18 @@ export class CustomValidators {
         };
     }
 
-    static minModificationsLength(group: FormGroup): ValidationErrors | null {
-        const modifications = group.get('modifications') as FormArray;
-        return modifications && modifications.length === 0 ? { requiredModifications: true } : null;
-    }
+    // static minModificationsLength(): ValidationErrors | null {
+    //     return (control: AbstractControl): ValidationErrors | null => {
+    //         const formArray = control as FormArray;
+    //         if (control.value.length === 0) {
+    //             return { minModificationsLength: true }
+    //         }
+    //         return null;
+    //     }
+    // }
 
     static setNull(): ValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } | null => {
+        return (control: AbstractControl): ValidationErrors | null => {
             if (control.value === '') {
                 control.setValue(null, { emitEvent: false });
             }
@@ -138,64 +121,94 @@ export class CustomValidators {
         }
     }
 
-    static oldNewValue(control: AbstractControl): ValidationErrors | null {
-        const old_name = control.get('old_name')?.value;
-        const new_name = control.get('new_name')?.value;
 
-        if (old_name === null && new_name === null) {
-            return { nameMismatch: true };
-        }
 
-        return null;
+    static oldNewValue(): ValidationErrors | null {
+        return ((control: AbstractControl) => {
+            const old_name = control.get('old_name')?.value;
+            const new_name = control.get('new_name')?.value;
+
+            if (old_name === null && new_name === null) {
+                return { oldNewValueRequired: true };
+            }
+
+            return null;
+        });
     }
 
-    static requiredArgument(control: AbstractControl): ValidationErrors | null {
-        const old_name = control.get('old_name')?.value;
-        const new_name = control.get('new_name')?.value;
-        const new_type = control.get('new_type')?.value;
-        const new_value = control.get('new_value')?.value;
+    // static requiredArgument(control: AbstractControl): ValidationErrors | null {
+    //     const old_name = control.get('old_name')?.value;
+    //     const new_name = control.get('new_name')?.value;
+    //     const new_type = control.get('new_type')?.value;
+    //     const new_value = control.get('new_value')?.value;
         
-        if (old_name !== null) {
+    //     // Если есть old_name, то должно быть что-то из new_name, new_type, new_value
+    //     if (old_name !== null) {
+    //         if ((new_name === null) && 
+    //             (new_type === null) && 
+    //             (new_value === null)) {
+    //             return { requiredArgument: true };
+    //         }
+    //     }
+    //     return null;
+    // }
+
+    static requiredArgument(): ValidationErrors | null {
+        return (control: AbstractControl): ValidationErrors | null => {
+            const new_name = control.get('new_name')?.value;
+            const new_type = control.get('new_type')?.value;
+            const new_value = control.get('new_value')?.value;
+            
             if (!(new_name || new_type || new_value)) {
-                return { requiredArgument: true };
+                return { requiredArgument: true }
             }
+            return null;
         }
-        return null;
+    }
+
+    static minModificationsLength(): ValidationErrors | null {
+        return (control: AbstractControl): ValidationErrors | null => {
+            const array = control as FormArray;
+            if (!array || !array.controls.length) return { minModificationsLength: true };
+            return null;
+        }
     }
 
     static setTypeValue(): ValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } | null => {
+        return (control: AbstractControl): ValidationErrors | null => {
             if (control.value === 'null') {
-                control.setValue(null);
+                control.setValue(null, { emitEvent: false });
             }
             return null;
-        }
+        };
     }
 
-    static defaultValueType(control: AbstractControl): ValidationErrors | null {
-        const new_type = control.get('new_type')?.value;
-        const new_value = control.get('new_value')?.value;
+    static defaultValueType(): ValidationErrors | null {
+        return ((control: AbstractControl) => {
+            const new_type = control.get('new_type')?.value;
+            const new_value = control.get('new_value')?.value;
 
-        if (new_type === null || new_value === null) {
+            if (new_type === null || new_value === null) {
+                return null;
+            }
+
+            if (new_type === "Boolean") {
+                if (!CustomValidators.BOOL_PATTERN.test(new_value)) {
+                    return { typeMismatch: { expected: 'Boolean', value: new_value } };
+                }
+            }
+            else if (new_type === "Integer") {
+                if (!CustomValidators.INT_PATTERN.test(new_value)) {
+                    return { typeMismatch: { expected: 'Integer', value: new_value } };
+                }
+            }
+            else if (new_type === "Float") {
+                if (!CustomValidators.FLOAT_PATTERN.test(new_value)) {
+                    return { typeMismatch: { expected: 'Float', value: new_value } };
+                }
+            }
+
             return null;
-        }
-
-        if (new_type === "Boolean") {
-            if (!CustomValidators.BOOL_PATTERN.test(new_value)) {
-                return { typeMismatch: true };
-            }
-        }
-        else if (new_type === "Integer") {
-            if (!CustomValidators.INT_PATTERN.test(new_value)) {
-                return { typeMismatch: true };
-            }
-        }
-        else if (new_type === "Float") {
-            if (!CustomValidators.FLOAT_PATTERN.test(new_value)) {
-                return { typeMismatch: true };
-            }
-        }
-
-        return null;
+        });
     }
 }

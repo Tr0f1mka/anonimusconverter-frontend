@@ -3,15 +3,13 @@
     <button 
     class="pattern-btn" 
     [class.pattern-selected]="selectedPattern"
-    (click)="openPatternSelector()"
-    [disabled]="isLoading">
+    (click)="openPatternSelector()">
         <span class="btn-icon">{{ selectedPattern ? '📋' : '📄' }}</span>
         <span class="btn-text">
             {{ selectedPattern ? selectedPattern.name : ('selectPattern' | translate) }}
         </span>
         <span class="btn-icon dropdown-icon" *ngIf="!selectedPattern">▼</span>
-        <span class="btn-icon clear-icon" *ngIf="selectedPattern && !isLoading" (click)="clearPattern($event)">✕</span>
-        <span class="spinner" *ngIf="isLoading"></span>
+        <span class="btn-icon clear-icon" *ngIf="selectedPattern" (click)="clearPattern($event)">✕</span>
     </button>
     
     <!-- Модальное окно выбора шаблона -->
@@ -23,40 +21,51 @@
             </div>
             
             <div class="modal-body">
-                <!-- Поиск шаблонов -->
-                <!-- <div class="search-box" *ngIf="patterns.length > 0">
-                    <input 
-                    type="text" 
-                    placeholder="Поиск шаблонов..." 
-                    [(ngModel)]="searchQuery"
-                    (input)="filterPatterns()"
-                    class="search-input">
-                </div> -->
-                
-                <!-- Список шаблонов -->
-                <div class="patterns-list" *ngIf="filteredPatterns.length > 0; else noPatterns">
-                    <div 
-                    *ngFor="let pattern of filteredPatterns"
-                    class="pattern-item"
-                    [class.selected]="selectedPattern?.id === pattern.id"
-                    (click)="selectPattern(pattern)">
-                        <div class="pattern-info">
-                            <div class="pattern-name">{{ pattern.name }}</div>
-                        </div>
-                        <div class="pattern-actions">
-                            <span class="check-icon" *ngIf="selectedPattern?.id === pattern.id">✓</span>
-                        </div>
-                    </div>
+
+                <div class="loading-container" *ngIf="isLoading">
+                    <div class="spinner-large"></div>
+                    <p>Загрузка шаблонов...</p>
                 </div>
-                
-                <ng-template #noPatterns>
-                    <div class="no-patterns">
-                        <p>У вас пока нет шаблонов</p>
-                        <button class="btn btn-primary" (click)="createPattern()">
-                            Создать шаблон
-                        </button>
+
+                <div *ngIf="!isLoading">
+                    <!-- Поиск шаблонов -->
+                    <div class="search-box" *ngIf="patterns.length > 0">
+                        <input 
+                        type="text" 
+                        placeholder="Поиск шаблонов..." 
+                        [(ngModel)]="searchQuery"
+                        (input)="filterPatterns()"
+                        class="search-input">
                     </div>
-                </ng-template>
+                    
+                    <!-- Список шаблонов -->
+                    <div class="patterns-list" *ngIf="filteredPatterns.length > 0; else noPatterns">
+                        <div 
+                        *ngFor="let pattern of filteredPatterns"
+                        class="pattern-item"
+                        [class.selected]="selectedPattern?.id === pattern.id"
+                        (click)="selectPattern(pattern)">
+                            <div class="pattern-info">
+                                <div class="pattern-name">{{ pattern.name }}</div>
+                            </div>
+                            <button class="pattern-card-preview-btn" (click)="openPattern(pattern, $event)">
+                            Открыть
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <ng-template #noPatterns>
+                        <div class="no-patterns">
+                            <p>У вас пока нет шаблонов</p>
+                            <button
+                            class="btn btn-primary"
+                            (click)="closeModal()"
+                            [routerLink]="['/patterns']">
+                                Перейти на страницу шаблонов
+                            </button>
+                        </div>
+                    </ng-template>
+                </div>
             </div>
             
             <div class="modal-footer">
@@ -67,4 +76,10 @@
             </div>
         </div>
     </div>
+
+    <show-pattern-modal
+        [pattern]="selectedShowPattern"
+        [(isOpen)]="isOpenShowModal"
+        (isOpenChange)="onShowModalClosed()">
+    </show-pattern-modal>
 </div>

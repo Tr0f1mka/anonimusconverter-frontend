@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, of, throwError, tap, findIndex } from 'rxjs';
-import { Pattern, NewPattern } from '../models/pattern.model';
+import { BehaviorSubject, catchError, Observable, of, throwError, tap, findIndex, delay } from 'rxjs';
+import { Pattern, NewPattern, UpdetePattern } from '../models/pattern.model';
 import { APIPathes } from 'src/app/api-pathes';
 import { AuthService } from './auth.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -39,13 +40,11 @@ export class PatternService {
 
         this.getPatterns(this.current_user_id).subscribe({
             next: (patterns) => {
-                // this.pattern_storage.next(patterns);
-                this.pattern_storage.next(this.stub());
+                this.pattern_storage.next(patterns);
             },
             error: (error) => {
                 console.error('Failed to load patterns', error);
                 this.pattern_storage.next([]);
-                this.pattern_storage.next(this.stub());
             }
         })
     }
@@ -58,17 +57,22 @@ export class PatternService {
 
     getPatterns(userId: string): Observable<Pattern[]>{
         // Получение шаблонов пользователя        
-        return this.http.get<Pattern[]>(`${this.apiUrl}/${userId}`).pipe(
-            catchError(error => {
-                console.error('Error:', error);
-                return throwError(() => new Error(error.error?.message || 'Ошибка получения шаблона'));
-            })
-        );
+        // return this.http.get<Pattern[]>(`${this.apiUrl}/${userId}`).pipe(
+        //     catchError(error => {
+        //         console.error('Error:', error);
+        //         return throwError(() => new Error(error.error?.message || 'Ошибка получения шаблона'));
+        //     })
+        // );
+        return of(this.stub()).pipe(delay(3));
     }
 
 
     createPattern(pattern: NewPattern): Observable<Pattern>{
         // Создание шаблона
+        if (this.current_user_id) {
+            pattern.userId = this.current_user_id;
+        }
+        // console.log(pattern);
         return this.http.post<Pattern>(this.apiUrl, pattern).pipe(
             tap((new_pattern) => {
                 const old_patterns = this.pattern_storage.value;
@@ -87,7 +91,7 @@ export class PatternService {
     }
 
 
-    updatePattern(pattern: Pattern): Observable<Pattern>{
+    updatePattern(pattern: UpdetePattern): Observable<Pattern>{
         // Изменение шаблона
         return this.http.put<Pattern>(this.apiUrl, pattern).pipe(
             tap((update_pattern) => {
@@ -147,6 +151,7 @@ export class PatternService {
     }
 
     stub(): Pattern[] {
+        // return [];
         return [
             {
                 id: "1",
@@ -196,7 +201,7 @@ export class PatternService {
                         old_name: null,
                         new_name: "aboba",
                         new_type: null,
-                        new_value: "gugu-gaga"
+                        new_value: "gugu-gagdfghjkl;lkjhgfdfghjkl;lkjhgfghjkl;kjhgfa"
                     },
                     {
                         id: "4",
@@ -338,27 +343,27 @@ export class PatternService {
                         new_type: "String",
                         new_value: "gugu-gaga"
                     },
-                    {
-                        id: "4",
-                        old_name: "qwe",
-                        new_name: null,
-                        new_type: "Boolean",
-                        new_value: "true"
-                    },
-                    {
-                        id: "5",
-                        old_name: "lkj",
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: "gugu-gaga"
-                    },
-                    {
-                        id: "6",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: null
-                    }
+                    // {
+                    //     id: "4",
+                    //     old_name: "qwe",
+                    //     new_name: null,
+                    //     new_type: "Boolean",
+                    //     new_value: "true"
+                    // },
+                    // {
+                    //     id: "5",
+                    //     old_name: "lkj",
+                    //     new_name: "aboba",
+                    //     new_type: "String",
+                    //     new_value: "gugu-gaga"
+                    // },
+                    // {
+                    //     id: "6",
+                    //     old_name: null,
+                    //     new_name: "aboba",
+                    //     new_type: "String",
+                    //     new_value: null
+                    // }
                 ]
             },
             {

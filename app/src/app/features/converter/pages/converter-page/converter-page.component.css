@@ -207,12 +207,6 @@
     color: #856404;
 }
 
-.template-id {
-    font-size: 0.75rem;
-    color: #856404;
-    opacity: 0.8;
-}
-
 .converter-actions {
     display: flex;
     gap: 1rem;

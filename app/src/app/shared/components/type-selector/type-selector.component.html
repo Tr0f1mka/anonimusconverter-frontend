@@ -1,0 +1,19 @@
+<div class="type-selector">
+    <div class="type-selector-trigger" 
+         [class.active]="isOpen"
+         (click)="toggleDropdown()">
+        <span class="trigger-text">{{ selectedType || 'Не задано' }}</span>
+        <span class="dropdown-icon">▼</span>
+    </div>
+    
+    <div class="type-selector-dropdown" *ngIf="isOpen">
+        <div class="type-selector-options">
+            <div class="type-selector-option"
+                 [class.selected]="selectedType === type"
+                 *ngFor="let type of types"
+                 (click)="selectType(type)">
+                {{ type || 'Не задано' }}
+            </div>
+        </div>
+    </div>
+</div>

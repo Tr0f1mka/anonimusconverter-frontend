@@ -1,0 +1,109 @@
+<div class="update-pattern-modal" *ngIf="isOpen">
+    <div class="update-pattern-modal-backdrop" (click)="closeModal()"></div>
+    <div class="update-pattern-modal-content">
+        <div class="update-pattern-modal-header">
+            <h3>Изменение шаблона</h3>
+            <button (click)="closeModal()">×</button>
+        </div>
+        
+        <form [formGroup]="updatePatternForm" (ngSubmit)="onSubmit()" class="update-pattern-form">
+            <div class="update-pattern-modal-body">
+                <div class="form-content">
+                    <div class="form-fields">
+                        <label>
+                            Название
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                        type="text"
+                        id="pattern-name" 
+                        formControlName="name"
+                        class="form-control"
+                        [class.is-invalid]="isFieldInvalid(updatePatternForm, 'name')"
+                        placeholder="Введите название шаблона">
+
+                        <div class="error-messages" *ngIf="isFieldInvalid(updatePatternForm, 'name')">
+                            <div *ngIf="updatePatternForm.get('name')?.errors?.['required']">
+                                Имя обязательно
+                            </div>
+                            <div *ngIf="updatePatternForm.get('name')?.errors?.['minlength']">
+                                Имя должно быть не менее 2 символов
+                            </div>
+                            <div *ngIf="updatePatternForm.get('name')?.errors?.['maxlength']">
+                                Имя должно быть не более 50 символов
+                            </div>
+                            <div *ngIf="updatePatternForm.get('name')?.errors?.['leadingTrailingSpaces']">
+                                {{ updatePatternForm.get('name')?.errors?.['leadingTrailingSpaces'] }}
+                            </div>
+                        </div>
+
+                        <label>
+                            Модификации
+                            <span class="required">*</span>
+                        </label>
+
+                        <div formArrayName="modifications">
+                            <div class="modification"
+                            *ngFor="let modification of modifications.controls; let i = index"
+                            [formGroupName]="i">
+                                <div class="modification-row">
+                                    <div class="modification-inputs">
+                                        <input formControlName="old_name" placeholder="Старое имя поля">
+                                        <input formControlName="new_name" placeholder="Новое имя поля">
+                                        <div class="type-selector-class">
+                                            <type-selector
+                                            [selectedType]="getTypeName(i)"
+                                            (typeChange)="selectType($event, i)"></type-selector>
+                                        </div>
+                                        <input formControlName="new_value" placeholder="Новое значение поля">
+                                    </div>
+                                    <button type="button" 
+                                            class="remove-btn" 
+                                            (click)="removeModification(i)">
+                                        ×
+                                    </button>
+                                </div>
+                                <div class="error-messages" *ngIf="modification.errors">
+                                    <div *ngIf="modification.errors?.['typeMismatch']">
+                                        тип не соответствует значению
+                                    </div>
+                                    <div *ngIf="modification.errors?.['oldNewValueRequired']">
+                                        нужно старое или новое имя
+                                    </div>
+                                    <div *ngIf="modification.errors?.['maxlength']">
+                                        нельзя вводить болле 50 символов в поле
+                                    </div>
+                                    <div *ngIf="modification.errors?.['requiredArgument']">
+                                        нужно хотя бы одно поле
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="add-btn" 
+                                (click)="addModification()">
+                            + Добавить модификацию
+                        </button>
+                        
+                        <div class="error-messages" *ngIf="updatePatternForm.get('modifications')?.errors?.['minModificationsLength']">
+                            <div>
+                                обязательна хотя бы 1 модификация
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="update-pattern-modal-footer">
+                <button type="submit" 
+                        class="submit-btn"
+                        [disabled]="updatePatternForm.invalid || isLoading"
+                        >
+                    <span *ngIf="!isLoading">Сохранить шаблон</span>
+                    <span *ngIf="isLoading" class="spinner-small"></span>
+                </button>
+            </div>
+            
+        </form>
+    </div>
+</div>

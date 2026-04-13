@@ -6,7 +6,7 @@
             <button (click)="closeModal()">×</button>
         </div>
         <div class="show-pattern-modal-body">
-            <p>Название: {{ pattern.name }}</p>
+            <p><strong>Название:</strong> {{ pattern.name }}</p>
 
             <div class="table-container">
                 <table class="modification-table">
@@ -37,7 +37,7 @@
                 </table>
                 
                 <!-- Пагинация -->
-                <div class="pagination-container" *ngIf="totalPages > 1">
+                <div class="pagination-container" *ngIf="totalPages > -1">
                     <div class="pagination-info">
                         Показано {{ startItem }} - {{ endItem }} из {{ totalItems }}
                     </div>
