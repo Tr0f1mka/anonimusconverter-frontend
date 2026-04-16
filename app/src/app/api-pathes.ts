@@ -1,7 +1,8 @@
 export enum APIPathes {
-    API = 'http://localhost:8080/api/v1',
+    API = 'https://cson.site/api/v1',
     convert = `${API}/conversion`,
     download = `${API}/download`,
     patterns = `${API}/patterns`,
+    modifications = `${API}/modifocation`,
     auth = `${API}/auth`
 }

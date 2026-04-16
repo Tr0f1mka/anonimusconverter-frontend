@@ -23,7 +23,7 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
     isLoading: boolean = true;
 
     isOpenShowModal: boolean = false;
-    selectedShowPattern: Pattern = {id: '', name: '', modifications: []};
+    selectedShowPattern: Pattern = {id: '', name: ''};
     
     private subscriptions: Subscription[] = [];
 

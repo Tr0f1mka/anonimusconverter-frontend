@@ -1,3 +1,20 @@
+.pattern-card-preview-btn {
+    background: #fff;
+    border: 2px solid #09BEFF;
+    border-radius: 1rem;
+    width: 100%;
+    /* height: 100%; */
+    transition: all 0.3s;
+    padding: 1rem 0rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.pattern-card-preview-btn:hover {
+    background: #09BEFF;
+    color: #fff;
+}
+
 .show-pattern-modal {
     position: fixed;
     top: 0;

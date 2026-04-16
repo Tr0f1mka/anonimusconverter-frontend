@@ -12,16 +12,13 @@ import { Subscription } from 'rxjs';
 })
 export class PatternsPageComponent implements OnInit {
     patterns: Pattern[] = [];
+    isDeleting: boolean = false;
     isLoading: boolean = true;
     currentUserId: string | null = null;
 
     private subscriptions: Subscription[] = [];
 
-    selectedPattern: Pattern = {id: '', name: '', modifications: []};
-    isOpenShowModal: boolean = false;
-    isOpenCreateModal: boolean = false;
-    isOpenUpdateModal: boolean = false;
-    isDeleting: boolean = false;
+    // isDeleting: boolean = false;
 
     constructor(
         private patternService: PatternService,
@@ -58,31 +55,6 @@ export class PatternsPageComponent implements OnInit {
 
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe());
-    }
-
-    createPattern() {
-        if (!this.authService.isLoggedInSync()) {
-            this.modalService.open({
-                id: 'auth-required',
-                title: 'Требуется авторизация',
-                content: ['Для создания шаблона необходимо войти в систему'],
-                type: 'warning',
-                size: 'small'
-            });
-            return;
-        }
-        this.isOpenCreateModal = true;
-    }
-
-    openPattern(pattern: Pattern): void {
-        this.isOpenShowModal = true;
-        this.selectedPattern = pattern;
-    }
-
-    updatePattern(pattern: Pattern): void {
-        console.log(this.selectedPattern);
-        this.isOpenUpdateModal = true;
-        this.selectedPattern = pattern;
     }
 
     deletePattern(pattern: Pattern): void {

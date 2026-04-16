@@ -1,3 +1,5 @@
+import { Pattern } from "./pattern.model";
+
 export interface User {
     id: string;
     name: string;
@@ -9,6 +11,12 @@ export interface LoginRequest {
     password: string;
 }
 
+export interface LoginResponse {
+    userId: string;
+    username: string;
+    email: string;
+}
+
 export interface RegisterRequest {
     username: string;
     email: string;
@@ -17,10 +25,9 @@ export interface RegisterRequest {
 }
 
 export interface BackendAuthResponse {
-    userId: string;
+    id: string;
     username: string;
     email: string;
-    token: string;
 }
 
 export interface AuthResponse {

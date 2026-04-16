@@ -48,9 +48,10 @@
                             <div class="pattern-info">
                                 <div class="pattern-name">{{ pattern.name }}</div>
                             </div>
-                            <button class="pattern-card-preview-btn" (click)="openPattern(pattern, $event)">
-                            Открыть
-                            </button>
+                            <show-pattern-modal
+                                [pattern]="pattern"
+                                (isOpenChange)="onShowModalClosed()">
+                            </show-pattern-modal>
                         </div>
                     </div>
                     
@@ -76,10 +77,4 @@
             </div>
         </div>
     </div>
-
-    <show-pattern-modal
-        [pattern]="selectedShowPattern"
-        [(isOpen)]="isOpenShowModal"
-        (isOpenChange)="onShowModalClosed()">
-    </show-pattern-modal>
 </div>

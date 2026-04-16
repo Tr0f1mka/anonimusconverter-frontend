@@ -1,6 +1,8 @@
 // show-pattern.component.ts
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, ChangeDetectorRef } from '@angular/core';
-import { Pattern } from 'src/app/core/models/pattern.model';
+import { Pattern, Modification } from 'src/app/core/models/pattern.model';
+import { PatternService } from 'src/app/core/services/pattern.service';
+import { ModalService } from 'src/app/core/services/modal.service';
 
 @Component({
     selector: 'show-pattern-modal',
@@ -8,22 +10,23 @@ import { Pattern } from 'src/app/core/models/pattern.model';
     styleUrl: 'show-pattern.component.css'
 })
 export class ShowPatternComponent implements OnInit, OnChanges {
-    @Input() pattern: Pattern = {id: '', name: '', modifications: []};
-    @Input() isOpen: boolean = false;
+    @Input() pattern: Pattern = {id: '', name: ''};
     @Output() isOpenChange = new EventEmitter<boolean>();
+
+    isOpen: boolean = false;
 
     // Пагинация
     currentPage: number = 1;
     pageSize: number = 5;
     
-    // Сортировка
-    sortColumn: string = 'old_name';
-    sortDirection: 'asc' | 'desc' = 'asc';
     
     // Данные
-    paginatedModifications: any[] = [];
+    modifications: Modification[] = [];
+    paginatedModifications: Modification[] = [];
 
     constructor(
+        private patternService: PatternService,
+        private modalService: ModalService,
         private cdr: ChangeDetectorRef
     ) {}
     
@@ -36,9 +39,30 @@ export class ShowPatternComponent implements OnInit, OnChanges {
         this.updateTable();
     }
     
+    openWindow() {
+        this.patternService.getModifications(this.pattern.id, 100, 1).subscribe({
+            next: (modifications) => {
+                this.modifications = modifications;
+                this.isOpen = true;
+                this.updateTable();
+            },
+            error: (error) => {
+                console.error('Failed to load modifications', error);
+                this.modifications = [];
+                this.modalService.open({
+                    id: 'open-pattern-modal',
+                    title: 'Ошибка',
+                    content: ['Ошибка загрузки модификаций шаблона'],
+                    type: 'info',
+                    size: 'small'
+                });
+            }
+        });
+    }
+
     get totalItems(): number {
         //Всего элементов
-        return this.pattern.modifications?.length || 0;
+        return this.modifications?.length || 0;
     }
     
     get totalPages(): number {
@@ -59,13 +83,13 @@ export class ShowPatternComponent implements OnInit, OnChanges {
     
     updateTable() {
         //Обновление таблицы
-        if (!this.pattern?.modifications) return;
+        if (!this.modifications) return;
         
         const startIndex = (this.currentPage - 1) * this.pageSize;
         const endIndex = startIndex + this.pageSize;
-        this.paginatedModifications = this.pattern.modifications.slice(startIndex, endIndex);
+        this.paginatedModifications = this.modifications.slice(startIndex, endIndex);
 
-        this.cdr?.detectChanges();
+        this.cdr.detectChanges();
     }
     
     previousPage() {

@@ -21,22 +21,6 @@
     cursor: pointer;
 }
 
-.create-btn {
-    margin-top: 1rem;
-    width: 100%;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 1rem;
-    padding: 1rem 0rem;
-    transition: all 0.3s;
-    cursor: pointer;
-}
-
-.create-btn:hover {
-    background: #0056b3;
-}
-
 .pattern-container {
     background: white;
     border-radius: 8px;
@@ -166,19 +150,8 @@
     height: 40%;
 }
 
-.change-pattern-btn {
+.update-pattern-btn {
     width: 40%;
-    background: #fff;
-    border: 2px solid #09BEFF;
-    border-radius: 1rem;
-    padding: 1rem 0rem;
-    transition: all 0.3s;
-    cursor: pointer;
-}
-
-.change-pattern-btn:hover {
-    background: #09BEFF;
-    color: #fff;
 }
 
 .delete-pattern-btn {

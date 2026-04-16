@@ -5,10 +5,7 @@
             <p>Здесь будут храниться ваши шаблоны маппинга</p>
             <button (click)="openHelp()" class="help-btn">?</button>
         </div>
-        <button (click)="createPattern()" class="create-btn">Создать шаблон</button>
-        <create-pattern-modal
-        [(isOpen)]="isOpenCreateModal">
-        </create-pattern-modal>
+        <create-pattern-modal></create-pattern-modal>
     </div>
 
     <div class="pattern-container">
@@ -31,24 +28,19 @@
                                     <p>{{ pattern.name }}</p>
                                 </div>
                                 <div class="pattern-card-preview">
-                                    <button class="pattern-card-preview-btn" (click)="openPattern(pattern)">
-                                    Открыть
-                                    </button>
+                                    
                                     <show-pattern-modal
-                                        [pattern]="selectedPattern"
-                                        [(isOpen)]="isOpenShowModal">
+                                        [pattern]="pattern">
                                     </show-pattern-modal>
                                 </div>
                             </div>
                             <hr class="pattern-card-hr">
                             <div class="pattern-card-btns">
-                                <button class="change-pattern-btn" (click)="updatePattern(pattern)">
-                                    Изменить
-                                </button>
-                                <update-pattern-modal
-                                [pattern]="selectedPattern"
-                                [(isOpen)]="isOpenUpdateModal">
-                                </update-pattern-modal>
+                                <div class="update-pattern-btn">
+                                    <update-pattern-modal
+                                    [pattern]="pattern">
+                                    </update-pattern-modal>
+                                </div>
                                 <button class="delete-pattern-btn" (click)="deletePattern(pattern)">
                                     Удалить
                                 </button>

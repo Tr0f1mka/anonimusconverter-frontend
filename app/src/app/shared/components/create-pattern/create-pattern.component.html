@@ -1,3 +1,5 @@
+<button (click)="openForm()" class="create-btn">Создать шаблон</button>
+
 <div class="create-pattern-modal" *ngIf="isOpen">
     <div class="create-pattern-modal-backdrop" (click)="closeModal()"></div>
     <div class="create-pattern-modal-content">
@@ -48,14 +50,14 @@
                             [formGroupName]="i">
                                 <div class="modification-row">
                                     <div class="modification-inputs">
-                                        <input formControlName="old_name" placeholder="Старое имя поля">
-                                        <input formControlName="new_name" placeholder="Новое имя поля">
+                                        <input formControlName="oldName" placeholder="Старое имя поля">
+                                        <input formControlName="newName" placeholder="Новое имя поля">
                                         <div class="type-selector-class">
                                             <type-selector
                                             [selectedType]="getTypeName(i)"
                                             (typeChange)="selectType($event, i)"></type-selector>
                                         </div>
-                                        <input formControlName="new_value" placeholder="Новое значение поля">
+                                        <input formControlName="newValue" placeholder="Новое значение поля">
                                     </div>
                                     <button type="button" 
                                             class="remove-btn" 
@@ -65,16 +67,16 @@
                                 </div>
                                 <div class="error-messages" *ngIf="modification.errors">
                                     <div *ngIf="modification.errors?.['typeMismatch']">
-                                        тип не соответствует значению
+                                        Новый тип ячейки не соответствует новому значению
                                     </div>
                                     <div *ngIf="modification.errors?.['oldNewValueRequired']">
-                                        нужно старое или новое имя
+                                        Нужно ввести старое или новое имя ячейки
                                     </div>
                                     <div *ngIf="modification.errors?.['maxlength']">
-                                        нельзя вводить болле 50 символов в поле
+                                        Нельзя вводить более 50 символов в поле
                                     </div>
                                     <div *ngIf="modification.errors?.['requiredArgument']">
-                                        нужно хотя бы одно поле
+                                        Нужно заполнить хотя бы одно поле
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +89,7 @@
                         
                         <div class="error-messages" *ngIf="createPatternForm.get('modifications')?.errors?.['minModificationsLength']">
                             <div>
-                                обязательна хотя бы 1 модификация
+                                Обязательна хотя бы 1 модификация
                             </div>
                         </div>
                     </div>

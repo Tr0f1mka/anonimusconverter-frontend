@@ -12,9 +12,9 @@ import { ModalService } from "src/app/core/services/modal.service";
     styleUrl: "create-pattern.component.css"
 })
 export class CreatePatternComponent {
-    @Input() isOpen: boolean = false;
     @Output() isOpenChange = new EventEmitter<boolean>();
 
+    isOpen: boolean = false;
     createPatternForm: FormGroup;
     isLoading: boolean = false;
 
@@ -40,24 +40,38 @@ export class CreatePatternComponent {
         });
     }
 
+    openForm() {
+        if (!this.authService.isLoggedInSync()) {
+            this.modalService.open({
+                id: 'auth-required',
+                title: 'Требуется авторизация',
+                content: ['Для создания шаблона необходимо войти в систему'],
+                type: 'warning',
+                size: 'small'
+            });
+            return;
+        }
+        this.isOpen = true;
+    }
+
     get modifications(): FormArray {
         return this.createPatternForm.get('modifications') as FormArray;
     }
 
     createModificationGroup(): FormGroup {
         return this.fb.group({
-            old_name: [null, [
+            oldName: [null, [
                 Validators.maxLength(50),
                 CustomValidators.setNull()
             ]],
-            new_name: [null, [
+            newName: [null, [
                 Validators.maxLength(50),
                 CustomValidators.setNull()
             ]],
-            new_type: [null, [
+            newType: [null, [
                 CustomValidators.setTypeValue()
             ]],
-            new_value: [null, [
+            newValue: [null, [
                 Validators.maxLength(50),
                 CustomValidators.setNull()
             ]]
@@ -82,12 +96,12 @@ export class CreatePatternComponent {
         console.log(event, i);
         
         const modificationGroup = this.modifications.at(i) as FormGroup;
-        modificationGroup.get('new_type')?.setValue(event);
+        modificationGroup.get('newType')?.setValue(event);
 
     }
 
     getTypeName(i: number): string | null {
-        return this.modifications.at(i).get('new_type')?.value;
+        return this.modifications.at(i).get('newType')?.value;
     }
 
     isFieldInvalid(form: FormGroup, fieldName: string): boolean {

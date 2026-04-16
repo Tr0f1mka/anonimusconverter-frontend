@@ -1,22 +1,21 @@
 export interface Modification {
-    id: string;
-    old_name: string | null;
-    new_name: string | null;
-    new_type: 'String' | 'Integer' | 'Float' | 'Boolean' | null;
-    new_value: string | null;
+    oldName: string | null;
+    newName: string | null;
+    newType: 'String' | 'Integer' | 'Float' | 'Boolean' | null;
+    newValue: string | null;
 }
 
 export interface Pattern {
     id: string;
     name: string;
-    modifications: Modification[];
+    // modifications: Modification[];
 }
 
 export interface NewModification {
-    old_name: string | null;
-    new_name: string | null;
-    new_type: 'String' | 'Integer' | 'Float' | 'Boolean' | null;
-    new_value: string | null;
+    oldName: string | null;
+    newName: string | null;
+    newType: 'String' | 'Integer' | 'Float' | 'Boolean' | null;
+    newValue: string | null;
 }
 
 export interface NewPattern {
@@ -26,7 +25,6 @@ export interface NewPattern {
 }
 
 export interface UpdateModification {
-    id: string | null;
     old_name: string | null;
     new_name: string | null;
     new_type: 'String' | 'Integer' | 'Float' | 'Boolean' | null;

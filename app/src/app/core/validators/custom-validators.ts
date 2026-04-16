@@ -102,16 +102,6 @@ export class CustomValidators {
         };
     }
 
-    // static minModificationsLength(): ValidationErrors | null {
-    //     return (control: AbstractControl): ValidationErrors | null => {
-    //         const formArray = control as FormArray;
-    //         if (control.value.length === 0) {
-    //             return { minModificationsLength: true }
-    //         }
-    //         return null;
-    //     }
-    // }
-
     static setNull(): ValidatorFn {
         return (control: AbstractControl): ValidationErrors | null => {
             if (control.value === '') {
@@ -125,8 +115,8 @@ export class CustomValidators {
 
     static oldNewValue(): ValidationErrors | null {
         return ((control: AbstractControl) => {
-            const old_name = control.get('old_name')?.value;
-            const new_name = control.get('new_name')?.value;
+            const old_name = control.get('oldName')?.value;
+            const new_name = control.get('newName')?.value;
 
             if (old_name === null && new_name === null) {
                 return { oldNewValueRequired: true };
@@ -136,29 +126,11 @@ export class CustomValidators {
         });
     }
 
-    // static requiredArgument(control: AbstractControl): ValidationErrors | null {
-    //     const old_name = control.get('old_name')?.value;
-    //     const new_name = control.get('new_name')?.value;
-    //     const new_type = control.get('new_type')?.value;
-    //     const new_value = control.get('new_value')?.value;
-        
-    //     // Если есть old_name, то должно быть что-то из new_name, new_type, new_value
-    //     if (old_name !== null) {
-    //         if ((new_name === null) && 
-    //             (new_type === null) && 
-    //             (new_value === null)) {
-    //             return { requiredArgument: true };
-    //         }
-    //     }
-    //     return null;
-    // }
-
     static requiredArgument(): ValidationErrors | null {
         return (control: AbstractControl): ValidationErrors | null => {
-            const new_name = control.get('new_name')?.value;
-            const new_type = control.get('new_type')?.value;
-            const new_value = control.get('new_value')?.value;
-            
+            const new_name = control.get('newName')?.value;
+            const new_type = control.get('newType')?.value;
+            const new_value = control.get('newValue')?.value;
             if (!(new_name || new_type || new_value)) {
                 return { requiredArgument: true }
             }
@@ -185,8 +157,8 @@ export class CustomValidators {
 
     static defaultValueType(): ValidationErrors | null {
         return ((control: AbstractControl) => {
-            const new_type = control.get('new_type')?.value;
-            const new_value = control.get('new_value')?.value;
+            const new_type = control.get('newType')?.value;
+            const new_value = control.get('newValue')?.value;
 
             if (new_type === null || new_value === null) {
                 return null;

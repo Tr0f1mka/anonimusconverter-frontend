@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, Observable, of, throwError, tap, findIndex, delay } from 'rxjs';
-import { Pattern, NewPattern, UpdetePattern } from '../models/pattern.model';
+import { Pattern, NewPattern, UpdetePattern, Modification } from '../models/pattern.model';
 import { APIPathes } from 'src/app/api-pathes';
 import { AuthService } from './auth.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
@@ -11,6 +11,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 })
 export class PatternService {
     private apiUrl = APIPathes.patterns;
+    private apiModifications = APIPathes.modifications;
 
     private pattern_storage = new BehaviorSubject<Pattern[]|null>(null);
     public patterns$ = this.pattern_storage.asObservable();
@@ -38,7 +39,7 @@ export class PatternService {
     loadPatternsFromService(): void {
         if (!this.current_user_id) return;
 
-        this.getPatterns(this.current_user_id).subscribe({
+        this.getPatterns(100, 1).subscribe({
             next: (patterns) => {
                 this.pattern_storage.next(patterns);
             },
@@ -55,15 +56,25 @@ export class PatternService {
     }
 
 
-    getPatterns(userId: string): Observable<Pattern[]>{
+    getPatterns(limit: number, offset: number): Observable<Pattern[]>{
         // Получение шаблонов пользователя        
-        // return this.http.get<Pattern[]>(`${this.apiUrl}/${userId}`).pipe(
-        //     catchError(error => {
-        //         console.error('Error:', error);
-        //         return throwError(() => new Error(error.error?.message || 'Ошибка получения шаблона'));
-        //     })
-        // );
-        return of(this.stub()).pipe(delay(3));
+        return this.http.get<Pattern[]>(`${this.apiUrl}/${this.current_user_id}/${limit}/${offset}`).pipe(
+            catchError(error => {
+                console.error('Error:', error);
+                return throwError(() => new Error(error.error?.message || 'Ошибка получения шаблонов'));
+            })
+        );
+        // return of(this.stub()).pipe(delay(3));
+    }
+
+
+    getModifications(patternId: string, limit: number, offset: number): Observable<Modification[]>{
+        return this.http.get<Modification[]>(`${this.apiModifications}/${patternId}/${limit}/${offset}`).pipe(
+            catchError(error => {
+                console.error("Error", error);
+                return throwError(() => new Error(error.error?.message || 'Ошибка получения модификаций'));
+            })
+        );
     }
 
 
@@ -115,7 +126,7 @@ export class PatternService {
 
     deletePattern(patternId: string): Observable<{status: string, message: string}>{
         // Удаление шаблона
-        return this.http.delete<{status: string, message: string}>(`${this.apiUrl}/${this.current_user_id}/${patternId}`).pipe(
+        return this.http.delete<{status: string, message: string}>(`${this.apiUrl}/${patternId}`).pipe(
             tap(() =>{
                 const patterns = this.pattern_storage.value;
                 if (patterns) {
@@ -155,229 +166,23 @@ export class PatternService {
         return [
             {
                 id: "1",
-                name: "pat1",
-                modifications: [
-                    {
-                        id: "1",
-                        old_name: "azaza",
-                        new_name: "aboba",
-                        new_type: null,
-                        new_value: ""
-                    }
-                ]
+                name: "pat1"
             },
             {
                 id: "2",
-                name: "pat2",
-                modifications: [
-                    {
-                        id: "2",
-                        old_name: "azaza",
-                        new_name: "aboba",
-                        new_type: null,
-                        new_value: ""
-                    }
-                ]
+                name: "pat2"
             },
             {
                 id: "3",
-                name: "pat3wertyuiopoiuytrertyukl;;lkjhgfdfghjkl;lkjhytrtyuio",
-                modifications: [
-                    {
-                        id: "3",
-                        old_name: "azaza",
-                        new_name: "aboba",
-                        new_type: null,
-                        new_value: ""
-                    }
-                ]
+                name: "pat3wertyuiopoiuytrertyukl;;lkjhgfdfghjkl;lkjhytrtyuio"
             },
             {
                 id: "4",
-                name: "test_modal",
-                modifications: [
-                    {
-                        id: "3",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: null,
-                        new_value: "gugu-gagdfghjkl;lkjhgfdfghjkl;lkjhgfghjkl;kjhgfa"
-                    },
-                    {
-                        id: "4",
-                        old_name: "qwe",
-                        new_name: null,
-                        new_type: "Boolean",
-                        new_value: "true"
-                    },
-                    {
-                        id: "5",
-                        old_name: "lkj",
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: "gugu-gaga"
-                    },
-                    {
-                        id: "6",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: null
-                    },
-                    {
-                        id: "7",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: null,
-                        new_value: "gugu-gaga"
-                    },
-                    {
-                        id: "3",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: "guagu-gaga"
-                    },
-                    {
-                        id: "4",
-                        old_name: "qwe",
-                        new_name: null,
-                        new_type: "Boolean",
-                        new_value: "true"
-                    },
-                    {
-                        id: "5",
-                        old_name: "lkj",
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: "gugu-gaga"
-                    },
-                    {
-                        id: "6",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: null
-                    },
-                    {
-                        id: "7",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: null,
-                        new_value: "gugu-gaga"
-                    },
-                    {
-                        id: "3",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: "gugu-ghaga"
-                    },
-                    {
-                        id: "4",
-                        old_name: "qwe",
-                        new_name: null,
-                        new_type: "Boolean",
-                        new_value: "true"
-                    },
-                    {
-                        id: "5",
-                        old_name: "lkj",
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: "gugu-gaga"
-                    },
-                    {
-                        id: "6",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: null
-                    },
-                    {
-                        id: "7",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: null,
-                        new_value: "gugu-gaga"
-                    },
-                    {
-                        id: "3",
-                        old_name: null,
-                        new_name: "abob7a",
-                        new_type: "String",
-                        new_value: "gugu-gaga"
-                    },
-                    {
-                        id: "4",
-                        old_name: "qwe",
-                        new_name: null,
-                        new_type: "Boolean",
-                        new_value: "true"
-                    },
-                    {
-                        id: "5",
-                        old_name: "lkj",
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: "gugu-gaga"
-                    },
-                    {
-                        id: "6",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: null
-                    },
-                    {
-                        id: "7",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: null,
-                        new_value: "gugu-gaga"
-                    },
-                    {
-                        id: "3",
-                        old_name: null,
-                        new_name: "aboba",
-                        new_type: "String",
-                        new_value: "gugu-gaga"
-                    },
-                    // {
-                    //     id: "4",
-                    //     old_name: "qwe",
-                    //     new_name: null,
-                    //     new_type: "Boolean",
-                    //     new_value: "true"
-                    // },
-                    // {
-                    //     id: "5",
-                    //     old_name: "lkj",
-                    //     new_name: "aboba",
-                    //     new_type: "String",
-                    //     new_value: "gugu-gaga"
-                    // },
-                    // {
-                    //     id: "6",
-                    //     old_name: null,
-                    //     new_name: "aboba",
-                    //     new_type: "String",
-                    //     new_value: null
-                    // }
-                ]
+                name: "test_modal"
             },
             {
                 id: "5",
-                name: "pat3wertyuiopoiuytrertyukl;;lkjhgfdfghjkl;lkjhytrtyuio",
-                modifications: [
-                    {
-                        id: "3",
-                        old_name: "azaza",
-                        new_name: "aboba",
-                        new_type: null,
-                        new_value: ""
-                    }
-                ]
+                name: "pat3wertyuiopoiuytrertyukl;;lkjhgfdfghjkl;lkjhytrtyuio"
             },
         ];
     }

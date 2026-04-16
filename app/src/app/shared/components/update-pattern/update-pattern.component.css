@@ -1,3 +1,18 @@
+.change-pattern-btn {
+    width: 100%;
+    background: #fff;
+    border: 2px solid #09BEFF;
+    border-radius: 1rem;
+    padding: 1rem 0rem;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.change-pattern-btn:hover {
+    background: #09BEFF;
+    color: #fff;
+}
+
 .update-pattern-modal {
     position: fixed;
     top: 0;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { map, catchError, delay } from 'rxjs/operators';
-import { User, LoginRequest, RegisterRequest, AuthResponse, BackendAuthResponse } from '../models/user.model';
+import { User, LoginRequest, RegisterRequest, AuthResponse, BackendAuthResponse, LoginResponse } from '../models/user.model';
 import { APIPathes } from 'src/app/api-pathes';
 
 @Injectable({
@@ -48,14 +48,14 @@ export class AuthService {
         return this.currentUser.value;
     }
 
-    private transformBackendResponse(response: BackendAuthResponse): AuthResponse {
+    private transformRegisterResponse(response: BackendAuthResponse): AuthResponse {
         return {
             user: {
-                id: response.userId,
+                id: response.id,
                 name: response.username,
                 email: response.email
             },
-            token: response.token
+            token: ''
         };
     }
 
@@ -63,9 +63,9 @@ export class AuthService {
     register(data: RegisterRequest): Observable<AuthResponse> {
         // Реальный запрос к API
         
-        return this.http.post<BackendAuthResponse>(`${this.apiUrl}/register`, data).pipe(
+        return this.http.post<BackendAuthResponse>(`${this.apiUrl}/registration`, data).pipe(
             map(response => {
-                const correct_response = this.transformBackendResponse(response);
+                const correct_response = this.transformRegisterResponse(response);
                 this.setSession(correct_response);
                 console.log("USER RESPONSE", correct_response);
                 return correct_response;
@@ -76,14 +76,25 @@ export class AuthService {
         );
     }
 
+    private transformLoginResponse(response: LoginResponse): AuthResponse {
+        return {
+            user: {
+                id: response.userId,
+                name: response.username,
+                email: response.email
+            },
+            token: ''
+        };
+    }
+
     // Вход
     login(data: LoginRequest): Observable<AuthResponse> {
         // Реальный запрос к API
         
-        return this.http.post<BackendAuthResponse>(`${this.apiUrl}/login`, data).pipe(
+        return this.http.post<LoginResponse>(`${this.apiUrl}/login`, data).pipe(
             map(response => {
                 console.log("RESPONSE BEFORE", response);
-                const correct_response = this.transformBackendResponse(response);
+                const correct_response = this.transformLoginResponse(response);
                 this.setSession(correct_response);
                 console.log("USER RESPONSE", correct_response);
                 return correct_response;

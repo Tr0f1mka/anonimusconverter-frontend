@@ -1,3 +1,19 @@
+.create-btn {
+    margin-top: 1rem;
+    width: 100%;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    padding: 1rem 0rem;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.create-btn:hover {
+    background: #0056b3;
+}
+
 .create-pattern-modal {
     position: fixed;
     top: 0;

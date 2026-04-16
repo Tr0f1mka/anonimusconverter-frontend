@@ -1,3 +1,6 @@
+<button class="pattern-card-preview-btn" (click)="openWindow()">
+    Открыть
+</button>
 <div class="show-pattern-modal" *ngIf="isOpen">
     <div class="show-pattern-modal-backdrop" (click)="closeModal()"></div>
     <div class="show-pattern-modal-content">
@@ -28,10 +31,10 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let modification of paginatedModifications">
-                            <td class="wrap-text">{{ modification.old_name || '—' }}</td>
-                            <td class="wrap-text">{{ modification.new_name || '—' }}</td>
-                            <td>{{ modification.new_type || '—' }}</td>
-                            <td class="wrap-text">{{ modification.new_value || '—' }}</td>
+                            <td class="wrap-text">{{ modification.oldName || '—' }}</td>
+                            <td class="wrap-text">{{ modification.newName || '—' }}</td>
+                            <td>{{ modification.newType || '—' }}</td>
+                            <td class="wrap-text">{{ modification.newValue || '—' }}</td>
                         </tr>
                     </tbody>
                 </table>

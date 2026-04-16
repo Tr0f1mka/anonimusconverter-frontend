@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FileFormat } from '../../../core/models/format.model';
 import { APIPathes } from 'src/app/api-pathes';
@@ -62,19 +62,39 @@ export class ConversionService {
     }
 
     // Отправка файла на конвертацию и получение готового файла
+    // convert(request: ConversionRequest): Observable<HttpResponse<Blob>> {
+    //     const formData = new FormData();
+    //     formData.append('file', request.file);
+    //     formData.append('patternId', request.patternId || '');
+        
+    //     if (request.options) {
+    //         formData.append('options', JSON.stringify(request.options));
+    //     }
+        
+    //     console.log(`${this.apiUrl}/${request.sourceFormat}/${request.targetFormat}`)
+    //     // Отправляем запрос и ожидаем файл в ответе
+    //     return this.http.post(`${this.apiUrl}/${request.sourceFormat}/${request.targetFormat}`, formData, {
+    //         responseType: 'blob',
+    //         observe: 'response'
+    //     });
+    // }
+
     convert(request: ConversionRequest): Observable<HttpResponse<Blob>> {
         const formData = new FormData();
         formData.append('file', request.file);
-        // formData.append('patternId', request.patternId || '');
-        
+
         if (request.options) {
             formData.append('options', JSON.stringify(request.options));
         }
-        
-        console.log(`${this.apiUrl}/${request.sourceFormat}/${request.targetFormat}`)
-        // Отправляем запрос и ожидаем файл в ответе
+
+        // Build query params separately
+        let params = new HttpParams();
+        if (request.patternId) {
+            params = params.set('pattern', request.patternId); // matches name="pattern" in backend
+        }
+
         return this.http.post(`${this.apiUrl}/${request.sourceFormat}/${request.targetFormat}`, formData, {
-            responseType: 'blob',
+            params, responseType: 'blob',
             observe: 'response'
         });
     }
