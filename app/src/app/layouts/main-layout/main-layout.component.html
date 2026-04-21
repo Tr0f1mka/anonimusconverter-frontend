@@ -2,20 +2,20 @@
     <app-header></app-header>
     
     <main class="content">
-    <router-outlet></router-outlet>
+        <router-outlet></router-outlet>
     </main>
     
     <app-footer></app-footer>
     
     <!-- Глобальные модальные окна -->
     <ng-container *ngFor="let modal of modals$ | async">
-    <app-modal 
-        [title]="modal.title"
-        [size]="modal.size || 'medium'"
-        (close)="closeModal(modal.id)">
-        <div *ngFor="let line of modal.content">
-        <p>{{ line }}</p>
-        </div>
-    </app-modal>
+        <app-modal 
+            [title]="modal.title"
+            [size]="modal.size || 'medium'"
+            (close)="closeModal(modal.id)">
+            <div *ngFor="let line of modal.content">
+            <p>{{ line }}</p>
+            </div>
+        </app-modal>
     </ng-container>
 </div>

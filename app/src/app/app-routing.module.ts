@@ -22,10 +22,13 @@ const routes: Routes = [
             {
                 path: 'auth',
                 loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
+            },
+            {
+                path: '**',
+                loadChildren: () => import('./features/not-found/not-found.module').then(m => m.NotFoundModule)
             }
         ]
-    },
-    { path: '**', redirectTo: '' }
+    }
 ];
 
 @NgModule({

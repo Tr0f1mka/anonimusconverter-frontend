@@ -16,6 +16,7 @@
             </div>
 
             <div *ngIf="!isLoading">
+                <!-- Шаблоны -->
                 <div class="pattern-card-container" *ngIf="patterns.length > 0">
 
                     <div class="pattern-card" *ngFor="let pattern of patterns">
@@ -49,8 +50,23 @@
                     </div>
                 </div>
 
-                <div class="pattern-footer" *ngIf="patterns.length > 0">
-                    <p>{{patterns.length}}</p>
+                <div class="pattern-footer">
+                    <div class="pagination-controls" *ngIf="patterns.length > 0">
+                        <button (click)="previousPage()" [disabled]="currentPage === 1" class="page-btn">
+                            ← Назад
+                        </button>
+                        
+                        <button *ngFor="let page of getPages()" 
+                                (click)="goToPage(page)"
+                                [class.active]="page === currentPage"
+                                class="page-btn">
+                            {{ page }}
+                        </button>
+                        
+                        <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="page-btn">
+                            Вперед →
+                        </button>
+                    </div>
                 </div>
 
                 <p *ngIf="patterns.length === 0">Шаблонов нет</p>

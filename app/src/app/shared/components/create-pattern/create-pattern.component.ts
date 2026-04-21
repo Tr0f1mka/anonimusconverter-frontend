@@ -5,6 +5,7 @@ import { NewPattern, NewModification } from "src/app/core/models/pattern.model";
 import { PatternService } from "src/app/core/services/pattern.service";
 import { AuthService } from "src/app/core/services/auth.service";
 import { ModalService } from "src/app/core/services/modal.service";
+import { ChangeDetectorRef } from "@angular/core";
 
 @Component({
     selector: "create-pattern-modal",
@@ -26,7 +27,8 @@ export class CreatePatternComponent {
         private fb: FormBuilder,
         private patternService: PatternService,
         private authService: AuthService,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private cdr: ChangeDetectorRef
     ){
         this.createPatternForm = this.fb.group({
             userId: [''],
@@ -117,12 +119,16 @@ export class CreatePatternComponent {
 
     onSubmit(): void {
         if (this.createPatternForm.valid) {
+            if (this.isLoading) {
+                
+            }
             this.isLoading = true;
             
             const pattern = this.createPatternForm.value;
             // console.log('azaza', pattern);
             this.patternService.createPattern(pattern).subscribe({
                 next: () => {
+                    console.log("CREATE PATTERN: SUCCES");
                     this.isLoading = false;
                     // this.modalService.open({
                     //     id: 'create-pattern-success',
@@ -153,5 +159,6 @@ export class CreatePatternComponent {
         this.createPatternForm.reset();
         this.modifications.clear();
         this.isOpenChange.emit(false);
+        this.cdr.detectChanges();
     }
 }

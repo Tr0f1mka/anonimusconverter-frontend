@@ -15,20 +15,23 @@ export class PatternsPageComponent implements OnInit {
     isDeleting: boolean = false;
     isLoading: boolean = true;
     currentUserId: string | null = null;
+    currentPage: number = 1;
+    totalPages: number = 1;
 
     private subscriptions: Subscription[] = [];
 
-    // isDeleting: boolean = false;
 
     constructor(
         private patternService: PatternService,
         private authService: AuthService,
         private modalService: ModalService,
         private cdr: ChangeDetectorRef
-    ) {}
+    ) {
+        
+    }
 
     ngOnInit() {
-
+        // юзер
         this.subscriptions.push(
             this.authService.getCurrentUser().subscribe(user => {
                 if (user) {
@@ -41,6 +44,7 @@ export class PatternsPageComponent implements OnInit {
             })
         );
 
+        // шаблоны
         this.subscriptions.push(
             this.patternService.patterns$.subscribe(patterns => {
                 console.log(patterns);
@@ -51,11 +55,79 @@ export class PatternsPageComponent implements OnInit {
                 this.cdr.detectChanges();
             })
         );
+
+        // текущая страница
+        this.subscriptions.push(
+            this.patternService.currentPage$.subscribe(page => {
+                this.currentPage = page;
+                this.cdr.detectChanges();
+            })
+        );
+
+        // всего страниц
+        this.subscriptions.push(
+            this.patternService.totalPages$.subscribe(pages =>{
+                this.totalPages = pages;
+                this.cdr.detectChanges();
+            })
+        );
+
+        // загрузка
+        this.subscriptions.push(
+            this.patternService.loading$.subscribe(loading => {
+                this.isLoading = loading;
+                this.cdr.detectChanges();
+            })
+        )
     }
 
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe());
     }
+
+    
+    previousPage() {
+        //Предыдущая страница
+        this.patternService.prevPagePatterns();
+    }
+    
+    nextPage() {
+        //Следующая страница
+        this.patternService.nextPagePatterns();
+    }
+    
+    goToPage(page: number) {
+        //Переход на страницу
+        if (page !== this.currentPage) {
+            this.patternService.goToPage(page);
+        }
+    }
+    
+    getPages(): number[] {
+        //Взятие страниц
+        const pages: number[] = [];
+        const maxVisible = 5;
+        
+        if (this.totalPages <= maxVisible) {
+            for (let i = 1; i <= this.totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            let start = Math.max(1, this.currentPage - 2);
+            let end = Math.min(this.totalPages, start + maxVisible - 1);
+            
+            if (end - start + 1 < maxVisible) {
+                start = Math.max(1, end - maxVisible + 1);
+            }
+            
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+        }
+        
+        return pages;
+    }
+
 
     deletePattern(pattern: Pattern): void {
         this.isDeleting = true;

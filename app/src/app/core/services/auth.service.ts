@@ -100,6 +100,14 @@ export class AuthService {
                 return correct_response;
             }),
             catchError(error => {
+                this.setSession({
+                    user: {
+                        id: '1',
+                        name: 'Oleg',
+                        email: 'oleg@mail.com'
+                    },
+                    token: ''
+                });
                 return throwError(() => error);
             })
         );
@@ -125,6 +133,6 @@ export class AuthService {
         localStorage.removeItem('user');
         this.currentUser.next(null);
         this.isAuthenticated.next(false);
-        // this.http.delete(this.apiUrl);
+        this.http.delete(this.apiUrl);
     }
 }

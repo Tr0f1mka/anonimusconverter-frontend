@@ -1,0 +1,29 @@
+.not-found-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.not-found-container {
+    text-align: center;
+}
+
+.not-found-container div {
+    background: #09BEFF;
+    color: #fff;
+    border: 2px solid #09BEFF;
+    border-radius: 1rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    transition: all 0.3s;
+}
+
+.not-found-container div:hover {
+    background: #fff;
+    color: #09BEFF;
+    cursor: pointer;
+}
