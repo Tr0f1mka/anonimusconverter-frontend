@@ -55,7 +55,7 @@ export class AuthService {
                 name: response.username,
                 email: response.email
             },
-            token: ''
+            token: response.token
         };
     }
 
@@ -83,7 +83,7 @@ export class AuthService {
                 name: response.username,
                 email: response.email
             },
-            token: ''
+            token: response.token
         };
     }
 
@@ -114,7 +114,6 @@ export class AuthService {
     }
 
     private setSession(response: AuthResponse): void {
-        // Преобразуем Date в строку для localStorage если нужно
         console.log("SET SESSION: ", response);
         const userForStorage = {
           ...response.user
@@ -133,6 +132,5 @@ export class AuthService {
         localStorage.removeItem('user');
         this.currentUser.next(null);
         this.isAuthenticated.next(false);
-        this.http.delete(this.apiUrl);
     }
 }

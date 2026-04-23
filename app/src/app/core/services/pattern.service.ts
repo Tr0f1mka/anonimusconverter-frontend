@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, catchError, Observable, of, throwError, tap, findIndex, delay, takeUntil, switchMap, Subject, debounceTime } from 'rxjs';
 import { Pattern, NewPattern, UpdetePattern, Modification } from '../models/pattern.model';
 import { APIPathes } from 'src/app/api-pathes';
@@ -254,22 +254,49 @@ export class PatternService {
 
     private cancelPendingRequests(): void {
         this.cancelRequests.next();
-        // Создаём новый Subject для следующих запросов
+        this.cancelRequests.complete();
         this.cancelRequests = new Subject<void>();
     }
     
+
+    private getToken(): string | null {
+        return localStorage.getItem('token');
+    }
+
+
+    private createHeaders(): HttpHeaders | null {
+        const token = this.getToken();
+        if (!token) {
+            return null;
+        }
+        return new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
+    }
+
+
     getPatterns(page: number): Observable<Pattern[]>{
+        const headers = this.createHeaders();
+        if (!headers) return throwError(() => new Error('Token is not defined'));
+
         this.loadingSubject.next(true);
         this.errorSubject.next(null);
         
         const cancelSignal = this.cancelRequests;
         
-        return this.http.get<Pattern[]>(`${this.apiUrl}/${this.currentUserId}/${this.patternsPerPage}/${page}`).pipe(
+        return this.http.get<Pattern[]>(`${this.apiUrl}/${this.currentUserId}/${this.patternsPerPage}/${page}`,
+            {
+                headers: headers
+            }
+        ).pipe(
             takeUntil(cancelSignal),
             tap(() => this.loadingSubject.next(false)),
             catchError(error => {
                 this.loadingSubject.next(false);
-                const errorMsg = error.error?.message || 'Ошибка получения шаблонов';
+                let errorMsg = error.error?.message || 'Ошибка получения шаблонов';
+                if (error.status === 403) {
+                    errorMsg = 'Ошибка авторизации';
+                }
                 this.errorSubject.next(errorMsg);
                 console.error('Error:', error);
                 return throwError(() => new Error(errorMsg));
@@ -279,9 +306,19 @@ export class PatternService {
 
 
     getCountPatterns(): Observable<number> {
-        return this.http.get<number>(`${this.apiUrl}/${this.currentUserId}`).pipe(
+        const headers = this.createHeaders();
+        if (!headers) return throwError(() => new Error('Token is not defined'));
+
+        return this.http.get<number>(`${this.apiUrl}/${this.currentUserId}`,
+            {
+                headers: headers
+            }
+        ).pipe(
             catchError(error => {
                 console.log('Error:', error);
+                if (error.status === 403) {
+                    return throwError(() => new Error('Ошибка авторизации'));
+                }
                 return throwError(() => new Error(error.error?.message || 'Ошибка получения количества шаблонов'));
             })
         );   
@@ -289,9 +326,19 @@ export class PatternService {
 
 
     getCountModifications(patternId: string): Observable<number> {
-        return this.http.get<number>(`${this.apiModifications}/${patternId}`).pipe(
+        const headers = this.createHeaders();
+        if (!headers) return throwError(() => new Error('Token is not defined'));
+
+        return this.http.get<number>(`${this.apiModifications}/${patternId}`,
+            {
+                headers: headers
+            }
+        ).pipe(
             catchError(error => {
                 console.log('Error:', error);
+                if (error.status === 403) {
+                    return throwError(() => new Error('Ошибка авторизации'));
+                }
                 return throwError(() => new Error(error.error?.message || 'Ошибка получения количества модификаций'));
             })
         );   
@@ -299,9 +346,19 @@ export class PatternService {
 
 
     getModifications(patternId: string, limit: number, offset: number): Observable<Modification[]>{
-        return this.http.get<Modification[]>(`${this.apiModifications}/${patternId}/${limit}/${offset}`).pipe(
+        const headers = this.createHeaders();
+        if (!headers) return throwError(() => new Error('Token is not defined'));
+        
+        return this.http.get<Modification[]>(`${this.apiModifications}/${patternId}/${limit}/${offset}`,
+            {
+                headers: headers
+            }
+        ).pipe(
             catchError(error => {
                 console.error("Error", error);
+                if (error.status === 403) {
+                    return throwError(() => new Error('Ошибка авторизации'));
+                }
                 return throwError(() => new Error(error.error?.message || 'Ошибка получения модификаций'));
             })
         );
@@ -310,6 +367,9 @@ export class PatternService {
 
     createPattern(pattern: NewPattern): Observable<Pattern>{
         // Создание шаблона
+        const headers = this.createHeaders();
+        if (!headers) return throwError(() => new Error('Token is not defined'));
+
         if (this.operationInProgress) {
             return throwError(() => new Error('Выполняется операция'))
         }
@@ -319,7 +379,11 @@ export class PatternService {
             pattern.userId = this.currentUserId;
         }
         console.log(pattern);
-        return this.http.post<Pattern>(this.apiUrl, pattern).pipe(
+        return this.http.post<Pattern>(this.apiUrl, pattern,
+            {
+                headers: headers
+            }
+        ).pipe(
             tap(() => {
                 this.refreshStorage();
                 this.operationInProgress = false;
@@ -327,6 +391,9 @@ export class PatternService {
             catchError(error => {
                 console.error('Error:', error);
                 this.operationInProgress = false;
+                if (error.status === 403) {
+                    return throwError(() => new Error('Ошибка авторизации'));
+                }
                 return throwError(() => new Error(error.error?.message || 'Ошибка создания шаблона'));
             })
         );
@@ -335,12 +402,19 @@ export class PatternService {
 
     updatePattern(pattern: UpdetePattern): Observable<Pattern>{
         // Изменение шаблона
+        const headers = this.createHeaders();
+        if (!headers) return throwError(() => new Error('Token is not defined'));
+
         if (this.operationInProgress) {
             return throwError(() => new Error('Выполняется операция'))
         }
         this.operationInProgress = true;
         
-        return this.http.put<Pattern>(this.apiUrl, pattern).pipe(
+        return this.http.put<Pattern>(this.apiUrl, pattern,
+            {
+                headers: headers
+            }
+        ).pipe(
             tap(() => {
                 this.refreshStorage();
                 this.operationInProgress = false;
@@ -348,6 +422,9 @@ export class PatternService {
             catchError(error => {
                 console.error('Error:', error);
                 this.operationInProgress = false;
+                if (error.status === 403) {
+                    return throwError(() => new Error('Ошибка авторизации'));
+                }
                 return throwError(() => new Error(error.error?.message || 'Ошибка изменения шаблона'));
             })
         );
@@ -356,12 +433,19 @@ export class PatternService {
 
     deletePattern(patternId: string): Observable<{status: string, message: string}>{
         // Удаление шаблона
+        const headers = this.createHeaders();
+        if (!headers) return throwError(() => new Error('Token is not defined'));
+
         if (this.operationInProgress) {
             return throwError(() => new Error('Выполняется операция'))
         }
         this.operationInProgress = true;
         
-        return this.http.delete<{status: string, message: string}>(`${this.apiUrl}/${patternId}`).pipe(
+        return this.http.delete<{status: string, message: string}>(`${this.apiUrl}/${patternId}`,
+            {
+                headers: headers
+            }
+        ).pipe(
             tap(() =>{
                 this.refreshStorage();
                 this.operationInProgress = false;
@@ -369,6 +453,9 @@ export class PatternService {
             catchError(error => {
                 console.error('Error:', error);
                 this.operationInProgress = false;
+                if (error.status === 403) {
+                    return throwError(() => new Error('Ошибка авторизации'));
+                }
                 return throwError(() => new Error(error.error?.message || 'Ошибка удаления шаблона'));
             })
         );
@@ -463,84 +550,6 @@ export class PatternService {
                 }
             });
         });
-
-        // if (this.refreshInProgress) {
-        //     console.warn('Refresh already in progress, skipping...');
-        //     return;
-        // }
-        
-        // if (!this.currentUserId) return;
-        
-        // this.refreshInProgress = true;
-        // this.loadingSubject.next(true);
-        
-        // // Целевая страница
-        // const targetPage = keepCurrentPage ? this.currentPage : 1;
-        
-        // this.getCountPatterns().subscribe({
-        //     next: (count) => {
-        //         this.countPatterns = count;
-                
-        //         const totalPages = Math.ceil(count / this.patternsPerPage);
-        //         this.totalPagesSubject.next(totalPages);
-
-        //         // Корректируем целевую страницу, если она выходит за пределы
-        //         let newCurrentPage = targetPage;
-        //         if (newCurrentPage > totalPages) {
-        //             newCurrentPage = Math.max(1, totalPages);
-        //         }
-                
-        //         // Обновляем текущую страницу
-        //         this.currentPage = newCurrentPage;
-        //         this.currentPageSubject.next(this.currentPage);
-                
-        //         // Загружаем обновлённую текущую страницу
-        //         this.getPatterns(this.currentPage).subscribe({
-        //             next: (patterns) => {
-        //                 this.patternStorage.next(patterns);
-                        
-        //                 // Загружаем следующую страницу
-        //                 if (this.currentPage * this.patternsPerPage < this.countPatterns) {
-        //                     this.getPatterns(this.currentPage + 1).subscribe({
-        //                         next: (patterns) => this.nextPatternStorage.next(patterns),
-        //                         error: (error) => {
-        //                             console.error('Failed to load next page', error);
-        //                             this.nextPatternStorage.next([]);
-        //                         }
-        //                     });
-        //                 } else {
-        //                     this.nextPatternStorage.next([]);
-        //                 }
-                        
-        //                 // Загружаем предыдущую страницу
-        //                 if (this.currentPage > 1) {
-        //                     this.getPatterns(this.currentPage - 1).subscribe({
-        //                         next: (patterns) => this.previousPatternStorage.next(patterns),
-        //                         error: (error) => {
-        //                             console.error('Failed to load previous page', error);
-        //                             this.previousPatternStorage.next([]);
-        //                         }
-        //                     });
-        //                 } else {
-        //                     this.previousPatternStorage.next([]);
-        //                 }
-                        
-        //                 this.refreshInProgress = false;
-        //                 this.loadingSubject.next(false);
-        //             },
-        //             error: (error) => {
-        //                 console.error('Failed to load current page', error);
-        //                 this.refreshInProgress = false;
-        //                 this.loadingSubject.next(false);
-        //             }
-        //         });
-        //     },
-        //     error: (error) => {
-        //         console.error('Failed to load count', error);
-        //         this.refreshInProgress = false;
-        //         this.loadingSubject.next(false);
-        //     }
-        // });
     }
 
 
