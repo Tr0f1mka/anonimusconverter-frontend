@@ -12,7 +12,12 @@
             <p><strong>Название:</strong> {{ pattern.name }}</p>
 
             <div class="table-container">
-                <table class="modification-table">
+                <div class="loading-overlay" *ngIf="isLoading">
+                    <div class="spinner"></div>
+                    <p>Загрузка модификаций...</p>
+                </div>
+
+                <table class="modification-table" *ngIf="!isLoading">
                     <thead>
                         <tr>
                             <th class="head">
@@ -30,7 +35,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let modification of paginatedModifications">
+                        <tr *ngFor="let modification of currentModifications">
                             <td class="wrap-text">{{ modification.oldName || '—' }}</td>
                             <td class="wrap-text">{{ modification.newName || '—' }}</td>
                             <td>{{ modification.newType || '—' }}</td>
@@ -40,11 +45,7 @@
                 </table>
                 
                 <!-- Пагинация -->
-                <div class="pagination-container" *ngIf="totalPages > -1">
-                    <div class="pagination-info">
-                        Показано {{ startItem }} - {{ endItem }} из {{ totalItems }}
-                    </div>
-
+                <div class="pagination-container" *ngIf="totalPages > 1 && !isLoading">
                     <div class="pagination-controls">
                         <button (click)="previousPage()" [disabled]="currentPage === 1" class="page-btn">
                             ← Назад

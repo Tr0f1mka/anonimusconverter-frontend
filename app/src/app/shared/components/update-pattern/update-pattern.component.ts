@@ -44,7 +44,7 @@ export class UpdatePatternComponent {
     }
 
     openWindow(): void {
-        this.patternService.getModifications(this.pattern.id, 100, 1).subscribe({
+        this.patternService.getModifications(this.pattern.id, 10000, 1).subscribe({
             next: (modifications) => {
                 this.updatePatternForm.setControl('modifications',
                     this.fb.array([], CustomValidators.minModificationsLength())
@@ -54,8 +54,8 @@ export class UpdatePatternComponent {
                 });
                 this.updatePatternForm.get('id')?.setValue(this.pattern.id);
                 this.updatePatternForm.get('name')?.setValue(this.pattern.name);
-                this.cdr.detectChanges();
                 this.isOpen = true;
+                this.cdr.detectChanges();
             },
             error: (error) => {
                 console.error('Failed to load modifications', error);

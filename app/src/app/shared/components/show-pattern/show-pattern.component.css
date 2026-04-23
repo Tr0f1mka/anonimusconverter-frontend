@@ -111,6 +111,26 @@
     justify-content: space-between;
 }
 
+.loading-overlay {
+    display: flex;
+    justify-content: center;
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .modification-table {
     width: 100%;
     border-collapse: collapse;
@@ -166,7 +186,7 @@
 /* Пагинация */
 .pagination-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-top: 1.5rem;
     padding: 1rem;
