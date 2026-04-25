@@ -3,6 +3,7 @@ import { Pattern, Modification } from 'src/app/core/models/pattern.model';
 import { PatternService } from 'src/app/core/services/pattern.service';
 import { ModalService } from 'src/app/core/services/modal.service';
 import { BehaviorSubject, count, forkJoin, retry } from 'rxjs';
+import { LanguageService } from 'src/app/core/services/language.service';
 
 @Component({
     selector: 'show-pattern-modal',
@@ -31,6 +32,7 @@ export class ShowPatternComponent implements OnInit, OnChanges {
     constructor(
         private patternService: PatternService,
         private modalService: ModalService,
+        private languageService: LanguageService,
         private cdr: ChangeDetectorRef
     ) {}
     
@@ -74,8 +76,8 @@ export class ShowPatternComponent implements OnInit, OnChanges {
                 this.isLoading = false;
                 this.modalService.open({
                     id: 'open-pattern-modal',
-                    title: 'Ошибка',
-                    content: ['Ошибка загрузки модификаций шаблона'],
+                    title: this.languageService.translate('errorTitle'),
+                    content: [this.languageService.translate('errorModificationLoad')],
                     type: 'info',
                     size: 'small'
                 });

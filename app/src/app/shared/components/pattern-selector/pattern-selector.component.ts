@@ -19,7 +19,6 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
     patterns: Pattern[] = [];
     filteredPatterns: Pattern[] = [];
     searchQuery = '';
-    totalPatterns = 0;
     isLoading: boolean = true;
 
     isOpenShowModal: boolean = false;
@@ -41,7 +40,6 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
                 if (patterns) {
                     this.patterns = patterns;
                     this.filteredPatterns = patterns;
-                    this.totalPatterns = patterns.length;
                     this.isLoading = false;
                 }
                 this.cdr.detectChanges();
@@ -58,8 +56,8 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
         if (!this.authService.isLoggedInSync()) {
             this.modalService.open({
                 id: 'auth-required',
-                title: 'Требуется авторизация',
-                content: ['Для выбора шаблона необходимо войти в систему'],
+                title: this.languageService.translate('authRequired'),
+                content: [this.languageService.translate('authRequiredDescription')],
                 type: 'warning',
                 size: 'small'
             });
@@ -80,7 +78,6 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
             if (patterns) {
                 this.patterns = patterns;
                 this.filteredPatterns = patterns;
-                this.totalPatterns = patterns.length;
             }
         });
     }

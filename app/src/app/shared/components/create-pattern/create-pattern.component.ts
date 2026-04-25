@@ -5,6 +5,7 @@ import { NewPattern, NewModification } from "src/app/core/models/pattern.model";
 import { PatternService } from "src/app/core/services/pattern.service";
 import { AuthService } from "src/app/core/services/auth.service";
 import { ModalService } from "src/app/core/services/modal.service";
+import { LanguageService } from "src/app/core/services/language.service";
 import { ChangeDetectorRef } from "@angular/core";
 
 @Component({
@@ -28,6 +29,7 @@ export class CreatePatternComponent {
         private patternService: PatternService,
         private authService: AuthService,
         private modalService: ModalService,
+        private languageService: LanguageService,
         private cdr: ChangeDetectorRef
     ){
         this.createPatternForm = this.fb.group({
@@ -46,8 +48,8 @@ export class CreatePatternComponent {
         if (!this.authService.isLoggedInSync()) {
             this.modalService.open({
                 id: 'auth-required',
-                title: 'Требуется авторизация',
-                content: ['Для создания шаблона необходимо войти в систему'],
+                title: this.languageService.translate('authRequired'),
+                content: [this.languageService.translate('authRequiredDescription')],
                 type: 'warning',
                 size: 'small'
             });
@@ -80,8 +82,7 @@ export class CreatePatternComponent {
         }, {
             validators: [
                 CustomValidators.oldNewValue(),
-                CustomValidators.defaultValueType(),
-                CustomValidators.requiredArgument()
+                CustomValidators.defaultValueType()
             ]
         });
     }
@@ -143,8 +144,8 @@ export class CreatePatternComponent {
                     this.isLoading = false;
                     this.modalService.open({
                         id: 'register-error',
-                        title: 'Ошибка',
-                        content: [error.message || 'Не удалось зарегистрироваться'],
+                        title: this.languageService.translate('errorTitle'),
+                        content: [error.message || this.languageService.translate('failedRegister')],
                         type: 'warning',
                         size: 'small'
                     });

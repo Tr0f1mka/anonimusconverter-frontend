@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ModalService } from '../../../../core/services/modal.service';
 import { CustomValidators } from '../../../../core/validators/custom-validators';
+import { LanguageService } from 'src/app/core/services/language.service';
 
 @Component({
     selector: 'app-login-page',
@@ -21,6 +22,7 @@ export class LoginPageComponent {
         private fb: FormBuilder,
         private authService: AuthService,
         private modalService: ModalService,
+        private languageService: LanguageService,
         private router: Router
     ) {
         // Форма входа
@@ -89,8 +91,8 @@ export class LoginPageComponent {
                     this.isLoading = false;
                     this.modalService.open({
                         id: 'login-error',
-                        title: 'Ошибка',
-                        content: [error.message || 'Неверный email или пароль'],
+                        title: this.languageService.translate('errorTitle'),
+                        content: [error.message || this.languageService.translate('invalidEmailOrPassword')],
                         type: 'warning',
                         size: 'small'
                     });
@@ -122,8 +124,8 @@ export class LoginPageComponent {
                     this.isLoading = false;
                     this.modalService.open({
                         id: 'register-error',
-                        title: 'Ошибка',
-                        content: [error.message || 'Не удалось зарегистрироваться'],
+                        title: this.languageService.translate('errorTitle'),
+                        content: [error.message || this.languageService.translate('failedRegister')],
                         type: 'warning',
                         size: 'small'
                     });

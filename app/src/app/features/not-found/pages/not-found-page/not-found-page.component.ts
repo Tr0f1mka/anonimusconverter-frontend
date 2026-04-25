@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LanguageService } from 'src/app/core/services/language.service';
 
 @Component({
     selector: 'not-found-patterns-page',
@@ -9,7 +10,8 @@ import { Router } from '@angular/router';
 export class NotFoundComponent implements OnInit {
 
     constructor(
-        private router: Router
+        private router: Router,
+        private languageService: LanguageService
     ) {}
 
     ngOnInit() {}

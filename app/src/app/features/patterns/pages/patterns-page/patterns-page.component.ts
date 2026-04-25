@@ -4,6 +4,7 @@ import { PatternService } from 'src/app/core/services/pattern.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ModalService } from 'src/app/core/services/modal.service';
 import { Subscription } from 'rxjs';
+import { LanguageService } from 'src/app/core/services/language.service';
 
 @Component({
     selector: 'app-patterns-page',
@@ -25,10 +26,9 @@ export class PatternsPageComponent implements OnInit {
         private patternService: PatternService,
         private authService: AuthService,
         private modalService: ModalService,
+        private langugeService: LanguageService,
         private cdr: ChangeDetectorRef
-    ) {
-        
-    }
+    ) {}
 
     ngOnInit() {
         // юзер
@@ -147,8 +147,8 @@ export class PatternsPageComponent implements OnInit {
                 this.isLoading = false;
                 this.modalService.open({
                     id: 'delete-pattern-error',
-                    title: 'Ошибка',
-                    content: [error.message || 'Не удалось удалить шаблон'],
+                    title: this.langugeService.translate('errorTitle'),
+                    content: [error.message || this.langugeService.translate('deleteError')],
                     type: 'warning',
                     size: 'small'
                 });
@@ -159,12 +159,9 @@ export class PatternsPageComponent implements OnInit {
     openHelp() {
         this.modalService.open({
             id: "pattern-help",
-            title: "Помощь",
+            title: this.langugeService.translate('help'),
             content: [
-                "Создайте шаблон",
-                "Посмотрите шаблон",
-                "Измените шаблон",
-                "Удалите шаблон"
+                this.langugeService.translate('patternPageHelp1')
             ],
             type: "info",
             size: "medium"

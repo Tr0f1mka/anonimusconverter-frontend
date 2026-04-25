@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
+import { LanguageService } from 'src/app/core/services/language.service';
 
 @Component({
     selector: 'type-selector',
@@ -12,7 +13,10 @@ export class TypeSelectorComponent {
     types = [null, 'String', 'Integer', 'Float', 'Boolean']
     isOpen = false;
     
-    constructor(private elementRef: ElementRef) {}
+    constructor(
+        private languageService: LanguageService,
+        private elementRef: ElementRef
+    ) {}
     
     toggleDropdown(): void {
         this.isOpen = !this.isOpen;

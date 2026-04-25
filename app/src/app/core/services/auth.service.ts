@@ -100,14 +100,6 @@ export class AuthService {
                 return correct_response;
             }),
             catchError(error => {
-                this.setSession({
-                    user: {
-                        id: '1',
-                        name: 'Oleg',
-                        email: 'oleg@mail.com'
-                    },
-                    token: ''
-                });
                 return throwError(() => error);
             })
         );

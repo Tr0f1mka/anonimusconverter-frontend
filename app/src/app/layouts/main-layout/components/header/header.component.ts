@@ -47,8 +47,8 @@ export class HeaderComponent implements OnInit {
         
         this.modalService.open({
             id: 'logout-success',
-            title: 'Выход',
-            content: ['Вы успешно вышли из системы'],
+            title: this.languageService.translate('deleteError'),
+            content: [this.languageService.translate('exitDescription')],
             type: 'info',
             size: 'small'
         });

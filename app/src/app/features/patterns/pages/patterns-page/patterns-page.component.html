@@ -1,8 +1,8 @@
 <div class="pattern-page">
-    <h1>Шаблоны</h1>
+    <h1>{{ 'patterns' | translate }}</h1>
     <div class="pattern-container">
         <div class="pattern-description">
-            <p>Здесь будут храниться ваши шаблоны маппинга</p>
+            <p>{{ 'patternPageHelp' | translate }}</p>
             <button (click)="openHelp()" class="help-btn">?</button>
         </div>
         <create-pattern-modal></create-pattern-modal>
@@ -12,7 +12,7 @@
         <div *ngIf="currentUserId">
             <div class="loading-container" *ngIf="isLoading">
                 <div class="spinner-large"></div>
-                <p>Загрузка шаблонов...</p>
+                <p>{{ 'loadingPatterns' | translate }}</p>
             </div>
 
             <div *ngIf="!isLoading">
@@ -43,7 +43,7 @@
                                     </update-pattern-modal>
                                 </div>
                                 <button class="delete-pattern-btn" (click)="deletePattern(pattern)">
-                                    Удалить
+                                    {{ 'deletePattern' | translate }}
                                 </button>
                             </div>
                         </div>
@@ -53,7 +53,7 @@
                 <div class="pattern-footer">
                     <div class="pagination-controls" *ngIf="patterns.length > 0">
                         <button (click)="previousPage()" [disabled]="currentPage === 1" class="page-btn">
-                            ← Назад
+                            ← {{ 'back' | translate }}
                         </button>
                         
                         <button *ngFor="let page of getPages()" 
@@ -64,17 +64,17 @@
                         </button>
                         
                         <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="page-btn">
-                            Вперед →
+                            {{ 'forward' | translate }} →
                         </button>
                     </div>
                 </div>
 
-                <p *ngIf="patterns.length === 0">Шаблонов нет</p>
+                <p *ngIf="patterns.length === 0">{{ 'noPatterns' | translate }}</p>
             </div>
         </div>
 
         <div *ngIf="!currentUserId">
-            <p>Войдите, чтобы начать работу с шаблонами</p>
+            <p>{{ 'unAuthPatterns' | translate }}</p>
         </div>
     </div>
 </div>

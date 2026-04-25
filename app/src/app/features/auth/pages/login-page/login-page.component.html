@@ -6,19 +6,19 @@
                 class="tab-btn" 
                 [class.active]="!isRegisterMode"
                 (click)="setMode(false)">
-                Вход
+                {{ 'entrance' | translate }}
             </button>
             <button 
                 class="tab-btn" 
                 [class.active]="isRegisterMode"
                 (click)="setMode(true)">
-                Регистрация
+                {{ 'registration' | translate }}
             </button>
         </div>
-        
+
         <!-- Форма входа -->
         <div class="auth-form" *ngIf="!isRegisterMode">
-            <h2>Вход в систему</h2>
+            <h2>{{ 'entranceInSystem' | translate }}</h2>
             
             <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
                 <!-- Email -->
@@ -37,13 +37,13 @@
                     
                     <div class="error-messages" *ngIf="isFieldInvalid(loginForm, 'email')">
                         <div *ngIf="loginForm.get('email')?.errors?.['required']">
-                            Email обязателен
+                            {{ 'emailRequired' | translate }}
                         </div>
                         <div *ngIf="loginForm.get('email')?.errors?.['invalidEmail']">
-                            {{ loginForm.get('email')?.errors?.['invalidEmail'] }}
+                            {{ 'invalidEmail' | translate }}
                         </div>
                         <div *ngIf="loginForm.get('email')?.errors?.['bannedCharacters']">
-                            {{ loginForm.get('email')?.errors?.['bannedCharacters'] }}
+                            {{ 'bannedCharacters' | translate }}
                         </div>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                 <!-- Пароль -->
                 <div class="form-group">
                     <label for="login-password">
-                        Пароль
+                        {{ 'password' | translate }}
                         <span class="required">*</span>
                     </label>
                     <input 
@@ -60,17 +60,17 @@
                     formControlName="password"
                     class="form-control"
                     [class.is-invalid]="isFieldInvalid(loginForm, 'password')"
-                    placeholder="Введите пароль">
-                    
+                    placeholder="{{ 'inputPassword' | translate }}">
+
                     <div class="error-messages" *ngIf="isFieldInvalid(loginForm, 'password')">
                         <div *ngIf="loginForm.get('password')?.errors?.['required']">
-                            Пароль обязателен
+                            {{ 'passwordRequired' | translate }}
                         </div>
-                        <div *ngIf="loginForm.get('password')?.errors?.['passwordLength']">
-                            {{ loginForm.get('password')?.errors?.['passwordLength'] }}
+                        <div *ngIf="loginForm.get('password')?.errors?.['invalidLength']">
+                            {{ 'invalidPasswordLength' | translate }}
                         </div>
-                        <div *ngIf="loginForm.get('password')?.errors?.['passwordBannedChars']">
-                            {{ loginForm.get('password')?.errors?.['passwordBannedChars'] }}
+                        <div *ngIf="loginForm.get('password')?.errors?.['invalidPassword']">
+                            {{ 'passwordBannedCharacters' | translate }}
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
                     type="submit" 
                     class="btn btn-primary btn-block"
                     [disabled]="loginForm.invalid || isLoading">
-                    <span *ngIf="!isLoading">Войти</span>
+                    <span *ngIf="!isLoading">{{ 'login' | translate }}</span>
                     <span *ngIf="isLoading" class="spinner-small"></span>
                 </button>
             </form>
@@ -88,13 +88,13 @@
         
         <!-- Форма регистрации -->
         <div class="auth-form" *ngIf="isRegisterMode">
-            <h2>Регистрация</h2>
+            <h2>{{ 'registration' | translate }}</h2>
             
             <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
                 <!-- Имя -->
                 <div class="form-group">
                     <label for="register-name">
-                        Имя
+                        {{ 'name' | translate }}
                         <span class="required">*</span>
                     </label>
                     <input 
@@ -103,27 +103,27 @@
                     formControlName="username"
                     class="form-control"
                     [class.is-invalid]="isFieldInvalid(registerForm, 'username')"
-                    placeholder="Введите ваше имя">
+                    placeholder="{{ 'inputName' | translate }}">
                     
                     <div class="error-messages" *ngIf="isFieldInvalid(registerForm, 'username')">
                         <div *ngIf="registerForm.get('username')?.errors?.['required']">
-                            Имя обязательно
+                            {{ 'nameRequired' | translate }}
                         </div>
                         <div *ngIf="registerForm.get('username')?.errors?.['minlength']">
-                            Имя должно быть не менее 2 символов
+                            {{ 'minLengthName' | translate }}
                         </div>
                         <div *ngIf="registerForm.get('username')?.errors?.['maxlength']">
-                            Имя должно быть не более 50 символов
+                            {{ 'maxLengthName' | translate }}
                         </div>
                         <div *ngIf="registerForm.get('username')?.errors?.['invalidName']">
-                            {{ registerForm.get('username')?.errors?.['invalidName'] }}
+                            {{ 'invalidName' | translate }}
                         </div>
                         <div *ngIf="registerForm.get('username')?.errors?.['bannedCharacters']">
-                            {{ registerForm.get('username')?.errors?.['bannedCharacters'] }}
+                            {{ 'bannedCharacters' | translate }}
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Email -->
                 <div class="form-group">
                     <label for="register-email">
@@ -139,14 +139,14 @@
                     placeholder="example@email.com">
                     
                     <div class="error-messages" *ngIf="isFieldInvalid(registerForm, 'email')">
-                        <div *ngIf="registerForm.get('email')?.errors?.['required']">
-                            Email обязателен
+                        <div *ngIf="loginForm.get('password')?.errors?.['required']">
+                            {{ 'passwordRequired' | translate }}
                         </div>
-                        <div *ngIf="registerForm.get('email')?.errors?.['invalidEmail']">
-                            {{ registerForm.get('email')?.errors?.['invalidEmail'] }}
+                        <div *ngIf="loginForm.get('password')?.errors?.['invalidLength']">
+                            {{ 'invalidPasswordLength' | translate }}
                         </div>
-                        <div *ngIf="registerForm.get('email')?.errors?.['bannedCharacters']">
-                            {{ registerForm.get('email')?.errors?.['bannedCharacters'] }}
+                        <div *ngIf="loginForm.get('password')?.errors?.['invalidPassword']">
+                            {{ 'passwordBannedCharacters' | translate }}
                         </div>
                     </div>
                 </div>
@@ -154,7 +154,7 @@
                 <!-- Пароль -->
                 <div class="form-group">
                     <label for="register-password">
-                        Пароль
+                        {{ 'password' | translate }}
                         <span class="required">*</span>
                     </label>
                     <input 
@@ -163,28 +163,28 @@
                     formControlName="password"
                     class="form-control"
                     [class.is-invalid]="isFieldInvalid(registerForm, 'password')"
-                    placeholder="Придумайте пароль">
+                    placeholder="{{ 'inputPassword' | translate }}">
                     
                     <div class="password-requirements">
                         <div class="requirement" [class.valid]="registerForm.get('password')?.value?.length >= 8">
                             <span class="req-icon">{{ registerForm.get('password')?.value?.length >= 8 ? '✓' : '○' }}</span>
-                            Минимум 8 символов
+                            {{ 'min8Symbols' | translate }}
                         </div>
                         <div class="requirement" [class.valid]="!hasBannedChars">
                             <span class="req-icon">{{ !hasBannedChars ? '✓' : '○' }}</span>
-                            Только разрешенные символы
+                            {{ 'onlyAllowedCharacters' | translate }}
                         </div>
                     </div>
                     
                     <div class="error-messages" *ngIf="isFieldInvalid(registerForm, 'password')">
-                        <div *ngIf="registerForm.get('password')?.errors?.['required']">
-                            Пароль обязателен
+                        <div *ngIf="loginForm.get('password')?.errors?.['required']">
+                            {{ 'passwordRequired' | translate }}
                         </div>
-                        <div *ngIf="registerForm.get('password')?.errors?.['passwordLength']">
-                            {{ registerForm.get('password')?.errors?.['passwordLength'] }}
+                        <div *ngIf="loginForm.get('password')?.errors?.['invalidLength']">
+                            {{ 'invalidPasswordLength' | translate }}
                         </div>
-                        <div *ngIf="registerForm.get('password')?.errors?.['passwordBannedChars']">
-                            {{ registerForm.get('password')?.errors?.['passwordBannedChars'] }}
+                        <div *ngIf="loginForm.get('password')?.errors?.['invalidPassword']">
+                            {{ 'passwordBannedCharacters' | translate }}
                         </div>
                     </div>
                 </div>
@@ -192,7 +192,7 @@
                 <!-- Подтверждение пароля -->
                 <div class="form-group">
                     <label for="register-confirm-password">
-                        Подтверждение пароля
+                        {{ 'confirmPassword' | translate }}
                         <span class="required">*</span>
                     </label>
                     <input 
@@ -201,14 +201,14 @@
                     formControlName="confirmPassword"
                     class="form-control"
                     [class.is-invalid]="isFieldInvalid(registerForm, 'confirmPassword')"
-                    placeholder="Повторите пароль">
+                    placeholder="{{ 'repeatPassword' | translate }}">
                     
                     <div class="error-messages" *ngIf="isFieldInvalid(registerForm, 'confirmPassword')">
                         <div *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">
-                            Подтверждение пароля обязательно
+                            {{ 'confirmRequired' | translate }}
                         </div>
                         <div *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordsMismatch']">
-                            Пароли не совпадают
+                            {{ 'passwordsMismatch' | translate }}
                         </div>
                     </div>
                 </div>
@@ -218,7 +218,7 @@
                     type="submit" 
                     class="btn btn-primary btn-block"
                     [disabled]="registerForm.invalid || isLoading">
-                    <span *ngIf="!isLoading">Зарегистрироваться</span>
+                    <span *ngIf="!isLoading">{{ 'register' | translate }}</span>
                     <span *ngIf="isLoading" class="spinner-small"></span>
                 </button>
             </form>

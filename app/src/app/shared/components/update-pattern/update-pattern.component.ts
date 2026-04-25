@@ -5,6 +5,7 @@ import { Modification, Pattern, UpdateModification, UpdetePattern } from "src/ap
 import { PatternService } from "src/app/core/services/pattern.service";
 import { AuthService } from "src/app/core/services/auth.service";
 import { ModalService } from "src/app/core/services/modal.service";
+import { LanguageService } from "src/app/core/services/language.service";
 
 @Component({
     selector: "update-pattern-modal",
@@ -29,6 +30,7 @@ export class UpdatePatternComponent {
         private patternService: PatternService,
         private authService: AuthService,
         private modalService: ModalService,
+        private languageService: LanguageService,
         private cdr: ChangeDetectorRef
     ){
         this.updatePatternForm = this.fb.group({
@@ -62,8 +64,8 @@ export class UpdatePatternComponent {
                 this.modifications.clear();
                 this.modalService.open({
                     id: 'open-pattern-modal',
-                    title: 'Ошибка',
-                    content: ['Ошибка загрузки модификаций шаблона'],
+                    title: this.languageService.translate('errorTitle'),
+                    content: [this.languageService.translate('errorModificationLoad')],
                     type: 'info',
                     size: 'small'
                 });
@@ -182,8 +184,8 @@ export class UpdatePatternComponent {
                     this.isLoading = false;
                     this.modalService.open({
                         id: 'register-error',
-                        title: 'Ошибка',
-                        content: [error.message || 'Не удалось зарегистрироваться'],
+                        title: this.languageService.translate('errorTitle'),
+                        content: [error.message || this.languageService.translate('failedReqister')],
                         type: 'warning',
                         size: 'small'
                     });
