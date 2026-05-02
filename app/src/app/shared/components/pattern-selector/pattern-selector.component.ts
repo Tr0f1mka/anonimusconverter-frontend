@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Pattern } from '../../../core/models/pattern.model';
-import { PatternService } from 'src/app/core/services/pattern.service';
+import { PatternSelectorService } from 'src/app/core/services/pattern-page.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ModalService } from '../../../core/services/modal.service';
 import { LanguageService } from '../../../core/services/language.service';
@@ -19,7 +19,10 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
     patterns: Pattern[] = [];
     filteredPatterns: Pattern[] = [];
     searchQuery = '';
+    currentUserId: string | null = null;
     isLoading: boolean = true;
+    currentPage: number = 1;
+    totalPages: number = 1;
 
     isOpenShowModal: boolean = false;
     selectedShowPattern: Pattern = {id: '', name: ''};
@@ -27,7 +30,7 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
     private subscriptions: Subscription[] = [];
 
     constructor(
-        private patternService: PatternService,
+        private patternService: PatternSelectorService,
         private authService: AuthService,
         private modalService: ModalService,
         private languageService: LanguageService,
@@ -35,16 +38,54 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
+        // юзер
+        this.subscriptions.push(
+            this.authService.getCurrentUser().subscribe(user => {
+                if (user) {
+                    this.currentUserId = user.id;
+                }
+                else {
+                    this.currentUserId = null;
+                }
+                this.cdr.detectChanges();
+            })
+        );
+
+        // шаблоны
         this.subscriptions.push(
             this.patternService.patterns$.subscribe(patterns => {
+                console.log(patterns);
                 if (patterns) {
                     this.patterns = patterns;
-                    this.filteredPatterns = patterns;
                     this.isLoading = false;
                 }
                 this.cdr.detectChanges();
             })
         );
+
+        // текущая страница
+        this.subscriptions.push(
+            this.patternService.currentPage$.subscribe(page => {
+                this.currentPage = page;
+                this.cdr.detectChanges();
+            })
+        );
+
+        // всего страниц
+        this.subscriptions.push(
+            this.patternService.totalPages$.subscribe(pages =>{
+                this.totalPages = pages;
+                this.cdr.detectChanges();
+            })
+        );
+
+        // загрузка
+        this.subscriptions.push(
+            this.patternService.loading$.subscribe(loading => {
+                this.isLoading = loading;
+                this.cdr.detectChanges();
+            })
+        )
     }
 
     ngOnDestroy(): void {
@@ -52,7 +93,7 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
     }
 
     openPatternSelector(): void {
-      // Проверяем авторизацию
+        // Проверяем авторизацию
         if (!this.authService.isLoggedInSync()) {
             this.modalService.open({
                 id: 'auth-required',
@@ -69,8 +110,10 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
     }
 
     closeModal(): void {
-        this.showModal = false;
-        this.searchQuery = '';
+        if (!this.isOpenShowModal) {
+            this.showModal = false;
+            this.searchQuery = '';
+        }
     }
 
     loadPatterns(): void {
@@ -80,6 +123,10 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
                 this.filteredPatterns = patterns;
             }
         });
+
+        // this.filteredPatterns = this.patternService.stub();
+        // this.currentPage = 1;
+        // this.totalPages = 4;
     }
 
     filterPatterns(): void {
@@ -102,13 +149,55 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
 
     openPattern(pattern: Pattern, event: Event): void {
         event.stopPropagation();
-        this.closeModal();
+        event.preventDefault();
         this.selectedShowPattern = pattern;
         this.isOpenShowModal = true;
     }
 
+    previousPage() {
+        //Предыдущая страница
+        this.patternService.prevPagePatterns();
+    }
+    
+    nextPage() {
+        //Следующая страница
+        this.patternService.nextPagePatterns();
+    }
+    
+    goToPage(page: number) {
+        //Переход на страницу
+        if (page !== this.currentPage) {
+            this.patternService.goToPage(page);
+        }
+    }
+    
+    getPages(): number[] {
+        //Взятие страниц
+        const pages: number[] = [];
+        const maxVisible = 5;
+        
+        if (this.totalPages <= maxVisible) {
+            for (let i = 1; i <= this.totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            let start = Math.max(1, this.currentPage - 2);
+            let end = Math.min(this.totalPages, start + maxVisible - 1);
+            
+            if (end - start + 1 < maxVisible) {
+                start = Math.max(1, end - maxVisible + 1);
+            }
+            
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+        }
+        
+        return pages;
+    }
+
     onShowModalClosed(): void {
-        this.showModal = true;
+        this.isOpenShowModal = false;
     }
 
     clearPattern(event: Event): void {

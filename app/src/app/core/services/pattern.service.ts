@@ -5,26 +5,24 @@ import { Pattern, NewPattern, UpdetePattern, Modification } from '../models/patt
 import { APIPathes } from 'src/app/api-pathes';
 import { AuthService } from './auth.service';
 
-@Injectable({
-    providedIn: 'root'
-})
-export class PatternService {
-    private apiUrl = APIPathes.patterns;
-    private apiModifications = APIPathes.modifications;
+@Injectable()
+export abstract class BasePatternService {
+    protected apiUrl = APIPathes.patterns;
+    protected apiModifications = APIPathes.modifications;
 
     // Управляющие переменные
-    private loadingSubject = new BehaviorSubject<boolean>(false);
-    private errorSubject = new BehaviorSubject<string | null>(null);
-    private currentPageSubject = new BehaviorSubject<number>(1);
-    private totalPagesSubject = new BehaviorSubject<number>(0);
-    private cancelRequests = new Subject<void>();
-    private refreshRequest = new Subject<boolean>();
-    private destroy$ = new Subject<void>();
+    protected loadingSubject = new BehaviorSubject<boolean>(false);
+    protected errorSubject = new BehaviorSubject<string | null>(null);
+    protected currentPageSubject = new BehaviorSubject<number>(1);
+    protected totalPagesSubject = new BehaviorSubject<number>(0);
+    protected cancelRequests = new Subject<void>();
+    protected refreshRequest = new Subject<boolean>();
+    protected destroy$ = new Subject<void>();
 
     // Хранилища шаблонов
-    private patternStorage = new BehaviorSubject<Pattern[]|null>(null);
-    private previousPatternStorage = new BehaviorSubject<Pattern[]|null>(null);
-    private nextPatternStorage = new BehaviorSubject<Pattern[]|null>(null);
+    protected patternStorage = new BehaviorSubject<Pattern[]|null>(null);
+    protected previousPatternStorage = new BehaviorSubject<Pattern[]|null>(null);
+    protected nextPatternStorage = new BehaviorSubject<Pattern[]|null>(null);
 
     // Порты управляющих переменных
     public loading$ = this.loadingSubject.asObservable();
@@ -38,17 +36,17 @@ export class PatternService {
     public next_patterns$ = this.nextPatternStorage.asObservable();
 
 
-    private countPatterns: number = 0;
-    public patternsPerPage: number = 18;
+    protected countPatterns: number = 0;
+    public abstract patternsPerPage: number;
     public currentPage: number = 1;
-    private currentUserId: string | null = null;
-    private refreshInProgress: boolean = false;
-    private operationInProgress: boolean = false;
+    protected currentUserId: string | null = null;
+    protected refreshInProgress: boolean = false;
+    protected operationInProgress: boolean = false;
 
 
     constructor(
-        private http: HttpClient,
-        private auth_service: AuthService
+        protected http: HttpClient,
+        protected auth_service: AuthService
     ) {
         this.auth_service.getCurrentUser().pipe(
             takeUntil(this.destroy$)
@@ -252,19 +250,19 @@ export class PatternService {
     }
 
 
-    private cancelPendingRequests(): void {
+    protected cancelPendingRequests(): void {
         this.cancelRequests.next();
         this.cancelRequests.complete();
         this.cancelRequests = new Subject<void>();
     }
     
 
-    private getToken(): string | null {
+    protected getToken(): string | null {
         return localStorage.getItem('token');
     }
 
 
-    private createHeaders(): HttpHeaders | null {
+    protected createHeaders(): HttpHeaders | null {
         const token = this.getToken();
         if (!token) {
             return null;

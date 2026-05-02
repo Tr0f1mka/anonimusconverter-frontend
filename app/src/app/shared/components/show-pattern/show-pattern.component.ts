@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { Pattern, Modification } from 'src/app/core/models/pattern.model';
-import { PatternService } from 'src/app/core/services/pattern.service';
+import { PatternPageService } from 'src/app/core/services/pattern-page.service';
 import { ModalService } from 'src/app/core/services/modal.service';
 import { BehaviorSubject, count, forkJoin, retry } from 'rxjs';
 import { LanguageService } from 'src/app/core/services/language.service';
@@ -30,7 +30,7 @@ export class ShowPatternComponent implements OnInit, OnChanges {
     prevModifications: Modification[] = [];
 
     constructor(
-        private patternService: PatternService,
+        private patternService: PatternPageService,
         private modalService: ModalService,
         private languageService: LanguageService,
         private cdr: ChangeDetectorRef

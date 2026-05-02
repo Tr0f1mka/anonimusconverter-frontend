@@ -29,7 +29,7 @@
 
                 <div *ngIf="!isLoading">
                     <!-- Поиск шаблонов -->
-                    <div class="search-box" *ngIf="patterns.length > 0">
+                    <div class="search-box" *ngIf="0">    <!-- patterns.length > 0 -->
                         <input 
                         type="text" 
                         placeholder="{{ 'searchPatterns' | translate }}" 
@@ -43,15 +43,36 @@
                         <div 
                         *ngFor="let pattern of filteredPatterns"
                         class="pattern-item"
-                        [class.selected]="selectedPattern?.id === pattern.id"
-                        (click)="selectPattern(pattern)">
+                        [class.selected]="selectedPattern?.id === pattern.id">
                             <div class="pattern-info">
-                                <div class="pattern-name">{{ pattern.name }}</div>
+                                <div class="pattern-name" (click)="selectPattern(pattern)">{{ pattern.name }}</div>
                             </div>
-                            <show-pattern-modal
-                                [pattern]="pattern"
-                                (isOpenChange)="onShowModalClosed()">
-                            </show-pattern-modal>
+                            <div class="preview-cont">
+                                <show-pattern-modal
+                                    [pattern]="pattern"
+                                    (isOpenChange)="onShowModalClosed()">
+                                </show-pattern-modal>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Пагинация -->
+                    <div class="pagination" *ngIf="totalPages > 1">
+                        <div class="pagination-controls">
+                            <button (click)="previousPage()" [disabled]="currentPage === 1" class="page-btn">
+                                ← {{ 'back' | translate }}
+                            </button>
+                            
+                            <button *ngFor="let page of getPages()" 
+                                    (click)="goToPage(page)"
+                                    [class.active]="page === currentPage"
+                                    class="page-btn">
+                                {{ page }}
+                            </button>
+                            
+                            <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="page-btn">
+                                {{ 'forward' | translate }} →
+                            </button>
                         </div>
                     </div>
                     

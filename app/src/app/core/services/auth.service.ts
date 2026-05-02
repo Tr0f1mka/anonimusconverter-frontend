@@ -55,7 +55,8 @@ export class AuthService {
                 name: response.username,
                 email: response.email
             },
-            token: response.token
+            token: response.jwtToken
+
         };
     }
 
@@ -83,7 +84,7 @@ export class AuthService {
                 name: response.username,
                 email: response.email
             },
-            token: response.token
+            token: response.jwtToken
         };
     }
 

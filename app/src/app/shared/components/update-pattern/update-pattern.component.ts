@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Change
 import { FormBuilder, FormArray, FormGroup, Validator, Validators, AbstractControl } from "@angular/forms";
 import { CustomValidators } from "src/app/core/validators/custom-validators";
 import { Modification, Pattern, UpdateModification, UpdetePattern } from "src/app/core/models/pattern.model";
-import { PatternService } from "src/app/core/services/pattern.service";
+import { PatternPageService } from "src/app/core/services/pattern-page.service";
 import { AuthService } from "src/app/core/services/auth.service";
 import { ModalService } from "src/app/core/services/modal.service";
 import { LanguageService } from "src/app/core/services/language.service";
@@ -27,7 +27,7 @@ export class UpdatePatternComponent {
 
     constructor(
         private fb: FormBuilder,
-        private patternService: PatternService,
+        private patternService: PatternPageService,
         private authService: AuthService,
         private modalService: ModalService,
         private languageService: LanguageService,

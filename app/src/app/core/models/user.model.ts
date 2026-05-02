@@ -14,7 +14,7 @@ export interface LoginResponse {
     userId: string;
     username: string;
     email: string;
-    token: string;
+    jwtToken: string;
 }
 
 export interface RegisterRequest {
@@ -28,7 +28,7 @@ export interface BackendAuthResponse {
     id: string;
     username: string;
     email: string;
-    token: string;
+    jwtToken: string;
 }
 
 export interface AuthResponse {

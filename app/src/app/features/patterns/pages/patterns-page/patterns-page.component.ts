@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Pattern } from 'src/app/core/models/pattern.model';
-import { PatternService } from 'src/app/core/services/pattern.service';
+import { PatternPageService } from 'src/app/core/services/pattern-page.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ModalService } from 'src/app/core/services/modal.service';
 import { Subscription } from 'rxjs';
@@ -23,7 +23,7 @@ export class PatternsPageComponent implements OnInit {
 
 
     constructor(
-        private patternService: PatternService,
+        private patternService: PatternPageService,
         private authService: AuthService,
         private modalService: ModalService,
         private langugeService: LanguageService,
