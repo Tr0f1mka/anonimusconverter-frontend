@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Pattern } from '../../../core/models/pattern.model';
-import { PatternSelectorService } from 'src/app/core/services/pattern-page.service';
+import { PatternSelectorService } from 'src/app/core/services/pattern-selector.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ModalService } from '../../../core/services/modal.service';
 import { LanguageService } from '../../../core/services/language.service';
@@ -122,6 +122,7 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
                 this.patterns = patterns;
                 this.filteredPatterns = patterns;
             }
+            this.cdr.detectChanges();
         });
 
         // this.filteredPatterns = this.patternService.stub();
@@ -157,17 +158,20 @@ export class PatternSelectorComponent implements OnInit, OnDestroy {
     previousPage() {
         //Предыдущая страница
         this.patternService.prevPagePatterns();
+        this.cdr.detectChanges();
     }
     
     nextPage() {
         //Следующая страница
         this.patternService.nextPagePatterns();
+        this.cdr.detectChanges();
     }
     
     goToPage(page: number) {
         //Переход на страницу
         if (page !== this.currentPage) {
             this.patternService.goToPage(page);
+            this.cdr.detectChanges();
         }
     }
     

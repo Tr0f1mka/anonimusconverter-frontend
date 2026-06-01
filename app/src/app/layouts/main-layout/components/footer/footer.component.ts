@@ -33,9 +33,9 @@ export class FooterComponent {
             id: 'footer-dev-modal',
             title: this.languageService.translate('devTitle'),
             content: [
-                `${this.languageService.translate('apiEndpoint')} API нужно вставить`,
-                `${this.languageService.translate('documentation')} Ссылка на документацию`,
-                `${this.languageService.translate('github')} Ссылка на GIT`
+                `${this.languageService.translate('apiEndpoint')} https://cson.site/api/v1`,
+                `${this.languageService.translate('documentation')} https://github.com/kekishev/Converter/tree/main`,
+                `${this.languageService.translate('github')} https://github.com/kekishev/Converter/tree/main`
             ],
             type: 'dev',
             size: 'medium'

@@ -42,9 +42,6 @@
                         <div *ngIf="loginForm.get('email')?.errors?.['invalidEmail']">
                             {{ 'invalidEmail' | translate }}
                         </div>
-                        <div *ngIf="loginForm.get('email')?.errors?.['bannedCharacters']">
-                            {{ 'bannedCharacters' | translate }}
-                        </div>
                     </div>
                 </div>
                 
@@ -118,9 +115,6 @@
                         <div *ngIf="registerForm.get('username')?.errors?.['invalidName']">
                             {{ 'invalidName' | translate }}
                         </div>
-                        <div *ngIf="registerForm.get('username')?.errors?.['bannedCharacters']">
-                            {{ 'bannedCharacters' | translate }}
-                        </div>
                     </div>
                 </div>
 
@@ -139,14 +133,11 @@
                     placeholder="example@email.com">
                     
                     <div class="error-messages" *ngIf="isFieldInvalid(registerForm, 'email')">
-                        <div *ngIf="loginForm.get('password')?.errors?.['required']">
-                            {{ 'passwordRequired' | translate }}
+                        <div *ngIf="loginForm.get('email')?.errors?.['required']">
+                            {{ 'emailRequired' | translate }}
                         </div>
-                        <div *ngIf="loginForm.get('password')?.errors?.['invalidLength']">
-                            {{ 'invalidPasswordLength' | translate }}
-                        </div>
-                        <div *ngIf="loginForm.get('password')?.errors?.['invalidPassword']">
-                            {{ 'passwordBannedCharacters' | translate }}
+                        <div *ngIf="loginForm.get('email')?.errors?.['invalidEmail']">
+                            {{ 'invalidEmail' | translate }}
                         </div>
                     </div>
                 </div>
@@ -169,10 +160,6 @@
                         <div class="requirement" [class.valid]="registerForm.get('password')?.value?.length >= 8">
                             <span class="req-icon">{{ registerForm.get('password')?.value?.length >= 8 ? '✓' : '○' }}</span>
                             {{ 'min8Symbols' | translate }}
-                        </div>
-                        <div class="requirement" [class.valid]="!hasBannedChars">
-                            <span class="req-icon">{{ !hasBannedChars ? '✓' : '○' }}</span>
-                            {{ 'onlyAllowedCharacters' | translate }}
                         </div>
                     </div>
                     
@@ -225,3 +212,6 @@
         </div>
     </div>
 </div>
+
+
+<!-- [disabled]="registerForm.invalid || isLoading" -->

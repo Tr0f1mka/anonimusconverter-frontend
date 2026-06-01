@@ -145,7 +145,7 @@ export class CreatePatternComponent {
                     this.modalService.open({
                         id: 'register-error',
                         title: this.languageService.translate('errorTitle'),
-                        content: [error.message || this.languageService.translate('failedRegister')],
+                        content: [(error.status === 404) ? this.languageService.translate('userNotFound') : this.languageService.translate('patternCreationError')],
                         type: 'warning',
                         size: 'small'
                     });

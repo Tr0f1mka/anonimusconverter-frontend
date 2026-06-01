@@ -94,8 +94,7 @@ export class UpdatePatternComponent {
             }, {
                 validators: [
                     CustomValidators.oldNewValue(),
-                    CustomValidators.defaultValueType(),
-                    CustomValidators.requiredArgument()
+                    CustomValidators.defaultValueType()
                 ]
             })
         );
@@ -125,8 +124,7 @@ export class UpdatePatternComponent {
         }, {
             validators: [
                 CustomValidators.oldNewValue(),
-                CustomValidators.defaultValueType(),
-                CustomValidators.requiredArgument()
+                CustomValidators.defaultValueType()
             ]
         });
     }
@@ -185,7 +183,7 @@ export class UpdatePatternComponent {
                     this.modalService.open({
                         id: 'register-error',
                         title: this.languageService.translate('errorTitle'),
-                        content: [error.message || this.languageService.translate('failedReqister')],
+                        content: [(error.status === 404) ? this.languageService.translate('userNotFound') : this.languageService.translate('patternModificationError')],
                         type: 'warning',
                         size: 'small'
                     });

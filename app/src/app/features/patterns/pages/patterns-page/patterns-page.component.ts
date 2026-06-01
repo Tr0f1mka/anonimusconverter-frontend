@@ -16,6 +16,7 @@ export class PatternsPageComponent implements OnInit {
     isDeleting: boolean = false;
     isLoading: boolean = true;
     currentUserId: string | null = null;
+    isVericated: boolean = false;
     currentPage: number = 1;
     totalPages: number = 1;
 
@@ -31,11 +32,14 @@ export class PatternsPageComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        this.patternService.initialize();
+        
         // юзер
         this.subscriptions.push(
             this.authService.getCurrentUser().subscribe(user => {
                 if (user) {
                     this.currentUserId = user.id;
+                    this.isVericated = user.isVerified;
                 }
                 else {
                     this.currentUserId = null;
@@ -131,7 +135,7 @@ export class PatternsPageComponent implements OnInit {
 
     deletePattern(pattern: Pattern): void {
         this.isDeleting = true;
-        console.log('azaza', pattern);
+        // console.log('azaza', pattern);
         this.patternService.deletePattern(pattern.id).subscribe({
             next: () => {
                 this.isDeleting = false;
@@ -148,7 +152,7 @@ export class PatternsPageComponent implements OnInit {
                 this.modalService.open({
                     id: 'delete-pattern-error',
                     title: this.langugeService.translate('errorTitle'),
-                    content: [error.message || this.langugeService.translate('deleteError')],
+                    content: [(error.status === 404) ? this.langugeService.translate('patternNotFound') : this.langugeService.translate('patternDeletionError')],
                     type: 'warning',
                     size: 'small'
                 });

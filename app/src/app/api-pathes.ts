@@ -5,5 +5,6 @@ export enum APIPathes {
     download = `${API}/download`,
     patterns = `${API}/patterns`,
     modifications = `${API}/modifications`,
-    auth = `${API}/auth`
+    login = `${API}/auth`,
+    registration = `${API}/users`
 }

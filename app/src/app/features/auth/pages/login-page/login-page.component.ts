@@ -29,8 +29,7 @@ export class LoginPageComponent {
         this.loginForm = this.fb.group({
             email: ['', [
                 Validators.required,
-                CustomValidators.validateEmail(),
-                CustomValidators.noBannedCharacters()
+                CustomValidators.validateEmail()
             ]],
             password: ['', [
                 Validators.required,
@@ -44,13 +43,11 @@ export class LoginPageComponent {
                 Validators.required,
                 Validators.minLength(2),
                 Validators.maxLength(50),
-                CustomValidators.validateName(),
-                CustomValidators.noBannedCharacters()
+                CustomValidators.validateName()
             ]],
             email: ['', [
                 Validators.required,
-                CustomValidators.validateEmail(),
-                CustomValidators.noBannedCharacters()
+                CustomValidators.validateEmail()
             ]],
             password: ['', [
                 Validators.required,
@@ -62,10 +59,10 @@ export class LoginPageComponent {
         });
     }
 
-    get hasBannedChars(): boolean {
-        const password = this.registerForm.get('password')?.value || '';
-        return CustomValidators['BAN_PATTERN'].test(password);
-    }
+    // get hasBannedChars(): boolean {
+    //     const password = this.registerForm.get('password')?.value || '';
+    //     return CustomValidators['BAN_PATTERN'].test(password);
+    // }
 
     setMode(isRegister: boolean): void {
         this.isRegisterMode = isRegister;
@@ -92,7 +89,7 @@ export class LoginPageComponent {
                     this.modalService.open({
                         id: 'login-error',
                         title: this.languageService.translate('errorTitle'),
-                        content: [error.message || this.languageService.translate('invalidEmailOrPassword')],
+                        content: [(error.status !== 400)? this.languageService.translate('authorizationError') : this.languageService.translate('invalidEmailOrPassword')],
                         type: 'warning',
                         size: 'small'
                     });
@@ -118,14 +115,14 @@ export class LoginPageComponent {
                     //     size: 'small'
                     // });
                     this.setMode(false);
-                    this.router.navigate(['/']);
+                    this.router.navigate(['/verify/email']);
                 },
                 error: (error) => {
                     this.isLoading = false;
                     this.modalService.open({
                         id: 'register-error',
                         title: this.languageService.translate('errorTitle'),
-                        content: [error.message || this.languageService.translate('failedRegister')],
+                        content: [(error.message === 'EMAIL EXISTS') ? this.languageService.translate('userAlreadyExists') : this.languageService.translate('failedRegister')],
                         type: 'warning',
                         size: 'small'
                     });

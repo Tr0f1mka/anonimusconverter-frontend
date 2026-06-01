@@ -120,7 +120,7 @@ export class ConverterPageComponent {
     onTargetFormatChange(format: FormatInfo): void {
         this.targetFormat = format;
         
-        // Если форматы совпадают и шаблон не выбран, показываем подсказку
+        // Если форматы совпадают, показываем подсказку
         if (this.isSameFormat() && this.selectedFile && !this.selectedPattern) {
             this.modalService.open({
                 id: 'pattern-required-hint',

@@ -5,7 +5,7 @@ import { LanguageService } from "../services/language.service";
 
 export class CustomValidators {
 
-    private static readonly BAN_PATTERN = /[^\wа-яА-Я_!#$%&\'()*+,\-.\/:;<>=?@\[\]{}^`|~]+/;
+    // private static readonly BAN_PATTERN = /[^\wа-яА-Я_!#$%&\'()*+,\-.\/:;<>=?@\[\]{}^`|~]+/;
     private static readonly NAME_PATTERN = /^[\w_]+$/;
     private static readonly EMAIL_PATTERN = /^[\w_]+[\.\w_]*@([\w_]+\.[\w_]+)$/;
     private static readonly PASSWORD_PATTERN = /^[\wа-яА-Я_!#$%&\'()*+,\-.\/:;<>=?@\[\]{}^`|~]{8,}$/;
@@ -16,23 +16,6 @@ export class CustomValidators {
     constructor(
         private languageService: LanguageService
     ) {}
-
-    static noBannedCharacters(): ValidatorFn {
-        //Проверка на запрещённые символы
-        return (control: AbstractControl): ValidationErrors | null => {
-            const value = control.value;
-
-            if (!value) return null;
-
-            if (CustomValidators.BAN_PATTERN.test(value)) {
-                return {
-                    BannedCharacters: true
-                };
-            }
-
-            return null;
-        };
-    }
 
     static validateName(): ValidatorFn {
         //Проверка имени

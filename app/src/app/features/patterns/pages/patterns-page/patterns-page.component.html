@@ -1,6 +1,6 @@
 <div class="pattern-page">
     <h1>{{ 'patterns' | translate }}</h1>
-    <div class="pattern-container">
+    <div class="pattern-container" *ngIf="isVericated">
         <div class="pattern-description">
             <p>{{ 'patternPageHelp' | translate }}</p>
             <button (click)="openHelp()" class="help-btn">?</button>
@@ -73,8 +73,9 @@
             </div>
         </div>
 
-        <div *ngIf="!currentUserId">
-            <p>{{ 'unAuthPatterns' | translate }}</p>
+        <div *ngIf="!currentUserId || !isVericated">
+            <p *ngIf="!currentUserId">{{ 'unAuthPatterns' | translate }}</p>
+            <p *ngIf="currentUserId && !isVericated">{{ 'confirmEmailToWorkWithPatterns' | translate }}</p>
         </div>
     </div>
 </div>

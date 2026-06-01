@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { EmailVerificationComponent } from './features/email-verification/page/email-verification.component';
 
 const routes: Routes = [
     {
@@ -12,7 +13,7 @@ const routes: Routes = [
                 loadChildren: () => import('./features/converter/converter.module').then(m => m.ConverterModule)
             },
             {
-                path: 'converter',  // Добавляем явный путь
+                path: 'converter',
                 loadChildren: () => import('./features/converter/converter.module').then(m => m.ConverterModule)
             },
             {
@@ -22,6 +23,10 @@ const routes: Routes = [
             {
                 path: 'auth',
                 loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
+            },
+            {
+                path: 'verify',
+                loadChildren: () => import('./features/email-verification/email-verification.module').then(m => m.EmailVerificationModule)
             },
             {
                 path: '**',

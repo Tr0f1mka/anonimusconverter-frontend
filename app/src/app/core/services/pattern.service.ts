@@ -4,6 +4,7 @@ import { BehaviorSubject, catchError, Observable, of, throwError, tap, findIndex
 import { Pattern, NewPattern, UpdetePattern, Modification } from '../models/pattern.model';
 import { APIPathes } from 'src/app/api-pathes';
 import { AuthService } from './auth.service';
+import { LanguageService } from './language.service';
 
 @Injectable()
 export abstract class BasePatternService {
@@ -39,6 +40,7 @@ export abstract class BasePatternService {
     protected countPatterns: number = 0;
     public abstract patternsPerPage: number;
     public currentPage: number = 1;
+    protected isInitialized: boolean = false;
     protected currentUserId: string | null = null;
     protected refreshInProgress: boolean = false;
     protected operationInProgress: boolean = false;
@@ -46,27 +48,16 @@ export abstract class BasePatternService {
 
     constructor(
         protected http: HttpClient,
-        protected auth_service: AuthService
+        protected auth_service: AuthService,
+        protected language_service: LanguageService
     ) {
-        this.auth_service.getCurrentUser().pipe(
-            takeUntil(this.destroy$)
-        ).subscribe(user => {
-            if (user) {
-                this.currentUserId = user.id;
-                this.initPatternStorage();
-            }
-            else {
-                this.currentUserId = null;
-                this.clearStorage();
-            }
-        });
         this.refreshRequest.pipe(
             debounceTime(100),
             switchMap((keepCurrentPage) => this.doRefreshStorage(keepCurrentPage).pipe(
                 catchError(error => {
                     console.error('Refresh failed:', error);
-                    this.errorSubject.next('Ошибка обновления данных');
-                    return of(void 0); // Возвращаем void, чтобы поток не прерывался
+                    this.errorSubject.next(language_service.translate('dataUpdateError'));
+                    return of(void 0);
                 })
             )),
             takeUntil(this.destroy$)
@@ -79,6 +70,25 @@ export abstract class BasePatternService {
         this.destroy$.complete();
         this.cancelRequests.next();
         this.cancelRequests.complete();
+    }
+
+
+    public initialize(): void {
+        if (!this.currentUserId) {
+            const user = this.auth_service.getCurrentUserSync();
+            if (user) {
+                this.currentUserId = user.id;
+            }
+            else {
+                this.currentUserId = null;
+                this.clearStorage();
+                return;
+            }
+        }
+
+        if (this.patternStorage.value === null) {
+            this.initPatternStorage();
+        }
     }
 
 
@@ -255,45 +265,23 @@ export abstract class BasePatternService {
         this.cancelRequests.complete();
         this.cancelRequests = new Subject<void>();
     }
-    
-
-    protected getToken(): string | null {
-        return localStorage.getItem('token');
-    }
-
-
-    protected createHeaders(): HttpHeaders | null {
-        const token = this.getToken();
-        if (!token) {
-            return null;
-        }
-        return new HttpHeaders({
-            'Authorization': `Bearer ${token}`
-        });
-    }
 
 
     getPatterns(page: number): Observable<Pattern[]>{
-        const headers = this.createHeaders();
-        if (!headers) return throwError(() => new Error('Token is not defined'));
-
         this.loadingSubject.next(true);
         this.errorSubject.next(null);
         
         const cancelSignal = this.cancelRequests;
         
-        return this.http.get<Pattern[]>(`${this.apiUrl}/${this.currentUserId}/${this.patternsPerPage}/${page}`,
-            {
-                headers: headers
-            }
-        ).pipe(
+        return this.http.get<Pattern[]>(`${this.apiUrl}/${this.patternsPerPage}/${page}`, { withCredentials: true }).pipe(
             takeUntil(cancelSignal),
             tap(() => this.loadingSubject.next(false)),
             catchError(error => {
                 this.loadingSubject.next(false);
-                let errorMsg = error.error?.message || 'Ошибка получения шаблонов';
+                let errorMsg = error.error?.message || this.language_service.translate('errorReceivingPatterns');
                 if (error.status === 403) {
-                    errorMsg = 'Ошибка авторизации';
+                    errorMsg = this.language_service.translate('authorizationError');
+                    // this.auth_service.logout();
                 }
                 this.errorSubject.next(errorMsg);
                 console.error('Error:', error);
@@ -304,60 +292,43 @@ export abstract class BasePatternService {
 
 
     getCountPatterns(): Observable<number> {
-        const headers = this.createHeaders();
-        if (!headers) return throwError(() => new Error('Token is not defined'));
-
-        return this.http.get<number>(`${this.apiUrl}/${this.currentUserId}`,
-            {
-                headers: headers
-            }
-        ).pipe(
+        return this.http.get<number>(`${this.apiUrl}`, { withCredentials: true }).pipe(
             catchError(error => {
                 console.log('Error:', error);
                 if (error.status === 403) {
-                    return throwError(() => new Error('Ошибка авторизации'));
+                    // this.auth_service.logout();
+                    return throwError(() => new Error(this.language_service.translate('authorizationError')));
                 }
-                return throwError(() => new Error(error.error?.message || 'Ошибка получения количества шаблонов'));
+                return throwError(() => new Error(error.error?.message || this.language_service.translate('errorGetNumberPatterns')));
             })
         );   
     }
 
 
     getCountModifications(patternId: string): Observable<number> {
-        const headers = this.createHeaders();
-        if (!headers) return throwError(() => new Error('Token is not defined'));
-
-        return this.http.get<number>(`${this.apiModifications}/${patternId}`,
-            {
-                headers: headers
-            }
+        return this.http.get<number>(`${this.apiModifications}/${patternId}`, { withCredentials: true }
         ).pipe(
             catchError(error => {
                 console.log('Error:', error);
                 if (error.status === 403) {
-                    return throwError(() => new Error('Ошибка авторизации'));
+                    // this.auth_service.logout();
+                    return throwError(() => new Error(this.language_service.translate('authorizationError')));
                 }
-                return throwError(() => new Error(error.error?.message || 'Ошибка получения количества модификаций'));
+                return throwError(() => new Error(error.error?.message || this.language_service.translate('errorGetNumberModifications')));
             })
         );   
     }
 
 
     getModifications(patternId: string, limit: number, offset: number): Observable<Modification[]>{
-        const headers = this.createHeaders();
-        if (!headers) return throwError(() => new Error('Token is not defined'));
-        
-        return this.http.get<Modification[]>(`${this.apiModifications}/${patternId}/${limit}/${offset}`,
-            {
-                headers: headers
-            }
-        ).pipe(
+        return this.http.get<Modification[]>(`${this.apiModifications}/${patternId}/${limit}/${offset}`, { withCredentials: true }).pipe(
             catchError(error => {
                 console.error("Error", error);
                 if (error.status === 403) {
-                    return throwError(() => new Error('Ошибка авторизации'));
+                    // this.auth_service.logout();
+                    return throwError(() => new Error(this.language_service.translate('authorizationError')));
                 }
-                return throwError(() => new Error(error.error?.message || 'Ошибка получения модификаций'));
+                return throwError(() => new Error(error.error?.message || this.language_service.translate('errorReceivingModifications')));
             })
         );
     }
@@ -365,11 +336,8 @@ export abstract class BasePatternService {
 
     createPattern(pattern: NewPattern): Observable<Pattern>{
         // Создание шаблона
-        const headers = this.createHeaders();
-        if (!headers) return throwError(() => new Error('Token is not defined'));
-
         if (this.operationInProgress) {
-            return throwError(() => new Error('Выполняется операция'))
+            return throwError(() => new Error(this.language_service.translate('operationIsBeingPerformed')))
         }
         this.operationInProgress = true;
         
@@ -377,11 +345,7 @@ export abstract class BasePatternService {
             pattern.userId = this.currentUserId;
         }
         console.log(pattern);
-        return this.http.post<Pattern>(this.apiUrl, pattern,
-            {
-                headers: headers
-            }
-        ).pipe(
+        return this.http.post<Pattern>(this.apiUrl, pattern, { withCredentials: true }).pipe(
             tap(() => {
                 this.refreshStorage();
                 this.operationInProgress = false;
@@ -390,9 +354,10 @@ export abstract class BasePatternService {
                 console.error('Error:', error);
                 this.operationInProgress = false;
                 if (error.status === 403) {
-                    return throwError(() => new Error('Ошибка авторизации'));
+                    // this.auth_service.logout();
+                    return throwError(() => new Error(this.language_service.translate('authorizationError')));
                 }
-                return throwError(() => new Error(error.error?.message || 'Ошибка создания шаблона'));
+                return throwError(() => new Error(error.error?.message || this.language_service.translate('patternCreationError')));
             })
         );
     }
@@ -400,19 +365,12 @@ export abstract class BasePatternService {
 
     updatePattern(pattern: UpdetePattern): Observable<Pattern>{
         // Изменение шаблона
-        const headers = this.createHeaders();
-        if (!headers) return throwError(() => new Error('Token is not defined'));
-
         if (this.operationInProgress) {
-            return throwError(() => new Error('Выполняется операция'))
+            return throwError(() => new Error(this.language_service.translate('operationIsBeingPerformed')))
         }
         this.operationInProgress = true;
         
-        return this.http.put<Pattern>(this.apiUrl, pattern,
-            {
-                headers: headers
-            }
-        ).pipe(
+        return this.http.put<Pattern>(this.apiUrl, pattern, { withCredentials: true }).pipe(
             tap(() => {
                 this.refreshStorage();
                 this.operationInProgress = false;
@@ -421,9 +379,10 @@ export abstract class BasePatternService {
                 console.error('Error:', error);
                 this.operationInProgress = false;
                 if (error.status === 403) {
-                    return throwError(() => new Error('Ошибка авторизации'));
+                    // this.auth_service.logout();
+                    return throwError(() => new Error(this.language_service.translate('authorizationError')));
                 }
-                return throwError(() => new Error(error.error?.message || 'Ошибка изменения шаблона'));
+                return throwError(() => new Error(error.error?.message || this.language_service.translate('patternModificationError')));
             })
         );
     }
@@ -431,19 +390,12 @@ export abstract class BasePatternService {
 
     deletePattern(patternId: string): Observable<{status: string, message: string}>{
         // Удаление шаблона
-        const headers = this.createHeaders();
-        if (!headers) return throwError(() => new Error('Token is not defined'));
-
         if (this.operationInProgress) {
-            return throwError(() => new Error('Выполняется операция'))
+            return throwError(() => new Error(this.language_service.translate('operationIsBeingPerformed')))
         }
         this.operationInProgress = true;
         
-        return this.http.delete<{status: string, message: string}>(`${this.apiUrl}/${patternId}`,
-            {
-                headers: headers
-            }
-        ).pipe(
+        return this.http.delete<{status: string, message: string}>(`${this.apiUrl}/${patternId}`, { withCredentials: true }).pipe(
             tap(() =>{
                 this.refreshStorage();
                 this.operationInProgress = false;
@@ -452,9 +404,10 @@ export abstract class BasePatternService {
                 console.error('Error:', error);
                 this.operationInProgress = false;
                 if (error.status === 403) {
-                    return throwError(() => new Error('Ошибка авторизации'));
+                    // this.auth_service.logout();
+                    return throwError(() => new Error(this.language_service.translate('authorizationError')));
                 }
-                return throwError(() => new Error(error.error?.message || 'Ошибка удаления шаблона'));
+                return throwError(() => new Error(error.error?.message || this.language_service.translate('patternDeletionError')));
             })
         );
     }

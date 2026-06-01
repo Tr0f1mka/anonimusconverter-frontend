@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpResponse, HttpParams, HttpHeaders } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
 import { FileFormat } from '../../../core/models/format.model';
 import { APIPathes } from 'src/app/api-pathes';
+import { LanguageService } from 'src/app/core/services/language.service';
 
 export interface ConversionRequest {
     file: File;
@@ -19,7 +20,10 @@ export class ConversionService {
     private apiUrl = APIPathes.convert;
     private currentConversion: ConversionRequest | null = null;
 
-    constructor(private http: HttpClient) {
+    constructor(
+        private http: HttpClient,
+        private language_service: LanguageService
+    ) {
         console.log('ConversionService инициализирован');
     }
 
@@ -79,6 +83,7 @@ export class ConversionService {
     //     });
     // }
 
+
     convert(request: ConversionRequest): Observable<HttpResponse<Blob>> {
         const formData = new FormData();
         formData.append('file', request.file);
@@ -87,15 +92,22 @@ export class ConversionService {
             formData.append('options', JSON.stringify(request.options));
         }
 
-        // Build query params separately
-        let params = new HttpParams();
+        let url = `${this.apiUrl}/${request.sourceFormat}/${request.targetFormat}`;
+        
+        const requestOptions: {
+            responseType: 'blob';
+            observe: 'response';
+            withCredentials: true;
+        } = {
+            responseType: 'blob',
+            observe: 'response',
+            withCredentials: true
+        };
+
         if (request.patternId) {
-            params = params.set('pattern', request.patternId); // matches name="pattern" in backend
+            url = `${url}?pattern=${encodeURIComponent(request.patternId)}`;
         }
 
-        return this.http.post(`${this.apiUrl}/${request.sourceFormat}/${request.targetFormat}`, formData, {
-            params, responseType: 'blob',
-            observe: 'response'
-        });
+        return this.http.post(url, formData, requestOptions);
     }
 }
