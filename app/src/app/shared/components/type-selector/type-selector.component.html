@@ -2,7 +2,7 @@
     <div class="type-selector-trigger" 
          [class.active]="isOpen"
          (click)="toggleDropdown()">
-        <span class="trigger-text">{{ selectedType || 'Не задано' }}</span>
+        <span class="trigger-text">{{ selectedType || ( 'noneType' | translate ) }}</span>
         <span class="dropdown-icon">▼</span>
     </div>
     
@@ -12,7 +12,7 @@
                  [class.selected]="selectedType === type"
                  *ngFor="let type of types"
                  (click)="selectType(type)">
-                {{ type || 'Не задано' }}
+                {{ type || ( 'noneType' | translate ) }}
             </div>
         </div>
     </div>

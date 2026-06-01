@@ -1,20 +1,13 @@
-import { Pattern } from "./pattern.model";
-
 export interface User {
     id: string;
     name: string;
     email: string;
+    isVerified: boolean;
 }
 
 export interface LoginRequest {
     email: string;
     password: string;
-}
-
-export interface LoginResponse {
-    userId: string;
-    username: string;
-    email: string;
 }
 
 export interface RegisterRequest {
@@ -25,12 +18,12 @@ export interface RegisterRequest {
 }
 
 export interface BackendAuthResponse {
-    id: string;
+    userId: string;
     username: string;
     email: string;
+    isVerified: boolean;
 }
 
 export interface AuthResponse {
     user: User;
-    token: string;
 }

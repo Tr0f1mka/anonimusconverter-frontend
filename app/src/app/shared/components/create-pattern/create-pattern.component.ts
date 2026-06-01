@@ -2,9 +2,11 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormArray, FormGroup, Validator, Validators, AbstractControl } from "@angular/forms";
 import { CustomValidators } from "src/app/core/validators/custom-validators";
 import { NewPattern, NewModification } from "src/app/core/models/pattern.model";
-import { PatternService } from "src/app/core/services/pattern.service";
+import { PatternPageService } from "src/app/core/services/pattern-page.service";
 import { AuthService } from "src/app/core/services/auth.service";
 import { ModalService } from "src/app/core/services/modal.service";
+import { LanguageService } from "src/app/core/services/language.service";
+import { ChangeDetectorRef } from "@angular/core";
 
 @Component({
     selector: "create-pattern-modal",
@@ -24,9 +26,11 @@ export class CreatePatternComponent {
 
     constructor(
         private fb: FormBuilder,
-        private patternService: PatternService,
+        private patternService: PatternPageService,
         private authService: AuthService,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private languageService: LanguageService,
+        private cdr: ChangeDetectorRef
     ){
         this.createPatternForm = this.fb.group({
             userId: [''],
@@ -44,8 +48,8 @@ export class CreatePatternComponent {
         if (!this.authService.isLoggedInSync()) {
             this.modalService.open({
                 id: 'auth-required',
-                title: 'Требуется авторизация',
-                content: ['Для создания шаблона необходимо войти в систему'],
+                title: this.languageService.translate('authRequired'),
+                content: [this.languageService.translate('authRequiredDescription')],
                 type: 'warning',
                 size: 'small'
             });
@@ -78,8 +82,7 @@ export class CreatePatternComponent {
         }, {
             validators: [
                 CustomValidators.oldNewValue(),
-                CustomValidators.defaultValueType(),
-                CustomValidators.requiredArgument()
+                CustomValidators.defaultValueType()
             ]
         });
     }
@@ -117,12 +120,16 @@ export class CreatePatternComponent {
 
     onSubmit(): void {
         if (this.createPatternForm.valid) {
+            if (this.isLoading) {
+                
+            }
             this.isLoading = true;
             
             const pattern = this.createPatternForm.value;
             // console.log('azaza', pattern);
             this.patternService.createPattern(pattern).subscribe({
                 next: () => {
+                    console.log("CREATE PATTERN: SUCCES");
                     this.isLoading = false;
                     // this.modalService.open({
                     //     id: 'create-pattern-success',
@@ -137,8 +144,8 @@ export class CreatePatternComponent {
                     this.isLoading = false;
                     this.modalService.open({
                         id: 'register-error',
-                        title: 'Ошибка',
-                        content: [error.message || 'Не удалось зарегистрироваться'],
+                        title: this.languageService.translate('errorTitle'),
+                        content: [(error.status === 404) ? this.languageService.translate('userNotFound') : this.languageService.translate('patternCreationError')],
                         type: 'warning',
                         size: 'small'
                     });
@@ -153,5 +160,6 @@ export class CreatePatternComponent {
         this.createPatternForm.reset();
         this.modifications.clear();
         this.isOpenChange.emit(false);
+        this.cdr.detectChanges();
     }
 }

@@ -1,10 +1,10 @@
-<button (click)="openForm()" class="create-btn">Создать шаблон</button>
+<button (click)="openForm()" class="create-btn">{{ 'createPattern' | translate }}</button>
 
 <div class="create-pattern-modal" *ngIf="isOpen">
     <div class="create-pattern-modal-backdrop" (click)="closeModal()"></div>
     <div class="create-pattern-modal-content">
         <div class="create-pattern-modal-header">
-            <h3>Создание шаблона</h3>
+            <h3>{{ 'creatingPattern' | translate }}</h3>
             <button (click)="closeModal()">×</button>
         </div>
         
@@ -13,7 +13,7 @@
                 <div class="form-content">
                     <div class="form-fields">
                         <label>
-                            Название
+                            {{ 'patternTitle' | translate }}
                             <span class="required">*</span>
                         </label>
                         <input 
@@ -22,25 +22,22 @@
                         formControlName="name"
                         class="form-control"
                         [class.is-invalid]="isFieldInvalid(createPatternForm, 'name')"
-                        placeholder="Введите название шаблона">
+                        placeholder="{{ 'enterPatternName' | translate }}">
 
                         <div class="error-messages" *ngIf="isFieldInvalid(createPatternForm, 'name')">
                             <div *ngIf="createPatternForm.get('name')?.errors?.['required']">
-                                Имя обязательно
+                                {{ 'nameRequired' | translate }}
                             </div>
                             <div *ngIf="createPatternForm.get('name')?.errors?.['minlength']">
-                                Имя должно быть не менее 2 символов
+                                {{ 'minLengthName' | translate }}
                             </div>
                             <div *ngIf="createPatternForm.get('name')?.errors?.['maxlength']">
-                                Имя должно быть не более 50 символов
-                            </div>
-                            <div *ngIf="createPatternForm.get('name')?.errors?.['leadingTrailingSpaces']">
-                                {{ createPatternForm.get('name')?.errors?.['leadingTrailingSpaces'] }}
+                                {{ 'maxLengthName' | translate }}
                             </div>
                         </div>
 
                         <label>
-                            Модификации
+                            {{ 'modifications' | translate }}
                             <span class="required">*</span>
                         </label>
 
@@ -50,14 +47,14 @@
                             [formGroupName]="i">
                                 <div class="modification-row">
                                     <div class="modification-inputs">
-                                        <input formControlName="oldName" placeholder="Старое имя поля">
-                                        <input formControlName="newName" placeholder="Новое имя поля">
+                                        <input formControlName="oldName" placeholder="{{ 'oldName' | translate }}">
+                                        <input formControlName="newName" placeholder="{{ 'newName' | translate }}">
                                         <div class="type-selector-class">
                                             <type-selector
                                             [selectedType]="getTypeName(i)"
                                             (typeChange)="selectType($event, i)"></type-selector>
                                         </div>
-                                        <input formControlName="newValue" placeholder="Новое значение поля">
+                                        <input formControlName="newValue" placeholder="{{ 'newValue' | translate }}">
                                     </div>
                                     <button type="button" 
                                             class="remove-btn" 
@@ -67,16 +64,13 @@
                                 </div>
                                 <div class="error-messages" *ngIf="modification.errors">
                                     <div *ngIf="modification.errors?.['typeMismatch']">
-                                        Новый тип ячейки не соответствует новому значению
+                                        {{ 'typeMismatch' | translate }}
                                     </div>
                                     <div *ngIf="modification.errors?.['oldNewValueRequired']">
-                                        Нужно ввести старое или новое имя ячейки
+                                        {{ 'oldNewValueRequired' | translate }}
                                     </div>
                                     <div *ngIf="modification.errors?.['maxlength']">
-                                        Нельзя вводить более 50 символов в поле
-                                    </div>
-                                    <div *ngIf="modification.errors?.['requiredArgument']">
-                                        Нужно заполнить хотя бы одно поле
+                                        {{ 'maxlength' | translate }}
                                     </div>
                                 </div>
                             </div>
@@ -84,12 +78,12 @@
 
                         <button class="add-btn" 
                                 (click)="addModification()">
-                            + Добавить модификацию
+                            + {{ 'addModifications' | translate }}
                         </button>
                         
                         <div class="error-messages" *ngIf="createPatternForm.get('modifications')?.errors?.['minModificationsLength']">
                             <div>
-                                Обязательна хотя бы 1 модификация
+                                {{ 'minModificationsLength' | translate }}
                             </div>
                         </div>
                     </div>
@@ -101,7 +95,7 @@
                         class="submit-btn"
                         [disabled]="createPatternForm.invalid || isLoading"
                         >
-                    <span *ngIf="!isLoading">Создать шаблон</span>
+                    <span *ngIf="!isLoading">{{ 'createPattern' | translate }}</span>
                     <span *ngIf="isLoading" class="spinner-small"></span>
                 </button>
             </div>

@@ -1,8 +1,8 @@
 <div class="pattern-page">
-    <h1>Шаблоны</h1>
-    <div class="pattern-container">
+    <h1>{{ 'patterns' | translate }}</h1>
+    <div class="pattern-container" *ngIf="isVericated">
         <div class="pattern-description">
-            <p>Здесь будут храниться ваши шаблоны маппинга</p>
+            <p>{{ 'patternPageHelp' | translate }}</p>
             <button (click)="openHelp()" class="help-btn">?</button>
         </div>
         <create-pattern-modal></create-pattern-modal>
@@ -12,10 +12,11 @@
         <div *ngIf="currentUserId">
             <div class="loading-container" *ngIf="isLoading">
                 <div class="spinner-large"></div>
-                <p>Загрузка шаблонов...</p>
+                <p>{{ 'loadingPatterns' | translate }}</p>
             </div>
 
             <div *ngIf="!isLoading">
+                <!-- Шаблоны -->
                 <div class="pattern-card-container" *ngIf="patterns.length > 0">
 
                     <div class="pattern-card" *ngFor="let pattern of patterns">
@@ -42,23 +43,39 @@
                                     </update-pattern-modal>
                                 </div>
                                 <button class="delete-pattern-btn" (click)="deletePattern(pattern)">
-                                    Удалить
+                                    {{ 'deletePattern' | translate }}
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="pattern-footer" *ngIf="patterns.length > 0">
-                    <p>{{patterns.length}}</p>
+                <div class="pattern-footer">
+                    <div class="pagination-controls" *ngIf="patterns.length > 0">
+                        <button (click)="previousPage()" [disabled]="currentPage === 1" class="page-btn">
+                            ← {{ 'back' | translate }}
+                        </button>
+                        
+                        <button *ngFor="let page of getPages()" 
+                                (click)="goToPage(page)"
+                                [class.active]="page === currentPage"
+                                class="page-btn">
+                            {{ page }}
+                        </button>
+                        
+                        <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="page-btn">
+                            {{ 'forward' | translate }} →
+                        </button>
+                    </div>
                 </div>
 
-                <p *ngIf="patterns.length === 0">Шаблонов нет</p>
+                <p *ngIf="patterns.length === 0">{{ 'noPatterns' | translate }}</p>
             </div>
         </div>
 
-        <div *ngIf="!currentUserId">
-            <p>Войдите, чтобы начать работу с шаблонами</p>
+        <div *ngIf="!currentUserId || !isVericated">
+            <p *ngIf="!currentUserId">{{ 'unAuthPatterns' | translate }}</p>
+            <p *ngIf="currentUserId && !isVericated">{{ 'confirmEmailToWorkWithPatterns' | translate }}</p>
         </div>
     </div>
 </div>

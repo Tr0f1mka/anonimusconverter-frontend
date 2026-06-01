@@ -1,45 +1,41 @@
 <div class="download-page">
     <div class="download-container">
         <!-- Шапка -->
-        <h1 class="page-title">Конвертация файла</h1>
+        <h1 class="page-title">{{ 'fileConversion' | translate }}</h1>
        
         <!-- Состояние загрузки -->
         <div class="loading-state" *ngIf="!isLoading && !error && !isCompleted">
             <div class="spinner"></div>
-            <h2>Конвертация в процессе</h2>
-            <p class="loading-message">Пожалуйста, подождите. Это может занять несколько секунд...</p>
+            <h2>{{ 'processConversion' | translate }}</h2>
+            <p class="loading-message">{{ 'waitPlease' | translate }}</p>
             
             <!-- Информация о конвертации -->
             <div class="conversion-info" *ngIf="conversionData">
                 <div class="info-item">
-                    <span class="info-label">Файл:</span>
+                    <span class="info-label">{{ 'file' | translate }}:</span>
                     <span class="info-value">{{ conversionData.file.name }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Из формата:</span>
+                    <span class="info-label">{{ 'fromFormat' | translate }}:</span>
                     <span class="info-value">{{ conversionData.sourceFormat }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">В формат:</span>
+                    <span class="info-label">{{ 'toFormat' | translate }}:</span>
                     <span class="info-value">{{ conversionData.targetFormat }}</span>
-                </div>
-                <div class="info-item" *ngIf="conversionData.patternId">
-                    <span class="info-label">Шаблон ID:</span>
-                    <span class="info-value">{{ conversionData.patternId }}</span>
                 </div>
             </div>
             
             <div class="loading-hint">
                 <span class="hint-icon">⏳</span>
-                <span class="hint-text">Не закрывайте страницу</span>
+                <span class="hint-text">{{ 'dontClose' | translate }}</span>
             </div>
         </div>
         
         <!-- Состояние готовности -->
         <div class="ready-state" *ngIf="isCompleted && downloadUrl && !error">
             <div class="success-icon">✅</div>
-            <h2>Конвертация завершена!</h2>
-            <p class="success-message">Ваш файл готов к скачиванию</p>
+            <h2>{{ 'completeConversion' | translate }}</h2>
+            <p class="success-message">{{ 'completeConversion1' | translate }}</p>
           
             <div class="file-info">
                 <div class="file-icon">📄</div>
@@ -53,17 +49,13 @@
             </div>
           
             <div class="action-buttons">
-                <!-- <a [href]="downloadUrl" download class="btn btn-success download-btn">
-                  <span class="btn-icon">⬇️</span>
-                  Скачать файл
-                </a> -->
                 <button class="btn btn-success download-btn" (click)="onDownloadClick()">
                     <span class="btn-icon">⬇️</span>
-                    Скачать файл
+                    {{ 'downloadFile' | translate }}
                 </button>
               
                 <button class="btn btn-primary new-conversion-btn" (click)="startNewConversion()">
-                    Новая конвертация
+                    {{ 'newConversion' | translate }}
                 </button>
             </div>
         </div>
@@ -71,16 +63,16 @@
         <!-- Состояние ошибки -->
         <div class="error-state" *ngIf="error">
             <div class="error-icon">❌</div>
-            <h2>Ошибка конвертации</h2>
+            <h2>{{ 'conversionError' | translate }}</h2>
             <p class="error-message">{{ error }}</p>
             
             <div class="action-buttons">
                 <button class="btn btn-primary" (click)="retryConversion()">
-                    Попробовать снова
+                    {{ 'tryAgain' | translate }}
                 </button>
                 
                 <button class="btn btn-secondary" (click)="startNewConversion()">
-                    Новая конвертация
+                    {{ 'newConversion' | translate }}
                 </button>
             </div>
         </div>

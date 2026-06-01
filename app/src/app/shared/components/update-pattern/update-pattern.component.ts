@@ -2,9 +2,10 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Change
 import { FormBuilder, FormArray, FormGroup, Validator, Validators, AbstractControl } from "@angular/forms";
 import { CustomValidators } from "src/app/core/validators/custom-validators";
 import { Modification, Pattern, UpdateModification, UpdetePattern } from "src/app/core/models/pattern.model";
-import { PatternService } from "src/app/core/services/pattern.service";
+import { PatternPageService } from "src/app/core/services/pattern-page.service";
 import { AuthService } from "src/app/core/services/auth.service";
 import { ModalService } from "src/app/core/services/modal.service";
+import { LanguageService } from "src/app/core/services/language.service";
 
 @Component({
     selector: "update-pattern-modal",
@@ -26,9 +27,10 @@ export class UpdatePatternComponent {
 
     constructor(
         private fb: FormBuilder,
-        private patternService: PatternService,
+        private patternService: PatternPageService,
         private authService: AuthService,
         private modalService: ModalService,
+        private languageService: LanguageService,
         private cdr: ChangeDetectorRef
     ){
         this.updatePatternForm = this.fb.group({
@@ -44,7 +46,7 @@ export class UpdatePatternComponent {
     }
 
     openWindow(): void {
-        this.patternService.getModifications(this.pattern.id, 100, 1).subscribe({
+        this.patternService.getModifications(this.pattern.id, 10000, 1).subscribe({
             next: (modifications) => {
                 this.updatePatternForm.setControl('modifications',
                     this.fb.array([], CustomValidators.minModificationsLength())
@@ -54,16 +56,16 @@ export class UpdatePatternComponent {
                 });
                 this.updatePatternForm.get('id')?.setValue(this.pattern.id);
                 this.updatePatternForm.get('name')?.setValue(this.pattern.name);
-                this.cdr.detectChanges();
                 this.isOpen = true;
+                this.cdr.detectChanges();
             },
             error: (error) => {
                 console.error('Failed to load modifications', error);
                 this.modifications.clear();
                 this.modalService.open({
                     id: 'open-pattern-modal',
-                    title: 'Ошибка',
-                    content: ['Ошибка загрузки модификаций шаблона'],
+                    title: this.languageService.translate('errorTitle'),
+                    content: [this.languageService.translate('errorModificationLoad')],
                     type: 'info',
                     size: 'small'
                 });
@@ -92,8 +94,7 @@ export class UpdatePatternComponent {
             }, {
                 validators: [
                     CustomValidators.oldNewValue(),
-                    CustomValidators.defaultValueType(),
-                    CustomValidators.requiredArgument()
+                    CustomValidators.defaultValueType()
                 ]
             })
         );
@@ -123,8 +124,7 @@ export class UpdatePatternComponent {
         }, {
             validators: [
                 CustomValidators.oldNewValue(),
-                CustomValidators.defaultValueType(),
-                CustomValidators.requiredArgument()
+                CustomValidators.defaultValueType()
             ]
         });
     }
@@ -182,8 +182,8 @@ export class UpdatePatternComponent {
                     this.isLoading = false;
                     this.modalService.open({
                         id: 'register-error',
-                        title: 'Ошибка',
-                        content: [error.message || 'Не удалось зарегистрироваться'],
+                        title: this.languageService.translate('errorTitle'),
+                        content: [(error.status === 404) ? this.languageService.translate('userNotFound') : this.languageService.translate('patternModificationError')],
                         type: 'warning',
                         size: 'small'
                     });

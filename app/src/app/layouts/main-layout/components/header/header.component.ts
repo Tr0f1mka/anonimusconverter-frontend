@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LanguageService } from '../../../../core/services/language.service';
 import { ModalService } from '../../../../core/services/modal.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { User } from '../../../../core/models/user.model';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-header',
@@ -14,22 +15,33 @@ export class HeaderComponent implements OnInit {
     isLoggedIn = false;
     currentUser: User | null = null;
     showUserMenu = false;
+    subscriptions: Subscription[] = [];
 
     constructor(
         private router: Router,
         private languageService: LanguageService,
         private modalService: ModalService,
-        private authService: AuthService
+        private authService: AuthService,
+        private cdr: ChangeDetectorRef
     ) {}
 
     ngOnInit(): void {
-        this.authService.isLoggedIn().subscribe(isLoggedIn => {
-            this.isLoggedIn = isLoggedIn;
-        });
+        this.subscriptions.push(
+            this.authService.getCurrentUser().subscribe(user => {
+                this.currentUser = user;
+                this.cdr.detectChanges();
+            })
+        );
+        this.subscriptions.push(
+            this.authService.isLoggedIn().subscribe(isLoggedIn => {
+                this.isLoggedIn = isLoggedIn;
+                this.cdr.detectChanges();
+            })
+        );
+    }
 
-        this.authService.getCurrentUser().subscribe(user => {
-            this.currentUser = user;
-        });
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
     navigateToHome(): void {
@@ -40,6 +52,12 @@ export class HeaderComponent implements OnInit {
         this.showUserMenu = !this.showUserMenu;
     }
 
+    toVerified(): void {
+        // console.log('azaza');
+        this.router.navigate(['/verify/email']);
+        this.showUserMenu = false;
+    }
+
     logout(): void {
         this.authService.logout();
         this.showUserMenu = false;
@@ -47,8 +65,8 @@ export class HeaderComponent implements OnInit {
         
         this.modalService.open({
             id: 'logout-success',
-            title: 'Выход',
-            content: ['Вы успешно вышли из системы'],
+            title: this.languageService.translate('success'),
+            content: [this.languageService.translate('exitDescription')],
             type: 'info',
             size: 'small'
         });

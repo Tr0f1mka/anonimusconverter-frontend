@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { ConversionService } from '../../services/conversion.service';
 import { ModalService } from '../../../../core/services/modal.service';
+import { LanguageService } from 'src/app/core/services/language.service';
 
 @Component({
     selector: 'app-download-page',
@@ -25,7 +26,8 @@ export class DownloadPageComponent implements OnInit, OnDestroy {
         private conversionService: ConversionService,
         private modalService: ModalService,
         private router: Router,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private languageService: LanguageService
     ) {}
 
     ngOnInit(): void {
@@ -36,8 +38,8 @@ export class DownloadPageComponent implements OnInit, OnDestroy {
         if (!this.conversionData) {
             this.modalService.open({
                 id: 'no-data-error',
-                title: 'Ошибка',
-                content: ['Данные конвертации не найдены. Пожалуйста, начните заново.'],
+                title: this.languageService.translate('errorTitle'),
+                content: [this.languageService.translate('conversionDataError')],
                 type: 'warning',
                 size: 'small'
             });

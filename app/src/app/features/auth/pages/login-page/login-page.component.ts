@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ModalService } from '../../../../core/services/modal.service';
 import { CustomValidators } from '../../../../core/validators/custom-validators';
+import { LanguageService } from 'src/app/core/services/language.service';
 
 @Component({
     selector: 'app-login-page',
@@ -21,14 +22,14 @@ export class LoginPageComponent {
         private fb: FormBuilder,
         private authService: AuthService,
         private modalService: ModalService,
+        private languageService: LanguageService,
         private router: Router
     ) {
         // Форма входа
         this.loginForm = this.fb.group({
             email: ['', [
                 Validators.required,
-                CustomValidators.validateEmail(),
-                CustomValidators.noBannedCharacters()
+                CustomValidators.validateEmail()
             ]],
             password: ['', [
                 Validators.required,
@@ -42,13 +43,11 @@ export class LoginPageComponent {
                 Validators.required,
                 Validators.minLength(2),
                 Validators.maxLength(50),
-                CustomValidators.validateName(),
-                CustomValidators.noBannedCharacters()
+                CustomValidators.validateName()
             ]],
             email: ['', [
                 Validators.required,
-                CustomValidators.validateEmail(),
-                CustomValidators.noBannedCharacters()
+                CustomValidators.validateEmail()
             ]],
             password: ['', [
                 Validators.required,
@@ -60,10 +59,10 @@ export class LoginPageComponent {
         });
     }
 
-    get hasBannedChars(): boolean {
-        const password = this.registerForm.get('password')?.value || '';
-        return CustomValidators['BAN_PATTERN'].test(password);
-    }
+    // get hasBannedChars(): boolean {
+    //     const password = this.registerForm.get('password')?.value || '';
+    //     return CustomValidators['BAN_PATTERN'].test(password);
+    // }
 
     setMode(isRegister: boolean): void {
         this.isRegisterMode = isRegister;
@@ -89,8 +88,8 @@ export class LoginPageComponent {
                     this.isLoading = false;
                     this.modalService.open({
                         id: 'login-error',
-                        title: 'Ошибка',
-                        content: [error.message || 'Неверный email или пароль'],
+                        title: this.languageService.translate('errorTitle'),
+                        content: [(error.status !== 400)? this.languageService.translate('authorizationError') : this.languageService.translate('invalidEmailOrPassword')],
                         type: 'warning',
                         size: 'small'
                     });
@@ -116,14 +115,14 @@ export class LoginPageComponent {
                     //     size: 'small'
                     // });
                     this.setMode(false);
-                    this.router.navigate(['/']);
+                    this.router.navigate(['/verify/email']);
                 },
                 error: (error) => {
                     this.isLoading = false;
                     this.modalService.open({
                         id: 'register-error',
-                        title: 'Ошибка',
-                        content: [error.message || 'Не удалось зарегистрироваться'],
+                        title: this.languageService.translate('errorTitle'),
+                        content: [(error.message === 'EMAIL EXISTS') ? this.languageService.translate('userAlreadyExists') : this.languageService.translate('failedRegister')],
                         type: 'warning',
                         size: 'small'
                     });

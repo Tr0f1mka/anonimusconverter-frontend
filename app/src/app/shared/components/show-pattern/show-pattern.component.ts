@@ -1,8 +1,9 @@
-// show-pattern.component.ts
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { Pattern, Modification } from 'src/app/core/models/pattern.model';
-import { PatternService } from 'src/app/core/services/pattern.service';
+import { PatternPageService } from 'src/app/core/services/pattern-page.service';
 import { ModalService } from 'src/app/core/services/modal.service';
+import { BehaviorSubject, count, forkJoin, retry } from 'rxjs';
+import { LanguageService } from 'src/app/core/services/language.service';
 
 @Component({
     selector: 'show-pattern-modal',
@@ -14,106 +15,216 @@ export class ShowPatternComponent implements OnInit, OnChanges {
     @Output() isOpenChange = new EventEmitter<boolean>();
 
     isOpen: boolean = false;
+    isLoading: boolean = false;
+    isLoadingPage: boolean = false;
 
     // Пагинация
+    countModifications: number = 0;
     currentPage: number = 1;
     pageSize: number = 5;
-    
+    totalPages = 0;
     
     // Данные
-    modifications: Modification[] = [];
-    paginatedModifications: Modification[] = [];
+    currentModifications: Modification[] = [];
+    nextModifications: Modification[] = [];
+    prevModifications: Modification[] = [];
 
     constructor(
-        private patternService: PatternService,
+        private patternService: PatternPageService,
         private modalService: ModalService,
+        private languageService: LanguageService,
         private cdr: ChangeDetectorRef
     ) {}
     
-    ngOnInit() {
-        this.updateTable();
-    }
+    ngOnInit() {}
     
-    ngOnChanges() {
-        this.currentPage = 1;
-        this.updateTable();
-    }
+    ngOnChanges() {}
     
     openWindow() {
-        this.patternService.getModifications(this.pattern.id, 100, 1).subscribe({
-            next: (modifications) => {
-                this.modifications = modifications;
+        if (this.isLoading) return;
+
+        this.isLoading = true;
+        this.resetState();
+
+        forkJoin({
+            count: this.patternService.getCountModifications(this.pattern.id),
+            modifications: this.patternService.getModifications(this.pattern.id, this.pageSize, 1)
+        }).subscribe({
+            next: ({ count, modifications }) => {
+                this.countModifications = count;
+                this.totalPages = Math.ceil(count / this.pageSize);
+                this.currentModifications = modifications;
+                this.currentPage = 1;
+                this.isLoading = false;
                 this.isOpen = true;
-                this.updateTable();
+                this.cdr.detectChanges();
+
+                if (this.totalPages > 1) {
+                    this.patternService.getModifications(this.pattern.id, this.pageSize, 2).subscribe({
+                        next: (modifications) => {
+                            this.nextModifications = modifications;
+                        },
+                        error: (error) => {
+                            console.error('Failed to load next modifications:', error);
+                            this.nextModifications = [];
+                        }
+                    });
+                }
             },
             error: (error) => {
-                console.error('Failed to load modifications', error);
-                this.modifications = [];
+                console.error('Failed to load modifications:', error);
+                this.isLoading = false;
                 this.modalService.open({
                     id: 'open-pattern-modal',
-                    title: 'Ошибка',
-                    content: ['Ошибка загрузки модификаций шаблона'],
+                    title: this.languageService.translate('errorTitle'),
+                    content: [this.languageService.translate('errorModificationLoad')],
                     type: 'info',
                     size: 'small'
                 });
             }
         });
     }
-
-    get totalItems(): number {
-        //Всего элементов
-        return this.modifications?.length || 0;
-    }
-    
-    get totalPages(): number {
-        //Всего страниц
-        return Math.ceil(this.totalItems / this.pageSize);
-    }
-    
-    get startItem(): number {
-        //Первый элемент страницы
-        if (this.totalItems === 0) return 0;
-        return (this.currentPage - 1) * this.pageSize + 1;
-    }
-    
-    get endItem(): number {
-        //Последний элемент страницы
-        return Math.min(this.currentPage * this.pageSize, this.totalItems);
-    }
-    
-    updateTable() {
-        //Обновление таблицы
-        if (!this.modifications) return;
-        
-        const startIndex = (this.currentPage - 1) * this.pageSize;
-        const endIndex = startIndex + this.pageSize;
-        this.paginatedModifications = this.modifications.slice(startIndex, endIndex);
-
-        this.cdr.detectChanges();
-    }
     
     previousPage() {
         //Предыдущая страница
+        if (this.currentPage <= 1 || this.isLoadingPage) return;
+
+        this.isLoadingPage = true;
+
+        if (!this.prevModifications || this.prevModifications.length === 0) {
+            this.loadPageDirect(this.currentPage - 1);
+            return;
+        }
+
+        this.nextModifications = this.currentModifications;
+        this.currentModifications = this.prevModifications;
+        this.currentPage--;
+        this.cdr.detectChanges();
+
         if (this.currentPage > 1) {
-            this.currentPage--;
-            this.updateTable();
+            this.patternService.getModifications(this.pattern.id, this.pageSize, this.currentPage-1).subscribe({
+                next: (modifications) => {
+                    this.prevModifications = modifications;
+                    this.isLoadingPage = false;
+                },
+                error: (error) => {
+                    console.error('Failed to load previous modifications:', error);
+                    this.prevModifications = [];
+                    this.isLoadingPage = false;
+                }
+            });
+        }
+        else {
+            this.prevModifications = [];
+            this.isLoadingPage = false;
         }
     }
     
     nextPage() {
         //Следующая страница
+
+        if (this.currentPage === this.totalPages || this.isLoadingPage) return;
+
+        this.isLoadingPage = true;
+
+        if (!this.nextModifications || this.nextModifications.length === 0) {
+            this.loadPageDirect(this.currentPage+1);
+            return;
+        }
+
+        this.prevModifications = this.currentModifications;
+        this.currentModifications = this.nextModifications;
+        this.currentPage++;
+        this.cdr.detectChanges();
+
         if (this.currentPage < this.totalPages) {
-            this.currentPage++;
-            this.updateTable();
+            this.patternService.getModifications(this.pattern.id, this.pageSize, this.currentPage+1).subscribe({
+                next: (modifications) => {
+                    this.nextModifications = modifications;
+                    this.isLoadingPage = false;
+                },
+                error: (error) => {
+                    console.error('Failed to load next modifications:', error);
+                    this.nextModifications = [];
+                    this.isLoadingPage = false;
+                }
+            });
+        }
+        else {
+            this.nextModifications = [];
+            this.isLoadingPage = false;
         }
     }
     
     goToPage(page: number) {
         //Переход на страницу
-        this.currentPage = page;
-        this.updateTable();
+        if (this.currentPage === page ||
+            page < 1 ||
+            page > this.totalPages ||
+            this.isLoadingPage
+        ) return;
+        
+        if (page - this.currentPage === 1) {
+            this.nextPage();
+            return;
+        }
+
+        if (page - this.currentPage === -1) {
+            this.previousPage();
+            return;
+        }
+        
+        this.loadPageDirect(page);
     }
     
+    loadPageDirect(page: number) {
+        // Загрузка страницы
+        this.isLoadingPage = true;
+
+        this.patternService.getModifications(this.pattern.id, this.pageSize, page).subscribe({
+            next: (modifications) => {
+                this.currentModifications = modifications;
+                this.currentPage = page;
+                this.cdr.detectChanges();
+                if (page < this.totalPages) {
+                    this.patternService.getModifications(this.pattern.id, this.pageSize, page+1).subscribe({
+                        next: (modifications) => {
+                            this.nextModifications = modifications;
+                        },
+                        error: (error) => {
+                            console.error('Failed to load next modifications:', error);
+                            this.nextModifications = [];
+                        }
+                    });
+                }
+                else {
+                    this.nextModifications = [];
+                }
+
+                if (page > 1) {
+                    this.patternService.getModifications(this.pattern.id, this.pageSize, page-1).subscribe({
+                        next: (modifications) => {
+                            this.prevModifications = modifications;
+                        },
+                        error: (error) => {
+                            console.error('Failed to load next modifications:', error);
+                            this.prevModifications = [];
+                        }
+                    });
+                }
+                else {
+                    this.prevModifications = [];
+                }
+                this.isLoadingPage = false;
+            },
+            error: (error) => {
+                console.error('Failed to load modifications:', error);
+                this.currentModifications = [];
+                this.isLoadingPage = false;
+            }
+        });
+    }
+
     getPages(): number[] {
         //Взятие страниц
         const pages: number[] = [];
@@ -139,9 +250,23 @@ export class ShowPatternComponent implements OnInit, OnChanges {
         return pages;
     }
     
+
+    resetState() {
+        // Сброс модалки
+        this.currentModifications = [];
+        this.prevModifications = [];
+        this.nextModifications = [];
+        this.totalPages = 0;
+        this.currentPage = 1;
+        this.countModifications = 0;
+        this.isLoadingPage = false;
+    }
+
+
     closeModal() {
         //Закрытие модалки
         this.isOpen = false;
         this.isOpenChange.emit(false);
+        this.resetState();
     }
 }

@@ -40,7 +40,7 @@ README.md
 docs
 
 # Docker
-Dockerfile
+# Dockerfile
 .dockerignore
 docker-compose*.yml
 

@@ -87,8 +87,8 @@ export class ConverterPageComponent {
             if (!validation.valid) {
                 this.modalService.open({
                     id: 'file-error-modal',
-                    title: 'Ошибка загрузки',
-                    content: [validation.error || 'Неизвестная ошибка'],
+                    title: this.languageService.translate('errorTitle'),
+                    content: [validation.error || this.languageService.translate('unknownError')],
                     type: 'warning',
                     size: 'small'
                 });
@@ -105,8 +105,8 @@ export class ConverterPageComponent {
             if (this.sourceFormat === FileFormat.UNKNOWN) {
                 this.modalService.open({
                     id: 'format-warning',
-                    title: 'Формат не определен',
-                    content: ['Не удалось определить формат файла. Конвертация может не работать.'],
+                    title: this.languageService.translate('unknownFormat'),
+                    content: [this.languageService.translate('unknownFormatDescription')],
                     type: 'warning',
                     size: 'small'
                 });
@@ -120,12 +120,12 @@ export class ConverterPageComponent {
     onTargetFormatChange(format: FormatInfo): void {
         this.targetFormat = format;
         
-        // Если форматы совпадают и шаблон не выбран, показываем подсказку
+        // Если форматы совпадают, показываем подсказку
         if (this.isSameFormat() && this.selectedFile && !this.selectedPattern) {
             this.modalService.open({
                 id: 'pattern-required-hint',
-                title: 'Требуется шаблон',
-                content: ['Исходный и конечный форматы совпадают. Для конвертации необходимо выбрать шаблон.'],
+                title: this.languageService.translate('formatRequired'),
+                content: [this.languageService.translate('formatRequiredDescription')],
                 type: 'info',
                 size: 'small'
             });
@@ -158,8 +158,8 @@ export class ConverterPageComponent {
         if (this.isSameFormat() && !this.selectedPattern) {
             this.modalService.open({
             id: 'pattern-required-error',
-            title: 'Ошибка',
-            content: ['Для конвертации файла в тот же формат необходимо выбрать шаблон.'],
+            title: this.languageService.translate('errorTitle'),
+            content: [this.languageService.translate('formatRequiredDescription')],
             type: 'warning',
             size: 'small'
             });
@@ -192,8 +192,8 @@ export class ConverterPageComponent {
             console.error('Данные не сохранились!');
             this.modalService.open({
                 id: 'save-error',
-                title: 'Ошибка',
-                content: ['Не удалось сохранить данные конвертации'],
+                title: this.languageService.translate('errorTitle'),
+                content: [this.languageService.translate('saveDataError')],
                 type: 'warning',
                 size: 'small'
             });

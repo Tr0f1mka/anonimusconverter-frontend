@@ -1,36 +1,41 @@
 <button class="pattern-card-preview-btn" (click)="openWindow()">
-    Открыть
+    {{ 'openPattern' | translate }}
 </button>
 <div class="show-pattern-modal" *ngIf="isOpen">
     <div class="show-pattern-modal-backdrop" (click)="closeModal()"></div>
     <div class="show-pattern-modal-content">
         <div class="show-pattern-modal-header">
-            <h3>Просмотр шаблона</h3>
+            <h3>{{ 'showPatternTitle' | translate }}</h3>
             <button (click)="closeModal()">×</button>
         </div>
         <div class="show-pattern-modal-body">
-            <p><strong>Название:</strong> {{ pattern.name }}</p>
+            <p><strong>{{ 'patternTitle' | translate }}:</strong> {{ pattern.name }}</p>
 
             <div class="table-container">
-                <table class="modification-table">
+                <div class="loading-overlay" *ngIf="isLoading">
+                    <div class="spinner"></div>
+                    <p>{{ 'loadingPatterns' | translate }}</p>
+                </div>
+
+                <table class="modification-table" *ngIf="!isLoading">
                     <thead>
                         <tr>
                             <th class="head">
-                                Старое имя
+                                {{ 'oldNameTitle' | translate }}
                             </th>
                             <th class="head">
-                                Новое имя
+                                {{ 'newNameTitle' | translate }}
                             </th>
                             <th class="head">
-                                Новый тип
+                                {{ 'newTypeTitle' | translate }}
                             </th>
                             <th class="head">
-                                Новое значение
+                                {{ 'newValueTitle' | translate }}
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let modification of paginatedModifications">
+                        <tr *ngFor="let modification of currentModifications">
                             <td class="wrap-text">{{ modification.oldName || '—' }}</td>
                             <td class="wrap-text">{{ modification.newName || '—' }}</td>
                             <td>{{ modification.newType || '—' }}</td>
@@ -40,14 +45,10 @@
                 </table>
                 
                 <!-- Пагинация -->
-                <div class="pagination-container" *ngIf="totalPages > -1">
-                    <div class="pagination-info">
-                        Показано {{ startItem }} - {{ endItem }} из {{ totalItems }}
-                    </div>
-
+                <div class="pagination-container" *ngIf="totalPages > 1 && !isLoading">
                     <div class="pagination-controls">
                         <button (click)="previousPage()" [disabled]="currentPage === 1" class="page-btn">
-                            ← Назад
+                            ← {{ 'back' | translate }}
                         </button>
                         
                         <button *ngFor="let page of getPages()" 
@@ -58,7 +59,7 @@
                         </button>
                         
                         <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="page-btn">
-                            Вперед →
+                            {{ 'forward' | translate }} →
                         </button>
                     </div>
                 </div>
@@ -66,7 +67,7 @@
         </div>
 
         <div class="show-pattern-modal-footer">
-            <button (click)="closeModal()" class="close-btn">Закрыть</button>
+            <button (click)="closeModal()" class="close-btn">{{ 'close' | translate }}</button>
         </div>
     </div>
 </div>

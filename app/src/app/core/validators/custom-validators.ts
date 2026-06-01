@@ -1,11 +1,11 @@
 import { group } from "@angular/animations";
 import { emitDistinctChangesOnlyDefaultValue } from "@angular/compiler";
 import { AbstractControl, FormArray, FormGroup, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
-
+import { LanguageService } from "../services/language.service";
 
 export class CustomValidators {
 
-    private static readonly BAN_PATTERN = /[^\wа-яА-Я_!#$%&\'()*+,\-.\/:;<>=?@\[\]{}^`|~]+/;
+    // private static readonly BAN_PATTERN = /[^\wа-яА-Я_!#$%&\'()*+,\-.\/:;<>=?@\[\]{}^`|~]+/;
     private static readonly NAME_PATTERN = /^[\w_]+$/;
     private static readonly EMAIL_PATTERN = /^[\w_]+[\.\w_]*@([\w_]+\.[\w_]+)$/;
     private static readonly PASSWORD_PATTERN = /^[\wа-яА-Я_!#$%&\'()*+,\-.\/:;<>=?@\[\]{}^`|~]{8,}$/;
@@ -13,22 +13,9 @@ export class CustomValidators {
     private static readonly INT_PATTERN = /^[+|-]?\d+$/;
     private static readonly FLOAT_PATTERN = /^[+|-]?\d+(.\d+)?$/;
 
-    static noBannedCharacters(): ValidatorFn {
-        //Проверка на запрещённые символы
-        return (control: AbstractControl): ValidationErrors | null => {
-            const value = control.value;
-
-            if (!value) return null;
-
-            if (CustomValidators.BAN_PATTERN.test(value)) {
-                return {
-                    BannedCharacters: 'Обнаружены недопустимые символы. Разрешены только буквы, цифры, _ ! # $ % & \' ( ) * + , - . / : ; < = > ? @ [ ] { } ^ ` | ~'
-                };
-            }
-
-            return null;
-        };
-    }
+    constructor(
+        private languageService: LanguageService
+    ) {}
 
     static validateName(): ValidatorFn {
         //Проверка имени
@@ -39,7 +26,7 @@ export class CustomValidators {
             
             if (!CustomValidators.NAME_PATTERN.test(value)) {
                 return { 
-                    invalidName: 'Имя может содержать только буквы, цифры и символ подчеркивания' 
+                    invalidName: true
                 };
             }
             
@@ -56,7 +43,7 @@ export class CustomValidators {
             
             if (!CustomValidators.EMAIL_PATTERN.test(value)) {
                 return { 
-                    invalidEmail: 'Введите корректный email (пример: name@domain.com)'
+                    invalidEmail: true
                 };
             }
             
@@ -73,13 +60,13 @@ export class CustomValidators {
             
             if (value.length < 8) {
                 return {
-                    invalidLength: 'Пароль должен содержать минимум 8 символов'
+                    invalidLength: true
                 }
             }
 
             if (!CustomValidators.PASSWORD_PATTERN.test(value)) {
                 return { 
-                    invalidPassword: 'Пароль содержит недопустимые символы'
+                    invalidPassword: true
                 };
             }
             

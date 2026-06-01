@@ -16,7 +16,7 @@
     <div class="modal" *ngIf="showModal" (click)="closeModal()">
         <div class="modal-content" (click)="$event.stopPropagation()">
             <div class="modal-header">
-                <h3>Выберите шаблон</h3>
+                <h3>{{ 'selectPattern1' | translate }}</h3>
                 <button class="close-btn" (click)="closeModal()">×</button>
             </div>
             
@@ -24,15 +24,15 @@
 
                 <div class="loading-container" *ngIf="isLoading">
                     <div class="spinner-large"></div>
-                    <p>Загрузка шаблонов...</p>
+                    <p>{{ 'loadingPatterns' | translate }}</p>
                 </div>
 
                 <div *ngIf="!isLoading">
                     <!-- Поиск шаблонов -->
-                    <div class="search-box" *ngIf="patterns.length > 0">
+                    <div class="search-box" *ngIf="0">    <!-- patterns.length > 0 -->
                         <input 
                         type="text" 
-                        placeholder="Поиск шаблонов..." 
+                        placeholder="{{ 'searchPatterns' | translate }}" 
                         [(ngModel)]="searchQuery"
                         (input)="filterPatterns()"
                         class="search-input">
@@ -43,26 +43,47 @@
                         <div 
                         *ngFor="let pattern of filteredPatterns"
                         class="pattern-item"
-                        [class.selected]="selectedPattern?.id === pattern.id"
-                        (click)="selectPattern(pattern)">
+                        [class.selected]="selectedPattern?.id === pattern.id">
                             <div class="pattern-info">
-                                <div class="pattern-name">{{ pattern.name }}</div>
+                                <div class="pattern-name" (click)="selectPattern(pattern)">{{ pattern.name }}</div>
                             </div>
-                            <show-pattern-modal
-                                [pattern]="pattern"
-                                (isOpenChange)="onShowModalClosed()">
-                            </show-pattern-modal>
+                            <div class="preview-cont">
+                                <show-pattern-modal
+                                    [pattern]="pattern"
+                                    (isOpenChange)="onShowModalClosed()">
+                                </show-pattern-modal>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Пагинация -->
+                    <div class="pagination" *ngIf="totalPages > 1">
+                        <div class="pagination-controls">
+                            <button (click)="previousPage()" [disabled]="currentPage === 1" class="page-btn">
+                                ← {{ 'back' | translate }}
+                            </button>
+                            
+                            <button *ngFor="let page of getPages()" 
+                                    (click)="goToPage(page)"
+                                    [class.active]="page === currentPage"
+                                    class="page-btn">
+                                {{ page }}
+                            </button>
+                            
+                            <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="page-btn">
+                                {{ 'forward' | translate }} →
+                            </button>
                         </div>
                     </div>
                     
                     <ng-template #noPatterns>
                         <div class="no-patterns">
-                            <p>У вас пока нет шаблонов</p>
+                            <p>{{ 'noPatterns' | translate }}</p>
                             <button
                             class="btn btn-primary"
                             (click)="closeModal()"
                             [routerLink]="['/patterns']">
-                                Перейти на страницу шаблонов
+                                {{ 'onPatternsPage' | translate }}
                             </button>
                         </div>
                     </ng-template>
@@ -70,10 +91,7 @@
             </div>
             
             <div class="modal-footer">
-                <div class="footer-info" *ngIf="totalPatterns > 0">
-                    Всего шаблонов: {{ totalPatterns }}
-                </div>
-                <button class="btn btn-secondary" (click)="closeModal()">Отмена</button>
+                <button class="btn btn-secondary" (click)="closeModal()">{{ 'cancel' | translate }}</button>
             </div>
         </div>
     </div>

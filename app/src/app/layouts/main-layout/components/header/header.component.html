@@ -25,7 +25,7 @@
         <!-- Если пользователь авторизован -->
         <div class="user-menu" *ngIf="isLoggedIn">
             <button class="user-btn" (click)="toggleUserMenu()">
-                <span class="user-icon">👤</span>
+                <span class="user-icon">{{ (currentUser?.isVerified) ? '👤' : '❗️'}}</span>
                 <span class="user-name">{{ currentUser?.name }}</span>
                 <span class="dropdown-icon">▼</span>
             </button>
@@ -35,9 +35,12 @@
                     <div class="user-email">{{ currentUser?.email }}</div>
                 </div>
                 <div class="dropdown-divider"></div>
+                <button class="dropdown-item" (click)="toVerified()" *ngIf="!currentUser?.isVerified">
+                    {{ 'emailConfirmation' | translate }}
+                </button>
                 <button class="dropdown-item" (click)="logout()">
                     <span class="item-icon">🚪</span>
-                    Выйти
+                    {{ 'exit' | translate }}
                 </button>
             </div>
         </div>
